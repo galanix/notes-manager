@@ -104,7 +104,8 @@ $(".folders").on("click", function(e) {
 	$.each( $(".folders .folder_name"), function(i, val) {
 			if ( $(this).hasClass("colored") ) $(this).removeClass("colored");
 		});
-		$(target).toggleClass("colored");
+	if ( $(target).hasClass("folder_name") ) $(target).toggleClass("colored");
+		
 });
 
 // Toggle tags to open and close in tree format
@@ -129,7 +130,8 @@ $(".tags").on("click", function(e) {
 	$.each( $(".tags .tag_name"), function(i, val) {
 			if ( $(this).hasClass("colored") ) $(this).removeClass("colored");
 		});
-		$(target).toggleClass("colored");
+	if ( $(target).hasClass("tag_name") ) $(target).toggleClass("colored");
+		
 });
 
 });
