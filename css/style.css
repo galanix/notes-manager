@@ -1,0 +1,198 @@
+html {
+	display: none;
+}
+
+body * {
+	font-family: Arial, sans-serif;
+}
+
+#wrapper { 
+	width: 1080px;
+	margin: 0 auto;
+}
+
+/******************** Sign In Form  *********************************/
+
+#form {
+	position: fixed;
+	z-index: 100000;
+	width: 100%; /* Full width (cover the whole page) */
+	height: 100%; /* Full height (cover the whole page) */
+	top: 0; 
+	left: 0;
+	right: 0;
+	bottom: 0;
+	background-color: lightgray;
+}
+
+#form form {
+	width: 30%;
+	margin: 20px auto;
+}
+
+#form label{
+	font-size: 18px;
+}
+
+#form input {
+	margin-right: 15px;
+	text-indent: 15px;
+	padding-right: 10px;
+}
+
+/******************** Sign In Form end *********************************/
+
+/************************  HEADER **************************************/
+
+
+header { 
+	position: relative;
+	background-color: lightgray;
+	padding: 10px; 
+}
+
+header p {
+	display: inline-block;
+}
+
+header #logo {
+	margin-right: 20px;
+}
+
+/*header .close {
+	display: inline-block;
+	position: absolute;
+	top: 25px;
+	right: 10px;
+	background-color: #FC7100;
+	border: none;
+	cursor: pointer;
+	outline: none;
+	padding: 6px;
+	}*/
+
+
+
+	#logo {
+		padding: 10px 15px;
+		background-color: #FC7100;
+		font-size: 1.5rem;
+		font-weight: 700;
+		color: #fff;
+		-webkit-box-shadow: 2px 2px 2px #bbb;
+		box-shadow: 2px 2px 2px #bbb;
+	}
+
+	#name {
+		font-size: 18px;
+		margin-right: 20px;
+	}
+
+	header button {
+		margin-right: 10px;
+	}
+
+	/************************  HEADER end **************************************/
+
+	/*********************** POPUP ********************************************/
+
+	body #popup {
+		display: none;
+		position: fixed;
+		top: 0;
+		right: 0;
+		bottom: 0;
+		left: 0;
+		width: 100%;
+		height: 100%;
+		background-color: rgba(0,0,0,.8);
+
+	}
+
+	#popup form {
+		position: relative;
+		width: 30%;
+		margin: 20px auto;
+	}
+
+	#popup label {
+		color: #fff;
+		font-size: 18px;
+	}
+
+	.popup_close {
+		position: absolute;
+		top: 0;
+		right: -30px;
+		color: #fff;
+		cursor: pointer;
+		font-size: 1.5rem;
+    font-weight: 700;
+    text-shadow: 0 1px 0 #000;
+    opacity: .5;
+	}
+
+	.popup_close:hover { opacity: 1; }
+
+	/*********************** POPUP end ********************************************/
+
+	/************************ WORK SPACE **************************************/
+
+	#application {
+		display: -webkit-flex;
+		display: -moz-flex;
+		display: -ms-flex;
+		display: -o-flex;
+		display: flex;
+	}
+
+	/************************* SIDEBAR ***************************************/
+
+	.sidebar {
+		background-color: #9FF40A;
+		border-right: 4px solid lightgray;
+		padding: 15px 40px 15px 15px;
+	}
+
+	.folders {
+		margin-bottom: 20px;
+	}
+
+	.folder_name, .tag_name {
+		display: -webkit-flex;
+		display: -moz-flex;
+		display: -ms-flex;
+		display: -o-flex;
+		display: flex;
+		cursor: pointer;
+
+		-webkit-user-select: none;         
+		-moz-user-select: none; 
+		-ms-user-select: none; 
+	}
+
+	.colored { background-color: yellow; }
+
+	.folder_name i, .tag_name i {
+		padding-right: 5px;
+	}
+
+	.folders ul {
+		-webkit-transition: all 0.3s ease;
+		-o-transition: all 0.3s ease;
+		transition: all 0.3s ease;
+	}
+
+	/************************* SIDEBAR end ***************************************/
+
+	/************************* NOTE *********************************************/
+
+	#note {
+		background-color: #eee;
+		padding: 20px;
+	}
+
+	/************************* NOTE end *********************************************/
+
+
+	/************************ WORK SPACE end **************************************/

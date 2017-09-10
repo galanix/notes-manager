@@ -1,0 +1,38 @@
+{
+	"notes": {
+		"note1": {
+			"title": "Title1",
+			"text": "ghghghghghghghghghghghghf fgjhfghj fffffjhfgjhfg fgj",
+			"folder": "Frontend", 
+			"tags": "jquery, frontend, es6"
+		}
+	},
+
+	"folders":
+	[
+		{
+			"name":"Folder_1",
+			"children":
+			[
+				{
+					"name":"Folder_1.1",
+					"children":
+					[
+						{
+							"name":"Folder_1.1.1a"
+						},
+						{
+							"name":"Folder_1.1.1b"
+						}
+					]
+				},
+				{
+					"name":"Folder_2"
+				},
+				{
+					"name":"Folder_3"
+				}
+			]
+		}
+	]
+}
