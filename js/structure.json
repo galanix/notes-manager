@@ -12,25 +12,31 @@
 	[
 		{
 			"name":"Folder_1",
+			"id": 0,
 			"children":
 			[
 				{
 					"name":"Folder_1.1",
+					"id": 1,
 					"children":
 					[
 						{
-							"name":"Folder_1.1.1a"
+							"name":"Folder_1.1.1a",
+							"id": 2,
 						},
 						{
-							"name":"Folder_1.1.1b"
+							"name":"Folder_1.1.1b",
+							"id": 5,
 						}
 					]
 				},
 				{
-					"name":"Folder_2"
+					"name":"Folder_2",
+					"id": 3,
 				},
 				{
-					"name":"Folder_3"
+					"name":"Folder_3",
+					"id": 4,
 				}
 			]
 		}

@@ -1,4 +1,53 @@
 // Creating folders
+let idCounter = 0;
+
+let data = (localStorage.getItem("structure")) 
+	? JSON.parse(localStorage.getItem("structure")) : {
+		"folders": [],
+		"notes": {}
+	};
+let select = $("#folders_tree");
+
+
+function updateData() {
+	let folderName =  $("#folder_name").val();
+
+
+	let newFolder = {
+		"id": idCounter,
+		"name": folderName,
+		"isParent": false,
+		"children": []
+	};
+
+	if (select.val() === "Root") {
+		data.folders.push(newFolder);
+	}
+	
+	localStorage.setItem("structure", JSON.stringify(data));
+	localStorage.setItem("idCounter", idCounter);
+	idCounter++;
+
+		select.append(`
+			<option id="${newFolder.id}">${newFolder.name}</option>
+			`);
+		console.log(select.val())
+	}
+	
+	
+
+	// if ( $(".folders").children("li").children("ul")[0] === undefined ) {
+	// 	$(".folders").children("li").append(`
+	// 		<ul>
+	// 		<li>
+	// 		<span id="${newFolder.id}" class="folder_name">
+	// 		<i class="fa fa-caret-right" aria-hidden="true"></i> ${folderName}</span>
+	// 		</li>
+	// 		</ul>
+	// 		`);
+	// }
+
+console.log($(".folders").children("li").children("ul").children());
 
 $("#create_folder").on("click", function() {
 
@@ -11,68 +60,23 @@ $("#create_folder").on("click", function() {
 		$("#popup").fadeOut(500);
 		$("#popup form")[0].reset();
 	});
-
 });
 
-$(".folders").on("click", function(e) {
-	let target = e.target;
-	if ( $(target).hasClass("folder_name") ) {
-		let folderID = $(target).attr("id");
-		console.log(folderID);
-	}
-	console.log(target);
+// $(".folders").on("click", function(e) {
+// 	let target = e.target;
+// 	if ( $(target).hasClass("folder_name") ) {
+// 		let folderID = $(target).attr("id");
+// 	}
 
-});
+// });
 
 $(".create").on("click", function() {
-
-
-	let folderName =  $("#folder_name").val();
-	let data = (localStorage.getItem("structure")) 
-	? JSON.parse(localStorage.getItem("structure")) : {
-		"folders": [],
-		"notes": {}
-	};
-
-	let newFolder = {
-		"id": data.folders.length,
-		"name": folderName,
-	};
-
-	data.folders.push(newFolder);
-
-	localStorage.setItem("structure", JSON.stringify(data));
-
-	$.each( $(".folders .folder_name"), function(i, val) {
-		if ( $(this).hasClass("colored") ) {
-			$(this).siblings("ul").append(`
-				<li>
-				<span id="${newFolder.id}" class="folder_name">
-				<i class="fa fa-caret-right" aria-hidden="true"></i> ${folderName}</span>
-				<ul></ul>
-				</li>
-				`);
-		} 
-	});
+	updateData();
 
 	$("#popup").fadeOut(500);
 	$("#popup form")[0].reset();
 
-
 });
 
-// function renderStructure() {
-// 	let parseData = JSON.parse( localStorage.getItem("structure") );
-// 	for (let i = 0; i < parseData.folders.length; i++) {
-// 		$(".folders ul").html(`
-// 			<li>
-// 			<span  class="folder_name">
-// 			<i class="fa fa-caret-right" aria-hidden="true"></i> ${folderName}</span>
-// 			<ul></ul>
-// 			</li>
-// 			`);
-// 	}
-// }
 
-// renderStructure();
 localStorage.clear();
