@@ -1,4 +1,3 @@
-
 $(document).ready(function() {
 
 	function set_cookie ( name, value, exp_y, exp_m, exp_d, path, domain, secure ){
@@ -99,14 +98,14 @@ $(".folders").on("dblclick", function(e) {
 	}
 });
 
-$(".folders").on("click", function(e) {
-	let target = e.target;
-	$.each( $(".folders .folder_name"), function(i, val) {
-			if ( $(this).hasClass("colored") ) $(this).removeClass("colored");
-		});
-	if ( $(target).hasClass("folder_name") ) $(target).toggleClass("colored");
+// $(".folders").on("click", function(e) {
+// 	let target = e.target;
+// 	$.each( $(".folders .folder_name"), function(i, val) {
+// 			if ( $(this).hasClass("colored") ) $(this).removeClass("colored");
+// 		});
+// 	if ( $(target).hasClass("folder_name") ) $(target).toggleClass("colored");
 		
-});
+// });
 
 // Toggle tags to open and close in tree format
 
@@ -125,13 +124,13 @@ $(".tags").on("dblclick", function(e) {
 		}, 10);
 	}
 });
-$(".tags").on("click", function(e) {
-	let target = e.target;
-	$.each( $(".tags .tag_name"), function(i, val) {
-			if ( $(this).hasClass("colored") ) $(this).removeClass("colored");
-		});
-	if ( $(target).hasClass("tag_name") ) $(target).toggleClass("colored");
+// $(".tags").on("click", function(e) {
+// 	let target = e.target;
+// 	$.each( $(".tags .tag_name"), function(i, val) {
+// 			if ( $(this).hasClass("colored") ) $(this).removeClass("colored");
+// 		});
+// 	if ( $(target).hasClass("tag_name") ) $(target).toggleClass("colored");
 		
-});
+// });
 
 });
