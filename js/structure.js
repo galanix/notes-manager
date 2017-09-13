@@ -1,27 +1,24 @@
 localStorage.clear();
 
 // Creating folders
-let idCounter = 0;
+
 
 let data = (localStorage.getItem("structure")) 
 ? JSON.parse(localStorage.getItem("structure")) : {
 	"folders": [],
 	"notes": {}
 };
+
+let idCounter = (localStorage.getItem("idCounter")) 
+? localStorage.getItem("idCounter") : 0;
 let select = $("#folders_tree");
-let arrows = "";
+// Amount of dashes = nested level of subfolder
+let dashes = "";
+// Nested lvl in localStorage
+let levelCounter = 0;
 
-function drawDashes(obj) {
-	for (key in obj) {
-		let item = obj[key];
-		if (item.isParent) arrows += "-";
-		
-		if (item.children) {
-			drawDashes(item.children);
-		}
-	}
-}
 
+// Returns nested object 
 function find(source, id) {
 	for (key in source)
 	{
@@ -41,54 +38,56 @@ function find(source, id) {
     return null;
   }
 
-  // function renderSelect(obj) {
-  // 	for(key in obj) {
-  // 		let item = obj[key];
-  // 		let name = obj.name;
-  // 		let id = obj.id;
-  // 		console.log(item);
-  // 			select.append(`
-  // 			<option id="${id}">${arrows}${name}</option>
-  // 			`);
 
-  // 		if (obj.children) {
-  // 			renderSelect(obj.children);
-  // 		}
-  // 	}
-  // }
+// Render select 
+function renderSelect(obj) {
+	for(key in obj) {
+		let item = obj[key];
+		let name = item.name;
+		let id = item.id;
+		if (item.root) levelCounter = 0;
 
+		select.append(`
+			<option id="${id}" value="${name}">${dashes} ${name}</option>
+			`);
 
-  function updateData() {
-  	let folderName =  $("#folder_name").val();
-  	let findedObj;
-
-  	let newFolder = {
-  		"id": idCounter,
-  		"name": folderName,
-  		"children": []
-  	};
-
-  	if (select.val() === "Root") {
-  		data.folders.push(newFolder);
-  	} else {
-  		findedObj =	find(data.folders, $("#folders_tree option:selected").attr("id"));
-  		findedObj.children.push(newFolder);
-  		findedObj.isParent = true;
-  	}
-
-  	localStorage.setItem("structure", JSON.stringify(data));
-  	localStorage.setItem("idCounter", idCounter);
-  	idCounter++;
-  	
-  	drawDashes(findedObj);
-  	select.append(`
-  		<option id="${newFolder.id}">${arrows}${newFolder.name}</option>
-  		`);
-
-  	arrows = "";
-  }
+		if (item.children) {
+			levelCounter ++;
+			
+			renderSelect(item.children);
+		} 
+	}
+}
 
 
+function updateData() {
+	let folderName =  $("#folder_name").val();
+	let findedObj;
+
+	let newFolder = {
+		"id": idCounter,
+		"name": folderName,
+		"dashes": 0,
+		"children": []
+	};
+
+	if (select.val() === "Root") {
+		newFolder.root = true;
+		data.folders.push(newFolder);
+	} else {
+		findedObj =	find(data.folders, $("#folders_tree option:selected").attr("id"));
+		findedObj.isParent = true;
+		findedObj.children.push(newFolder);
+	}
+
+	localStorage.setItem("structure", JSON.stringify(data));
+	localStorage.setItem("idCounter", idCounter);
+	idCounter++;
+
+}
+
+renderSelect(data.folders);
+idCounter++;
 
 	// if ( $(".folders").children("li").children("ul")[0] === undefined ) {
 	// 	$(".folders").children("li").append(`
@@ -125,75 +124,102 @@ function find(source, id) {
 
 // });
 
-$(".create").on("click", function() {
-	if ( $("#folder_name").val() ) updateData();
 
+$(".create").on("click", function() {
+	if ( $("#folder_name").val() ) {
+		updateData();
+		select.find("option").not(".select_root").remove();
+		renderSelect(data.folders);
+		console.log(levelCounter);
+	}
 	
 	$("#popup").fadeOut(500);
 	$("#popup form")[0].reset();
 
 });
 
-let folders = 
-	[  
-      {  
-         "id":0,
-         "name":"Folder_1",
-         "children":[  
-            {  
-               "id":1,
-               "name":"Folder_1.1",
-               "children":[  
-                  {  
-                     "id":2,
-                     "name":"Folder_1.1.1",
-                     "children":[  
+// let folders = 
+// [  
+// {  
+// 	"id":0,
+// 	"name":"Folder_1",
+// 	"children":[  
+// 	{  
+// 		"id":1,
+// 		"name":"Folder_1.1",
+// 		"children":[  
+// 		{  
+// 			"id":2,
+// 			"name":"Folder_1.1.1",
+// 			"children":[  
+// 			{  
+// 				"id":8,
+// 				"name":"Folder_1.1.1.1",
+// 				"children":[  
 
-                     ]
-                  }
-               ],
-               "isParent":true
-            }
-         ],
-         "isParent":true
-      },
-      {  
-         "id":3,
-         "name":"Folder_2",
-         "children":[  
-            {  
-               "id":4,
-               "name":"Folder_2.1",
-               "children":[  
+// 				]
+// 			}
+// 			],
+// 			"isParent":true
+// 		},
+// 		{  
+// 			"id":3,
+// 			"name":"Folder_1.1.2",
+// 			"children":[  
 
-               ]
-            }
-         ],
-         "isParent":true
-      },
-      {  
-         "id":5,
-         "name":"Folder_3",
-         "children":[  
+// 			]
+// 		}
+// 		],
+// 		"isParent":true
+// 	}
+// 	],
+// 	"isParent":true
+// },
+// {  
+// 	"id":4,
+// 	"name":"Folder_2",
+// 	"children":[  
+// 	{  
+// 		"id":5,
+// 		"name":"Folder_2.1",
+// 		"children":[  
 
-         ]
-      }
-   ];
+// 		]
+// 	},
+// 	{  
+// 		"id":6,
+// 		"name":"Folder_2.2",
+// 		"children":[  
 
-	  function renderSelect(obj) {
-  	for(key in obj) {
-  		let item = obj[key];
-  		let name = item.name;
-  		let id = item.id;
-  		console.log(name);
-  			select.append(`
-  			<option id="${id}">${arrows}${name}</option>
-  			`);
+// 		]
+// 	}
+// 	],
+// 	"isParent":true
+// },
+// {  
+// 	"id":7,
+// 	"name":"Folder_3",
+// 	"children":[  
 
-  		if (obj.children) {
-  			renderSelect(obj.children);
-  		}
-  	}
-  }
+// 	]
+// }
+// ];
 
-  	renderSelect(folders);
+
+// function renderSelect(obj) {
+// 	for(key in obj) {
+// 		let item = obj[key];
+// 		let name = item.name;
+// 		let id = item.id;
+// 		console.log(item);
+// 		select.append(`
+// 			<option id="${id}">${arrows}${name}</option>
+// 			`);
+
+// 		if (item.children) {
+// 			renderSelect(item.children);
+// 		}
+// 	}
+// }
+
+// renderSelect(folders);

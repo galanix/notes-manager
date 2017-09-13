@@ -36,3 +36,76 @@
 		}
 	]
 }
+
+
+
+
+
+// **********************************
+
+let folders = 
+[  
+{  
+	"id":0,
+	"name":"Folder_1",
+	"children":[  
+	{  
+		"id":1,
+		"name":"Folder_1.1",
+		"children":[  
+		{  
+			"id":2,
+			"name":"Folder_1.1.1",
+			"children":[  
+			{  
+				"id":8,
+				"name":"Folder_1.1.1.1",
+				"children":[  
+
+				]
+			}
+			],
+			"isParent":true
+		},
+		{  
+			"id":3,
+			"name":"Folder_1.1.2",
+			"children":[  
+
+			]
+		}
+		],
+		"isParent":true
+	}
+	],
+	"isParent":true
+},
+{  
+	"id":4,
+	"name":"Folder_2",
+	"children":[  
+	{  
+		"id":5,
+		"name":"Folder_2.1",
+		"children":[  
+
+		]
+	},
+	{  
+		"id":6,
+		"name":"Folder_2.2",
+		"children":[  
+
+		]
+	}
+	],
+	"isParent":true
+},
+{  
+	"id":7,
+	"name":"Folder_3",
+	"children":[  
+
+	]
+}
+];
