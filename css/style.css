@@ -59,20 +59,6 @@ header #logo {
 	margin-right: 20px;
 }
 
-/*header .close {
-	display: inline-block;
-	position: absolute;
-	top: 25px;
-	right: 10px;
-	background-color: #FC7100;
-	border: none;
-	cursor: pointer;
-	outline: none;
-	padding: 6px;
-	}*/
-
-
-
 	#logo {
 		padding: 10px 15px;
 		background-color: #FC7100;
@@ -96,7 +82,7 @@ header #logo {
 
 	/*********************** POPUP ********************************************/
 
-	body #popup {
+	body #popup_folder, body #popup_note {
 		display: none;
 		position: fixed;
 		top: 0;
@@ -109,13 +95,14 @@ header #logo {
 
 	}
 
-	#popup form {
+	#popup_folder form, #popup_note form  {
 		position: relative;
 		width: 30%;
 		margin: 20px auto;
 	}
 
-	#popup label {
+	#popup_folder label, #popup_note label {
+		width: 100%;
 		color: #fff;
 		font-size: 18px;
 	}
@@ -148,7 +135,8 @@ header #logo {
 
 	/************************* SIDEBAR ***************************************/
 
-	.sidebar {
+	#sidebar {
+		height: 100%;
 		background-color: #9FF40A;
 		border-right: 4px solid lightgray;
 		padding: 15px 40px 15px 15px;
@@ -186,11 +174,20 @@ header #logo {
 	/************************* SIDEBAR end ***************************************/
 
 	/************************* NOTE *********************************************/
+#note {
+	width: 100%;
+	height: 100%;
+}
 
-	#note {
-		background-color: #eee;
-		padding: 20px;
-	}
+#note textarea {
+	width: 100%;
+	height: 100%;
+	resize: none;
+
+	-webkit-appearance: none;
+	-moz-appearance: none;
+	appearance: none;
+}
 
 	/************************* NOTE end *********************************************/
 
