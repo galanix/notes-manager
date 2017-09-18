@@ -121,6 +121,14 @@ header #logo {
 
 	.popup_close:hover { opacity: 1; }
 
+	#popup_folder button, #popup_note button {
+		margin-right: 20px;
+	}
+
+		#popup_folder button:last-of-type, #popup_note button:last-of-type {
+		margin-right: 0;
+	}
+
 	/*********************** POPUP end ********************************************/
 
 	/************************ WORK SPACE **************************************/
@@ -187,6 +195,13 @@ header #logo {
 	-webkit-appearance: none;
 	-moz-appearance: none;
 	appearance: none;
+}
+
+#note textarea:focus { outline: none; }
+
+.note {
+	display: block;
+	cursor: pointer;
 }
 
 	/************************* NOTE end *********************************************/

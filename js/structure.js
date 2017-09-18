@@ -9,7 +9,7 @@ let data = (localStorage.getItem("structure"))
 		"display": "block",
 		"children": []
 	}],
-	"notes": {}
+	"notes": []
 };
 
 let idCounter = (localStorage.getItem("idCounter")) 
@@ -36,6 +36,25 @@ function find(source, id) {
     return null;
   }
 
+  function findParent(arr, id) {
+  	for (let i = 0; i < arr.length; i++) {
+  		let item = arr[i];
+  		let children = item.children;
+  		for (let j = 0; j < children.length; j++) {
+  			let child = item.children[j];
+  			let childID = child.id;
+
+  			if (childID == id) return children;
+
+  			if (item.children) {
+  				let subresult = findParent(item.children, id);
+  				if (subresult) return subresult;
+  			}
+  		}
+  	}
+  	return null;
+  }
+
 // Render select list 
 function renderSelect(arr, counter) {
 	for(let i = 0; i < arr.length; i++) {
@@ -57,6 +76,14 @@ function renderSelect(arr, counter) {
 	}
 }
 
+// Set textarea(note) height equal to sidebar height
+function renderNoteSize() {
+	setTimeout(function() {
+		let sidebarHeight = ($("#sidebar").height());
+		$("#note textarea").css("height", sidebarHeight);
+	}, 10);
+}
+
 
 // Takes a folders array and turns it into a <ul>
 function parseFolders(folders) { 
@@ -70,16 +97,16 @@ function parseFolders(folders) {
 // Takes a folder object and turns it into a <li>
 function parseFolder(folder) { 
 	let li = $("<li>");
-	li.html(`<span data-folders-tree-id="${folder.id}" class="folder_name">
-		<i class="fa fa-caret-right" aria-hidden="true"></i> ${folder.name}</span>`);  
+	li.append(`<span data-folders-tree-id="${folder.id}" class="folder_name">
+		<i class="fa" aria-hidden="true"></i> ${folder.name}</span>`);
 	if(folder.children) li.append(parseFolders(folder.children));
 	return li;
 }
 
 // Render folders tree  with open or close folders
-function renderDisplay(arr) { 
-	for (key in arr) {
-		let item = arr[key];
+function renderDisplay(folders) { 
+	for (key in folders) {
+		let item = folders[key];
 		let display = item.display;
 		let icon = item.class;
 		let id = item.id;
@@ -89,6 +116,9 @@ function renderDisplay(arr) {
 			foldersSpan.siblings("ul").css("display", "block");
 		} else {
 			foldersSpan.siblings("ul").css("display", "none");
+		}
+			if (!item.children.length) {
+			folderI.remove();
 		}
 		if (display === "block" && item.children[0]) {
 			folderI.removeClass("fa-caret-right").addClass("fa-caret-down");
@@ -101,9 +131,18 @@ function renderDisplay(arr) {
 	} 
 }
 
+function renderNotes(arr) {
+	for (let i = 0; i < arr.length; i++) {
+		let item = arr[i];
+		let folderID = item.folder;
+		let foldersSpan = $(`.folders span[data-folders-tree-id="${folderID}"]`);
+		let li = foldersSpan.parent();
+		li.append(`<span class="note"><i class="fa fa-sticky-note-o" aria-hidden="true"></i>
+			${item.title}</span>`);
+	}
+}
 
-
-function updateData() {
+function updateFoldersData() {
 	let folderName =  $("#folder_name").val();
 	let findedObj;
 
@@ -124,16 +163,31 @@ function updateData() {
 	idCounter++;
 
 }
-// ******************************* PAGE ON LOAD **************************************
+
+function updateNotesData() {
+	let noteTitle = $("#note_name").val();
+	let folderID =	$("#popup_note select option:selected").attr("data-folders-select-id");
+	
+	let newNote = {
+		"title": noteTitle,
+		"text": "",
+		"folder": folderID,
+		"tags": ""
+	};
+
+	data.notes.push(newNote);
+	localStorage.setItem("structure", JSON.stringify(data));
+
+}
+// ******************************* CALL FUNCTIONS **************************************
 
 renderSelect(data.folders, 0);
 idCounter++;
 $(".folders").append(parseFolders(data.folders));
 renderDisplay(data.folders);
+renderNotes(data.notes);
 
-
-// ******************************* PAGE ON LOAD **************************************
-
+// ******************************* CALL FUNCTIONS end **************************************
 
 // Open create folder popup
 $("#create_folder").on("click", function() {
@@ -166,24 +220,64 @@ $("#create_note").on("click", function() {
 });
 
 // Render data in select and sidebar
-$(".create").on("click", function() {
+$("#popup_folder .create").on("click", function() {
 	if ( $("#folder_name").val() ) {
-		updateData();
+		updateFoldersData();
 		select.find("option").not(".select_root").remove();
 		renderSelect(data.folders, 0);
 		$(".folders").find("*").remove();
 		$(".folders").append(parseFolders(data.folders));
 		renderDisplay(data.folders);
+		renderNotes(data.notes);
+		renderNoteSize();
 	}
 
-	if( $("#note_name").val() ) {
-
-	}
-	
 	$("#popup_folder").fadeOut(500);
 	$("#popup_folder form")[0].reset();
 
 });
+
+// Delete and render data in select and sidebar
+$("#popup_folder .delete").on("click", function() {
+	let selectedOptionId = $("#popup_folder select option:selected").attr("data-folders-select-id");
+	if ( $("#popup_folder select").val() && selectedOptionId != "root" ) {
+		let findedArr = findParent(data.folders, selectedOptionId);
+		for (let i = 0; i < findedArr.length; i++) {
+			if (findedArr[i].id == selectedOptionId) {
+				let index = findedArr.indexOf(findedArr[i]);
+				findedArr.splice( findedArr.indexOf(findedArr[i], 1), 1 );
+			}
+		}
+
+		localStorage.setItem("structure", JSON.stringify(data));
+
+		select.find("option").not(".select_root").remove();
+		renderSelect(data.folders, 0);
+		$(".folders").find("*").remove();
+		$(".folders").append(parseFolders(data.folders));
+		renderDisplay(data.folders);
+		renderNoteSize();
+	}
+
+	$("#popup_folder").fadeOut(500);
+	$("#popup_folder form")[0].reset();
+});
+
+$("#popup_note .create").on("click", function() {
+	let selectedOptionId = $("#popup_note select option:selected").attr("data-folders-select-id");
+	if ( $("#note_name").val() && selectedOptionId != "root" ) {
+		updateNotesData();
+		$(".folders").find("*").remove();
+		$(".folders").append(parseFolders(data.folders));
+		renderDisplay(data.folders);
+		renderNotes(data.notes);
+		renderNoteSize();
+	}
+
+	$("#popup_note").fadeOut(500);
+	$("#popup_note form")[0].reset();
+});
+
 
 // Toggle folders to open and close in tree format
 $(".folders").on("dblclick", function(e) {
@@ -200,6 +294,7 @@ $(".folders").on("dblclick", function(e) {
 				$(target).children("i").removeClass("fa-caret-right").addClass("fa-caret-down");
 			}
 		// }, 10);
+		renderNoteSize();
 		let findedObj = find(data.folders, $(target).attr("data-folders-tree-id"));
 		// Change display property to render folders tree  with open or close folders
 		if (findedObj.display === "block" && findedObj.children[0]) {
@@ -230,10 +325,66 @@ $(".tags").on("dblclick", function(e) {
 	}
 });
 
-let sidebar = document.getElementById("sidebar");
+// let testData = {  
+// 	"folders":[  
+// 	{  
+// 		"id":"root",
+// 		"name":"Folders",
+// 		"display":"block",
+// 		"children":[  
+// 		{  
+// 			"id":1,
+// 			"name":"1",
+// 			"display":"block",
+// 			"children":[  
+// 			{  
+// 				"id":2,
+// 				"name":"1.1",
+// 				"display":"block",
+// 				"children":[  
+// 				{  
+// 					"id":3,
+// 					"name":"1.1.1",
+// 					"display":"block",
+// 					"children":[  
 
-setTimeout(function() {
-	// console.log(sidebar.offsetHeight); 
-	console.log($("#sidebar").outerHeight());
-}, 2000);
- 
+// 					]
+// 				}
+// 				],
+// 				"isParent":true
+// 			},
+// 			{  
+// 				"id":4,
+// 				"name":"1.2",
+// 				"display":"block",
+// 				"children":[  
+
+// 				]
+// 			}
+// 			],
+// 			"isParent":true
+// 		},
+// 		{  
+// 			"id":5,
+// 			"name":"2",
+// 			"display":"block",
+// 			"children":[  
+// 			{  
+// 				"id":6,
+// 				"name":"2.1",
+// 				"display":"block",
+// 				"children":[  
+
+// 				]
+// 			}
+// 			],
+// 			"isParent":true
+// 		}
+// 		],
+// 		"isParent":true
+// 	}
+// 	],
+// 	"notes":{  
+
+// 	}
+// }

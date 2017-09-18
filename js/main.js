@@ -48,10 +48,24 @@ else if ( get_cookie("access") === null ) {
 } 
 }
 
+// Set textarea(note) height equal to sidebar height
+ function renderNoteSizeLoad() {
+	setTimeout(function() {
+	let sidebarHeight = ($("#sidebar").height());
+	$("#note textarea").css("height", sidebarHeight);
+}, 1000);
+}
+
+// ******************************* CALL FUNCTIONS **************************************
+
 checkAccess();
+// Set display property of html tag to block(none by default)
 setTimeout(function() {
 	$("html").show();
-}, 500);
+}, 1000);
+renderNoteSizeLoad();
+
+// ******************************* CALL FUNCTIONS end **************************************
 
 // Form page on click Enter adds coockie and redirect to content page
 $(".enter_app_page").on("click", function() {
@@ -76,6 +90,8 @@ $.getJSON("js/pass.json", function(result) {
 	$("#logo").html(firstLetter);
 	$("#name").html(result.name);
 });
+
+
 
 });
 
