@@ -59,129 +59,131 @@ header #logo {
 	margin-right: 20px;
 }
 
-	#logo {
-		padding: 10px 15px;
-		background-color: #FC7100;
-		font-size: 1.5rem;
-		font-weight: 700;
-		color: #fff;
-		-webkit-box-shadow: 2px 2px 2px #bbb;
-		box-shadow: 2px 2px 2px #bbb;
-	}
+#logo {
+	padding: 10px 15px;
+	background-color: #FC7100;
+	font-size: 1.5rem;
+	font-weight: 700;
+	color: #fff;
+	-webkit-box-shadow: 2px 2px 2px #bbb;
+	box-shadow: 2px 2px 2px #bbb;
+}
 
-	#name {
-		font-size: 18px;
-		margin-right: 20px;
-	}
+#name {
+	font-size: 18px;
+	margin-right: 20px;
+}
 
-	header button {
-		margin-right: 10px;
-	}
+header button {
+	margin-right: 10px;
+}
 
-	/************************  HEADER end **************************************/
+.delete_note, .save_note { display: none; }
 
-	/*********************** POPUP ********************************************/
 
-	body #popup_folder, body #popup_note {
-		display: none;
-		position: fixed;
-		top: 0;
-		right: 0;
-		bottom: 0;
-		left: 0;
-		width: 100%;
-		height: 100%;
-		background-color: rgba(0,0,0,.8);
+/************************  HEADER end **************************************/
 
-	}
+/*********************** POPUP ********************************************/
 
-	#popup_folder form, #popup_note form  {
-		position: relative;
-		width: 30%;
-		margin: 20px auto;
-	}
+body #popup_folder, body #popup_note {
+	display: none;
+	position: fixed;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	background-color: rgba(0,0,0,.8);
 
-	#popup_folder label, #popup_note label {
-		width: 100%;
-		color: #fff;
-		font-size: 18px;
-	}
+}
 
-	.popup_close {
-		position: absolute;
-		top: 0;
-		right: -30px;
-		color: #fff;
-		cursor: pointer;
-		font-size: 1.5rem;
-    font-weight: 700;
-    text-shadow: 0 1px 0 #000;
-    opacity: .5;
-	}
+#popup_folder form, #popup_note form  {
+	position: relative;
+	width: 30%;
+	margin: 20px auto;
+}
 
-	.popup_close:hover { opacity: 1; }
+#popup_folder label, #popup_note label {
+	width: 100%;
+	color: #fff;
+	font-size: 18px;
+}
 
-	#popup_folder button, #popup_note button {
-		margin-right: 20px;
-	}
+.popup_close {
+	position: absolute;
+	top: 0;
+	right: -30px;
+	color: #fff;
+	cursor: pointer;
+	font-size: 1.5rem;
+	font-weight: 700;
+	text-shadow: 0 1px 0 #000;
+	opacity: .5;
+}
 
-		#popup_folder button:last-of-type, #popup_note button:last-of-type {
-		margin-right: 0;
-	}
+.popup_close:hover { opacity: 1; }
 
-	/*********************** POPUP end ********************************************/
+#popup_folder button, #popup_note button {
+	margin-right: 20px;
+}
 
-	/************************ WORK SPACE **************************************/
+#popup_folder button:last-of-type, #popup_note button:last-of-type {
+	margin-right: 0;
+}
 
-	#application {
-		display: -webkit-flex;
-		display: -moz-flex;
-		display: -ms-flex;
-		display: -o-flex;
-		display: flex;
-	}
+#popup_note textarea {
+	display: block;
+}
 
-	/************************* SIDEBAR ***************************************/
+/*********************** POPUP end ********************************************/
 
-	#sidebar {
-		height: 100%;
-		background-color: #9FF40A;
-		border-right: 4px solid lightgray;
-		padding: 15px 40px 15px 15px;
-	}
+/************************ WORK SPACE **************************************/
 
-	.folders {
-		margin-bottom: 20px;
-	}
+#application {
+	display: -webkit-flex;
+	display: -moz-flex;
+	display: -ms-flex;
+	display: -o-flex;
+	display: flex;
+}
 
-	.folder_name, .tag_name {
-		display: -webkit-flex;
-		display: -moz-flex;
-		display: -ms-flex;
-		display: -o-flex;
-		display: flex;
-		cursor: pointer;
+/************************* SIDEBAR ***************************************/
 
-		-webkit-user-select: none;         
-		-moz-user-select: none; 
-		-ms-user-select: none; 
-	}
+#sidebar {
+	height: 100%;
+	background-color: #9FF40A;
+	border-right: 4px solid lightgray;
+	padding: 15px;
+}
 
-	.colored { background-color: yellow; }
+.folders {
+	margin-bottom: 20px;
+}
 
-	.folder_name i, .tag_name i {
-		padding-right: 5px;
-	}
+.folder_name, .tag_name {
+	display: -webkit-flex;
+	display: -moz-flex;
+	display: -ms-flex;
+	display: -o-flex;
+	display: flex;
+	min-width: 100px;
+	cursor: pointer;
 
-	.folders ul {
-		-webkit-transition: all 0.3s ease;
-		-o-transition: all 0.3s ease;
-		transition: all 0.3s ease;
-	}
+	-webkit-user-select: none;
+	-moz-user-select: none; 
+	-ms-user-select: none; 
+}
 
-	/************************* SIDEBAR end ***************************************/
+.colored { background-color: yellow; }
 
-	/************************* NOTE *********************************************/
+.folder_name i, .tag_name i {
+	padding-right: 5px;
+}
+
+/************************* SIDEBAR end ***************************************/
+
+/************************* NOTE *********************************************/
 #note {
 	width: 100%;
 	height: 100%;
@@ -201,10 +203,15 @@ header #logo {
 
 .note {
 	display: block;
+	min-width: 100px;
 	cursor: pointer;
+
+	-webkit-user-select: none;
+	-moz-user-select: none; 
+	-ms-user-select: none; 
 }
 
-	/************************* NOTE end *********************************************/
+/************************* NOTE end *********************************************/
 
 
 	/************************ WORK SPACE end **************************************/

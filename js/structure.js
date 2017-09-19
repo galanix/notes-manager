@@ -12,8 +12,12 @@ let data = (localStorage.getItem("structure"))
 	"notes": []
 };
 
-let idCounter = (localStorage.getItem("idCounter")) 
-? localStorage.getItem("idCounter") : 0;
+let idFolderCounter = (localStorage.getItem("idFolderCounter")) 
+? localStorage.getItem("idFolderCounter") : 0;
+
+let idNoteCounter = (localStorage.getItem("idNoteCounter")) 
+? localStorage.getItem("idNoteCounter") : 0;
+
 let select = $(".folders_tree");
 
 
@@ -98,7 +102,8 @@ function parseFolders(folders) {
 function parseFolder(folder) { 
 	let li = $("<li>");
 	li.append(`<span data-folders-tree-id="${folder.id}" class="folder_name">
-		<i class="fa" aria-hidden="true"></i> ${folder.name}</span>`);
+		<i class="fa folder" aria-hidden="true"></i> <i class="fa fa-folder-o" aria-hidden="true"></i> 
+		${folder.name}</span>`);
 	if(folder.children) li.append(parseFolders(folder.children));
 	return li;
 }
@@ -111,33 +116,34 @@ function renderDisplay(folders) {
 		let icon = item.class;
 		let id = item.id;
 		let foldersSpan = $(`.folders span[data-folders-tree-id="${id}"]`);
-		let folderI = $(`.folders span[data-folders-tree-id="${id}"] i`);
+		let folderI = $(`.folders span[data-folders-tree-id="${id}"] .folder`);
 		if (display === "block") {
 			foldersSpan.siblings("ul").css("display", "block");
 		} else {
 			foldersSpan.siblings("ul").css("display", "none");
 		}
-			if (!item.children.length) {
-			folderI.remove();
-		}
-		if (display === "block" && item.children[0]) {
+		if (display === "block" && foldersSpan.next("ul").children().length) {
 			folderI.removeClass("fa-caret-right").addClass("fa-caret-down");
 		} else {
 			folderI.removeClass("fa-caret-down").addClass("fa-caret-right");
 		}
+		if (!foldersSpan.next("ul").children().length) {
+			folderI.remove();
+		}
 		if (item.children) {
 			renderDisplay(item.children);
 		}
-	} 
+	}
 }
 
 function renderNotes(arr) {
 	for (let i = 0; i < arr.length; i++) {
 		let item = arr[i];
+		let id = item.id;
 		let folderID = item.folder;
 		let foldersSpan = $(`.folders span[data-folders-tree-id="${folderID}"]`);
-		let li = foldersSpan.parent();
-		li.append(`<span class="note"><i class="fa fa-sticky-note-o" aria-hidden="true"></i>
+		let ul = foldersSpan.next("ul");
+		ul.append(`<span data-note-id="${id}" class="note"><i class="fa fa-sticky-note-o" aria-hidden="true"></i>
 			${item.title}</span>`);
 	}
 }
@@ -147,7 +153,7 @@ function updateFoldersData() {
 	let findedObj;
 
 	let newFolder = {
-		"id": idCounter,
+		"id": idFolderCounter,
 		"name": folderName,
 		"display": "block",
 		"children": []
@@ -159,33 +165,39 @@ function updateFoldersData() {
 
 
 	localStorage.setItem("structure", JSON.stringify(data));
-	localStorage.setItem("idCounter", idCounter);
-	idCounter++;
+	localStorage.setItem("idFolderCounter", idFolderCounter);
+	idFolderCounter++;
 
 }
 
 function updateNotesData() {
 	let noteTitle = $("#note_name").val();
+	let noteText = $("#popup_note textarea").val();
 	let folderID =	$("#popup_note select option:selected").attr("data-folders-select-id");
 	
 	let newNote = {
+		"id": idNoteCounter,
 		"title": noteTitle,
-		"text": "",
+		"text": noteText,
 		"folder": folderID,
 		"tags": ""
 	};
 
 	data.notes.push(newNote);
 	localStorage.setItem("structure", JSON.stringify(data));
+	localStorage.setItem("idNoteCounter", idNoteCounter);
+	idNoteCounter++;
 
 }
 // ******************************* CALL FUNCTIONS **************************************
 
 renderSelect(data.folders, 0);
-idCounter++;
+idFolderCounter++;
+idNoteCounter++;
 $(".folders").append(parseFolders(data.folders));
-renderDisplay(data.folders);
 renderNotes(data.notes);
+renderDisplay(data.folders);
+
 
 // ******************************* CALL FUNCTIONS end **************************************
 
@@ -215,7 +227,7 @@ $("#create_note").on("click", function() {
 
 	$(".popup_close").on("click", function() {
 		$("#popup_note").fadeOut(500);
-		$("#popup_folder form")[0].reset();
+		$("#popup_note form")[0].reset();
 	});
 });
 
@@ -227,8 +239,8 @@ $("#popup_folder .create").on("click", function() {
 		renderSelect(data.folders, 0);
 		$(".folders").find("*").remove();
 		$(".folders").append(parseFolders(data.folders));
-		renderDisplay(data.folders);
 		renderNotes(data.notes);
+		renderDisplay(data.folders);
 		renderNoteSize();
 	}
 
@@ -238,14 +250,16 @@ $("#popup_folder .create").on("click", function() {
 });
 
 // Delete and render data in select and sidebar
-$("#popup_folder .delete").on("click", function() {
+$("#popup_folder .delete_folder").on("click", function() {
 	let selectedOptionId = $("#popup_folder select option:selected").attr("data-folders-select-id");
 	if ( $("#popup_folder select").val() && selectedOptionId != "root" ) {
 		let findedArr = findParent(data.folders, selectedOptionId);
+		console.log(selectedOptionId);
+		console.log(findedArr);
 		for (let i = 0; i < findedArr.length; i++) {
 			if (findedArr[i].id == selectedOptionId) {
 				let index = findedArr.indexOf(findedArr[i]);
-				findedArr.splice( findedArr.indexOf(findedArr[i], 1), 1 );
+				findedArr.splice( findedArr.indexOf(findedArr[i]), 1);
 			}
 		}
 
@@ -255,6 +269,7 @@ $("#popup_folder .delete").on("click", function() {
 		renderSelect(data.folders, 0);
 		$(".folders").find("*").remove();
 		$(".folders").append(parseFolders(data.folders));
+		renderNotes(data.notes);
 		renderDisplay(data.folders);
 		renderNoteSize();
 	}
@@ -269,8 +284,8 @@ $("#popup_note .create").on("click", function() {
 		updateNotesData();
 		$(".folders").find("*").remove();
 		$(".folders").append(parseFolders(data.folders));
-		renderDisplay(data.folders);
 		renderNotes(data.notes);
+		renderDisplay(data.folders);
 		renderNoteSize();
 	}
 
@@ -282,22 +297,47 @@ $("#popup_note .create").on("click", function() {
 // Toggle folders to open and close in tree format
 $(".folders").on("dblclick", function(e) {
 	let target = e.target;
+	// Toggle folders to open and close by clicking on folder name
 	if ( $(target).hasClass("folder_name") && $(target).siblings("ul").children().length ) {
 		let childUl = $(target).siblings("ul");
 		childUl.toggle();
 		// Change folder open or close icon
-		// setTimeout(function() {
-			if ( $( childUl ).css("display").toLowerCase() === "none" ) {
-				$(target).children("i").removeClass("fa-caret-down").addClass("fa-caret-right");
-			} 
-			if ( $( childUl ).css("display").toLowerCase() === "block" ) {
-				$(target).children("i").removeClass("fa-caret-right").addClass("fa-caret-down");
-			}
-		// }, 10);
+		if ( $( childUl ).css("display").toLowerCase() === "none" ) {
+			$(target).children("i").removeClass("fa-caret-down").addClass("fa-caret-right");
+		} 
+		if ( $( childUl ).css("display").toLowerCase() === "block" ) {
+			$(target).children("i").removeClass("fa-caret-right").addClass("fa-caret-down");
+		}
 		renderNoteSize();
 		let findedObj = find(data.folders, $(target).attr("data-folders-tree-id"));
+		let span = $(`.folder_name[data-folders-tree-id="${findedObj.id}"]`);
 		// Change display property to render folders tree  with open or close folders
-		if (findedObj.display === "block" && findedObj.children[0]) {
+		if (findedObj.display === "block" && span.next("ul").children().length) {
+			findedObj.display = "none";
+			localStorage.setItem("structure", JSON.stringify(data));
+		} else {
+			findedObj.display = "block";
+			localStorage.setItem("structure", JSON.stringify(data));
+		}
+	}
+	// Toggle folders to open and close by clicking on folder icons(arrow, fodler)
+	if( $(target).hasClass("fa") && $(target).parent().siblings("ul").children().length ) {
+		let parentUl = $(target).parent().siblings("ul");
+		parentUl.toggle();
+		// Change folder open or close icon
+		if ( $( parentUl ).css("display").toLowerCase() === "none" ) {
+			$(target).removeClass("fa-caret-down").addClass("fa-caret-right");
+			$(target).siblings().removeClass("fa-caret-down").addClass("fa-caret-right");
+		} 
+		if ( $( parentUl ).css("display").toLowerCase() === "block" ) {
+			$(target).removeClass("fa-caret-right").addClass("fa-caret-down");
+			$(target).siblings().removeClass("fa-caret-right").addClass("fa-caret-down");
+		}
+		renderNoteSize();
+		let findedObj = find(data.folders, $(target).parent().attr("data-folders-tree-id"));
+		let span = $(`.folder_name[data-folders-tree-id="${findedObj.id}"]`);
+		// Change display property to render folders tree  with open or close folders
+		if (findedObj.display === "block" && span.next("ul").children().length) {
 			findedObj.display = "none";
 			localStorage.setItem("structure", JSON.stringify(data));
 		} else {
@@ -323,6 +363,68 @@ $(".tags").on("dblclick", function(e) {
 			}
 		}, 10);
 	}
+});
+
+// Show note on right side of app
+$(".folders").on("click", function(e) {
+	let target = e.target;
+	let textArea = $("#application textarea");
+	if ( $(target).hasClass("note") ) {
+		let span = $(target).parent().siblings(".folder_name");
+		let noteID = $(target).attr("data-note-id");
+		textArea.attr("data-textarea-id", noteID);
+		for (let i = 0; i < data.notes.length; i++) {
+			if (data.notes[i].folder == span.attr("data-folders-tree-id")) {
+				textArea.text(data.notes[i].text);
+			}
+		} }
+	});
+
+$(".edit").on("click", function() {
+	let workTextarea = $("#application textarea");
+	if ( workTextarea.val() ) {
+		$(".edit").css("display", "none");
+		$(".delete_note").css("display", "inline-block");
+		$(".save_note").css("display", "inline-block");
+		workTextarea.removeAttr("readonly");
+	}
+});
+
+$(".save_note").on("click", function() {
+	let workTextarea = $("#application textarea");
+	for (let i = 0; i < data.notes.length; i++) {
+		if ( data.notes[i].id == workTextarea.attr("data-textarea-id") ) {
+			data.notes[i].text = workTextarea.val();
+			localStorage.setItem("structure", JSON.stringify(data));
+		}
+	}
+	$(".edit").css("display", "inline-block");
+	$(".delete_note").css("display", "none");
+	$(".save_note").css("display", "none");
+});
+
+$(".delete_note").on("click", function() {
+	let workTextarea = $("#application textarea");
+	for (let i = 0; i < data.notes.length; i++) {
+		if ( data.notes[i].id == workTextarea.attr("data-textarea-id") ) {
+			let index = data.notes.indexOf(data.notes[i]);
+			data.notes.splice(index, 1);
+			localStorage.setItem("structure", JSON.stringify(data));
+		}
+	}
+
+		select.find("option").not(".select_root").remove();
+		renderSelect(data.folders, 0);
+		$(".folders").find("*").remove();
+		$(".folders").append(parseFolders(data.folders));
+		renderNotes(data.notes);
+		renderDisplay(data.folders);
+		renderNoteSize();
+
+	workTextarea.val("");
+	$(".edit").css("display", "inline-block");
+	$(".delete_note").css("display", "none");
+	$(".save_note").css("display", "none");
 });
 
 // let testData = {  
