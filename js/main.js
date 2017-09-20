@@ -49,11 +49,16 @@ else if ( get_cookie("access") === null ) {
 }
 
 // Set textarea(note) height equal to sidebar height
- function renderNoteSizeLoad() {
+function renderNoteSizeLoad() {
 	setTimeout(function() {
-	let sidebarHeight = ($("#sidebar").height());
-	$("#note textarea").css("height", sidebarHeight);
-}, 1000);
+		let sidebarHeight = $("#sidebar").height();
+		let noteTitleHeight = $("#note .note_title").height();
+		let tagsHeight = $("#note .tags").height();
+		let notesFolderHeight = $("#note .notes_folder").height();
+		let sum = noteTitleHeight + tagsHeight + notesFolderHeight;
+		let res = sidebarHeight - sum;
+		$("#note textarea").css("height", res);
+	}, 1000);
 }
 
 // ******************************* CALL FUNCTIONS **************************************
