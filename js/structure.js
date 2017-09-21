@@ -1,4 +1,4 @@
-// localStorage.clear();
+localStorage.clear();
 
 // Creating folders
 let data = (localStorage.getItem("structure")) 
@@ -9,7 +9,13 @@ let data = (localStorage.getItem("structure"))
 		"display": "block",
 		"children": []
 	}],
-	"notes": []
+	"notes": [],
+	"tags": [{
+		"id": "root",
+		"name": "Tags",
+		"display": "block",
+		"children": []
+	}]
 };
 
 let idFolderCounter = (localStorage.getItem("idFolderCounter")) 
@@ -18,19 +24,18 @@ let idFolderCounter = (localStorage.getItem("idFolderCounter"))
 let idNoteCounter = (localStorage.getItem("idNoteCounter")) 
 ? localStorage.getItem("idNoteCounter") : 0;
 
-let noteDate = (localStorage.getItem("noteDate"))
-? localStorage.getItem("noteDate") : "";
+let idTagCounter = (localStorage.getItem("idNoteCounter")) 
+? localStorage.getItem("idNoteCounter") : 0;
 
 let select = $(".folders_tree");
 
 
-// Returns nested object 
+// Find and return nested object 
 function find(source, id) {
 	for (key in source) {
 		var item = source[key];
 		if (item.id == id)
 			return item;
-
  // Item not returned yet. Search its children by recursive call.
  if (item.children) {
  	var subresult = find(item.children, id);
@@ -43,27 +48,28 @@ function find(source, id) {
     return null;
   }
 
-  function findParent(arr, id) {
-  	for (let i = 0; i < arr.length; i++) {
-  		let item = arr[i];
-  		let children = item.children;
-  		for (let j = 0; j < children.length; j++) {
-  			let child = item.children[j];
-  			let childID = child.id;
+// Find and return nested obj parent(arr)
+function findParent(arr, id) {
+	for (let i = 0; i < arr.length; i++) {
+		let item = arr[i];
+		let children = item.children;
+		for (let j = 0; j < children.length; j++) {
+			let child = item.children[j];
+			let childID = child.id;
 
-  			if (childID == id) return children;
+			if (childID == id) return children;
 
-  			if (item.children) {
-  				let subresult = findParent(item.children, id);
-  				if (subresult) return subresult;
-  			}
-  		}
-  	}
-  	return null;
-  }
+			if (item.children) {
+				let subresult = findParent(item.children, id);
+				if (subresult) return subresult;
+			}
+		}
+	}
+	return null;
+}
 
 // Render select list 
-function renderSelect(arr, counter) {
+function renderFolderSelect(arr, counter) {
 	for(let i = 0; i < arr.length; i++) {
 		let name = arr[i].name;
 		let id = arr[i].id;
@@ -78,7 +84,27 @@ function renderSelect(arr, counter) {
 				`);
 			dashes = "";
 
-			renderSelect(arr[i].children, counter + 1);
+			renderFolderSelect(arr[i].children, counter + 1);
+		} 
+	}
+}
+
+function renderTagSelect(arr, counter) {
+	for(let i = 0; i < arr.length; i++) {
+		let name = arr[i].name;
+		let id = arr[i].id;
+		
+		if (arr[i].children) {
+			let dashes = "";
+			for (let i = 0; i < counter - 1; i++) {
+				dashes += "-";
+			}
+			$("#popup_tag .tags_tree").append(`
+				<option data-tags-select-id="${id}" value="${name}">${dashes} ${name}</option>
+				`);
+			dashes = "";
+
+			renderTagSelect(arr[i].children, counter + 1);
 		} 
 	}
 }
@@ -86,11 +112,10 @@ function renderSelect(arr, counter) {
 // Set textarea(note) height equal to sidebar height
 function renderNoteSize() {
 	setTimeout(function() {
-		let sidebarHeight = $("#sidebar").height();
-		let noteTitleHeight = $("#note .note_title").height();
-		let tagsHeight = $("#note .tags").height();
-		let notesFolderHeight = $("#note .notes_folder").height();
-		let sum = noteTitleHeight + tagsHeight + notesFolderHeight;
+		let sidebarHeight = $("#sidebar").outerHeight();
+		let noteTitleHeight = $("#note .note_title").outerHeight();
+		let noteInfo = $("#note .note_info").outerHeight();
+		let sum = noteTitleHeight + noteInfo ;
 		let res = sidebarHeight - sum;
 		$("#note textarea").css("height", res);
 	}, 10);
@@ -116,12 +141,30 @@ function parseFolder(folder) {
 	return li;
 }
 
+// Takes a folders array and turns it into a <ul>
+function parseTags(tags) { 
+	let ul = $("<ul>");
+	for(var i = 0; i < tags.length; i++) {
+		ul.append(parseTag(tags[i]));
+	}
+	return ul;
+}
+
+// Takes a folder object and turns it into a <li>
+function parseTag(tag) { 
+	let li = $("<li>");
+	li.append(`<span data-folders-tree-id="${tag.id}" class="tag_name">
+		<i class="fa tag" aria-hidden="true"></i> <i class="fa fa-tag" aria-hidden="true"></i> 
+		${tag.name}</span>`);
+	if(tag.children) li.append(parseTags(tag.children));
+	return li;
+}
+
 // Render folders tree  with open or close folders
-function renderDisplay(folders) { 
+function renderFoldersDisplay(folders) { 
 	for (key in folders) {
 		let item = folders[key];
 		let display = item.display;
-		let icon = item.class;
 		let id = item.id;
 		let foldersSpan = $(`.folders span[data-folders-tree-id="${id}"]`);
 		let folderI = $(`.folders span[data-folders-tree-id="${id}"] .folder`);
@@ -131,24 +174,51 @@ function renderDisplay(folders) {
 			foldersSpan.siblings("ul").css("display", "none");
 		}
 		if (display === "block" && foldersSpan.next("ul").children().length) {
-			folderI.removeClass("fa-caret-right").addClass("fa-caret-down");
+			folderI.removeClass("fa-angle-right").addClass("fa-angle-down");
 		} else {
-			folderI.removeClass("fa-caret-down").addClass("fa-caret-right");
+			folderI.removeClass("fa-angle-down").addClass("fa-angle-right");
 		}
 		if (!foldersSpan.next("ul").children().length) {
 			folderI.remove();
 		}
 		if (item.children) {
-			renderDisplay(item.children);
+			renderFoldersDisplay(item.children);
+		}
+	}
+}
+
+function renderTagsDisplay(tags) { 
+	for (key in tags) {
+		let item = tags[key];
+		let display = item.display;
+		let id = item.id;
+		let tagsSpan = $(`.tags span[data-tags-tree-id="${id}"]`);
+		let folderI = $(`.tags span[data-tags-tree-id="${id}"] .folder`);
+		if (display === "block") {
+			tagsSpan.siblings("ul").css("display", "block");
+		} else {
+			tagsSpan.siblings("ul").css("display", "none");
+		}
+		if (display === "block" && tagsSpan.next("ul").children().length) {
+			folderI.removeClass("fa-angle-right").addClass("fa-angle-down");
+		} else {
+			folderI.removeClass("fa-angle-down").addClass("fa-angle-right");
+		}
+		if (!tagsSpan.next("ul").children().length) {
+			folderI.remove();
+		}
+		if (item.children) {
+			renderFoldersDisplay(item.children);
 		}
 	}
 }
 
 // Math max to array
 function getMaxOfArray(numArray) {
-  return Math.max.apply(null, numArray);
+	return Math.max.apply(null, numArray);
 }
 
+// Find last(date) note and return it as object from data
 function findLatestNote() {
 	let dataArr = [];
 	let maxNote;
@@ -168,36 +238,41 @@ function findLatestNote() {
 	return maxNote;
 }
 
+function paddingCheck() {
+	if ( $("#note .notes_tags").html().length > 0 ) $("#note .notes_tags").css({"padding": "5px 10px", "display": "inline-block"});
+	else $("#note .notes_tags").css({"padding": "0px"});
+}
 
+// Render note fields(title, tags..) and render last(date) note on load
 function renderNoteFields() {
 	let latestNote = findLatestNote();
 	let noteTitle = $("#note .note_title");
-	let noteTags = $("#note .tags");
+	let noteTags = $("#note .notes_tags");
 	let notesFolder = $("#note .notes_folder");
 	let textArea = $("#application textarea");
 
-if (latestNote) {
-	noteTitle.text(latestNote.title);
-	noteTags.text(latestNote.tags);
-
-	let latestNoteFolder = find(data.folders, latestNote.folder);
-	notesFolder.text(latestNoteFolder.name);
-
-	textArea.text(latestNote.text);
-}
+	if (latestNote) {
+		noteTitle.html(latestNote.title);
+		noteTags.html(latestNote.tags);			 
+		let latestNoteFolder = find(data.folders, latestNote.folder);
+		notesFolder.html(`<i class="fa fa-folder-o" aria-hidden="true"></i> ${latestNoteFolder.name}`);
+		textArea.html(latestNote.text);
+		if ( latestNote.tags.length <= 0 ) $("#note .notes_tags").css({"display": "none"});
+	}
 
 	for (let i = 0; i < data.notes.length; i++) {
 		let item = data.notes[i];
 		if ( data.notes[i].id == textArea.attr("data-textarea-id") ) {
-			noteTitle.text(item.title);
-			noteTags.text(item.tags);
+			noteTitle.html(item.title);
+			noteTags.html(item.tags);
 
 			let folder = find(data.folders, item.folder);
-			notesFolder.text(folder.name);
+			notesFolder.html(`<i class="fa fa-folder-o" aria-hidden="true"></i> ${folder.name}`);
 		}
 	}
 }
 
+// Render notes in sidebar tree
 function renderNotes(arr) {
 	for (let i = 0; i < arr.length; i++) {
 		let item = arr[i];
@@ -210,7 +285,7 @@ function renderNotes(arr) {
 	}
 }
 
-
+// Add new folder to localStorage and iterate idFolderCounter
 function updateFoldersData() {
 	let folderName =  $("#folder_name").val();
 	let findedObj;
@@ -223,7 +298,6 @@ function updateFoldersData() {
 	};
 
 	findedObj =	find(data.folders, $(".folders_tree option:selected").attr("data-folders-select-id"));
-	findedObj.isParent = true;
 	findedObj.children.push(newFolder);
 
 
@@ -233,6 +307,7 @@ function updateFoldersData() {
 
 }
 
+// Add new note to localStorage and iterate idNoteCounter
 function updateNotesData() {
 	let noteTitle = $("#note_name").val();
 	let noteText = $("#popup_note textarea").val();
@@ -245,7 +320,7 @@ function updateNotesData() {
 		"text": noteText,
 		"folder": folderID,
 		"date": noteDate,
-		"tags": ""
+		"tags": []
 	};
 
 	data.notes.push(newNote);
@@ -255,18 +330,57 @@ function updateNotesData() {
 	idNoteCounter++;
 
 }
+
+function updateTagsData() {
+	let tagName =  $("#tag_name").val();
+	let findedObj;
+
+	let newTag = {
+		"id": idTagCounter,
+		"name": tagName,
+		"display": "block",
+		"children": []
+	};
+
+	findedObj =	find(data.tags, $(".tags_tree option:selected").attr("data-tags-select-id"));
+	findedObj.children.push(newFolder);
+
+	localStorage.setItem("structure", JSON.stringify(data));
+	localStorage.setItem("idTagCounter", idTagCounter);
+	idTagCounter++;
+}
 // ******************************* CALL FUNCTIONS **************************************
 
-renderSelect(data.folders, 0);
+renderFolderSelect(data.folders, 0);
+renderTagSelect(data.tags, 0);
 idFolderCounter++;
 idNoteCounter++;
+idTagCounter++;
 $(".folders").append(parseFolders(data.folders));
+$(".tags").append(parseTags(data.tags));
 renderNotes(data.notes);
-renderDisplay(data.folders);
+renderFoldersDisplay(data.folders);
 renderNoteFields();
+paddingCheck();
 
 
 // ******************************* CALL FUNCTIONS end **************************************
+
+// ******************************* EXECUTE COMMANDS ******************************************
+
+if ( $("#application textarea").attr("data-textarea-id") ) 
+$("#application textarea").attr("data-textarea-id", findLatestNote().id);
+
+// ******************************* CALL FUNCTIONS end **************************************
+
+$("#sidebar").css("height", $(window).outerHeight() - $("header").outerHeight());
+
+
+$(window).resize(function() {
+	$("#sidebar").css("height", $(window).outerHeight() - $("header").outerHeight());
+	renderNoteSize();
+});
+
 
 // Open create folder popup
 $(".btn_folders").on("click", function() {
@@ -298,22 +412,56 @@ $(".btn_notes").on("click", function() {
 	});
 });
 
-// Render data in select and sidebar
+// Open create tag popup
+$(".btn_tags").on("click", function() {
+
+	$("#popup_tag").fadeIn(500);
+	$(document).keydown(function(e) {
+		if (e.keyCode == 27) $("#popup_tag").fadeOut(500);
+	});
+
+
+	$(".popup_close").on("click", function() {
+		$("#popup_tag").fadeOut(500);
+		$("#popup_tag form")[0].reset();
+	});
+});
+
+// Render data in folder select and sidebar
 $("#popup_folder .create").on("click", function() {
 	if ( $("#folder_name").val() ) {
 		updateFoldersData();
 		select.find("option").not(".select_root").remove();
-		renderSelect(data.folders, 0);
+		renderFolderSelect(data.folders, 0);
 		$(".folders").find("*").remove();
 		$(".folders").append(parseFolders(data.folders));
 		renderNotes(data.notes);
-		renderDisplay(data.folders);
+		renderFoldersDisplay(data.folders);
 		renderNoteFields();
 		renderNoteSize();
 	}
 
 	$("#popup_folder").fadeOut(500);
 	$("#popup_folder form")[0].reset();
+
+});
+
+// Render data in tags select and sidebar
+$("#popup_tag .create").on("click", function() {
+	if ( $("#tag_name").val() ) {
+		updateTagsData();
+		$("#popup_note .folders_tree").find("option").remove();
+		renderTagSelect(data.tags, 0);
+		$(".tags").find("*").remove();
+		$(".tags").append(parseFolders(data.tags));
+		renderNotes(data.notes);
+		renderFoldersDisplay(data.tags);
+		renderNoteFields();
+		renderNoteSize();
+	}
+
+	$("#popup_tag").fadeOut(500);
+	$("#popup_tag form")[0].reset();
 
 });
 
@@ -334,11 +482,11 @@ $("#popup_folder .delete_folder").on("click", function() {
 		localStorage.setItem("structure", JSON.stringify(data));
 
 		select.find("option").not(".select_root").remove();
-		renderSelect(data.folders, 0);
+		renderFolderSelect(data.folders, 0);
 		$(".folders").find("*").remove();
 		$(".folders").append(parseFolders(data.folders));
 		renderNotes(data.notes);
-		renderDisplay(data.folders);
+		renderFoldersDisplay(data.folders);
 		renderNoteFields();
 		renderNoteSize();
 	}
@@ -355,7 +503,7 @@ $("#popup_note .create").on("click", function() {
 		$(".folders").find("*").remove();
 		$(".folders").append(parseFolders(data.folders));
 		renderNotes(data.notes);
-		renderDisplay(data.folders);
+		renderFoldersDisplay(data.folders);
 		renderNoteFields();
 		renderNoteSize();
 	}
@@ -374,10 +522,10 @@ $(".folders").on("dblclick", function(e) {
 		childUl.toggle();
 		// Change folder open or close icon
 		if ( $( childUl ).css("display").toLowerCase() === "none" ) {
-			$(target).children("i").removeClass("fa-caret-down").addClass("fa-caret-right");
+			$(target).children("i").removeClass("fa-angle-down").addClass("fa-angle-right");
 		} 
 		if ( $( childUl ).css("display").toLowerCase() === "block" ) {
-			$(target).children("i").removeClass("fa-caret-right").addClass("fa-caret-down");
+			$(target).children("i").removeClass("fa-angle-right").addClass("fa-angle-down");
 		}
 		renderNoteSize();
 		let findedObj = find(data.folders, $(target).attr("data-folders-tree-id"));
@@ -397,12 +545,12 @@ $(".folders").on("dblclick", function(e) {
 		parentUl.toggle();
 		// Change folder open or close icon
 		if ( $( parentUl ).css("display").toLowerCase() === "none" ) {
-			$(target).removeClass("fa-caret-down").addClass("fa-caret-right");
-			$(target).siblings().removeClass("fa-caret-down").addClass("fa-caret-right");
+			$(target).removeClass("fa-angle-down").addClass("fa-angle-right");
+			$(target).siblings().removeClass("fa-angle-down").addClass("fa-angle-right");
 		} 
 		if ( $( parentUl ).css("display").toLowerCase() === "block" ) {
-			$(target).removeClass("fa-caret-right").addClass("fa-caret-down");
-			$(target).siblings().removeClass("fa-caret-right").addClass("fa-caret-down");
+			$(target).removeClass("fa-angle-right").addClass("fa-angle-down");
+			$(target).siblings().removeClass("fa-angle-right").addClass("fa-angle-down");
 		}
 		renderNoteSize();
 		let findedObj = find(data.folders, $(target).parent().attr("data-folders-tree-id"));
@@ -418,7 +566,6 @@ $(".folders").on("dblclick", function(e) {
 	}
 });
 
-
 // Toggle tags to open and close in tree format
 $(".tags").on("dblclick", function(e) {
 	let target = e.target;
@@ -427,10 +574,10 @@ $(".tags").on("dblclick", function(e) {
 		childUl.toggle();
 		setTimeout(function() {
 			if ( $( childUl ).css("display").toLowerCase() === "none" ) {
-				$(target).children("i").removeClass("fa-caret-down").addClass("fa-caret-right");
+				$(target).children("i").removeClass("fa-angle-down").addClass("fa-angle-right");
 			} 
 			if ( $( childUl ).css("display").toLowerCase() === "block" ) {
-				$(target).children("i").removeClass("fa-caret-right").addClass("fa-caret-down");
+				$(target).children("i").removeClass("fa-angle-right").addClass("fa-angle-down");
 			}
 		}, 10);
 	}
@@ -450,7 +597,20 @@ $(".folders").on("click", function(e) {
 			}
 		} 
 	}
-	});
+	if ( $(target).parent().hasClass("note") && $(".edit").css("display") != "none" ) {
+		let noteID = $(target).parent().attr("data-note-id");
+		textArea.attr("data-textarea-id", noteID);
+		for (let i = 0; i < data.notes.length; i++) {
+			if (data.notes[i].id == noteID) {
+				textArea.val(data.notes[i].text);
+				renderNoteFields();
+			}
+		} 
+	}
+	paddingCheck();
+});
+
+
 
 // Remove attr readonly from textarea. Also shows save and delete buttons. Hide edit button.
 $(".edit").on("click", function() {
@@ -489,14 +649,14 @@ $(".delete_note").on("click", function() {
 		}
 	}
 
-		select.find("option").not(".select_root").remove();
-		renderSelect(data.folders, 0);
-		$(".folders").find("*").remove();
-		$(".folders").append(parseFolders(data.folders));
-		renderNotes(data.notes);
-		renderDisplay(data.folders);
-		renderNoteFields();
-		renderNoteSize();
+	select.find("option").not(".select_root").remove();
+	renderFolderSelect(data.folders, 0);
+	$(".folders").find("*").remove();
+	$(".folders").append(parseFolders(data.folders));
+	renderNotes(data.notes);
+	renderFoldersDisplay(data.folders);
+	renderNoteFields();
+	renderNoteSize();
 
 	workTextarea.val("");
 	$(".edit").css("display", "inline-block");

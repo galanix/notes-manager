@@ -50,15 +50,14 @@ else if ( get_cookie("access") === null ) {
 
 // Set textarea(note) height equal to sidebar height
 function renderNoteSizeLoad() {
-	setTimeout(function() {
-		let sidebarHeight = $("#sidebar").height();
-		let noteTitleHeight = $("#note .note_title").height();
-		let tagsHeight = $("#note .tags").height();
-		let notesFolderHeight = $("#note .notes_folder").height();
-		let sum = noteTitleHeight + tagsHeight + notesFolderHeight;
+	// setTimeout(function() {
+		let sidebarHeight = $("#sidebar").outerHeight();
+		let noteTitleHeight = $("#note .note_title").outerHeight();
+		let noteInfo = $("#note .note_info").outerHeight();
+		let sum = noteTitleHeight + noteInfo;
 		let res = sidebarHeight - sum;
 		$("#note textarea").css("height", res);
-	}, 1000);
+	// }, 1000);
 }
 
 // ******************************* CALL FUNCTIONS **************************************
@@ -66,9 +65,10 @@ function renderNoteSizeLoad() {
 checkAccess();
 // Set display property of html tag to block(none by default)
 setTimeout(function() {
-	$("html").show();
-}, 1000);
+	$("html").css("visibility", "visible");
+}, 1500);
 renderNoteSizeLoad();
+
 
 // ******************************* CALL FUNCTIONS end **************************************
 
@@ -95,6 +95,7 @@ $.getJSON("js/pass.json", function(result) {
 	$("#logo").html(firstLetter);
 	$("#name").html(result.name);
 });
+
 
 
 });
