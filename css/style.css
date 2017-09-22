@@ -146,7 +146,8 @@ header .close {
 
 body #popup_folder, 
 body #popup_note, 
-body #popup_tag {
+body #popup_tag,
+body #popup_note_tag {
 	display: none;
 	position: fixed;
 	top: 0;
@@ -160,7 +161,8 @@ body #popup_tag {
 
 #popup_folder label, 
 #popup_note label, 
-#popup_tag label {
+#popup_tag label,
+#popup_note_tag label  {
 	display: block;
 	font-size: 20px;
 	margin-bottom: 8px;
@@ -169,7 +171,8 @@ body #popup_tag {
 
 #popup_folder input, 
 #popup_note input, 
-#popup_tag input {  
+#popup_tag input,
+#popup_note_tag input {  
 	width: 100%;
 	border: 1px solid lightgray;
 	box-sizing:content-box;
@@ -181,7 +184,8 @@ body #popup_tag {
 
 #popup_folder input:focus, 
 #popup_note input:focus,
-#popup_tag input:focus { border: 2px solid #0CC481;}
+#popup_tag input:focus,
+#popup_note_tag input:focus { border: 2px solid #0CC481;}
 
 #popup_folder select, 
 #popup_note select, 
@@ -206,7 +210,8 @@ body #popup_tag {
 
 #popup_folder form, 
 #popup_note form,
-#popup_tag form  {
+#popup_tag form,
+#popup_note_tag form  {
 	position: relative;
 	width: 30%;
 	margin: 20px auto;
@@ -232,13 +237,15 @@ body #popup_tag {
 
 #popup_folder button, 
 #popup_note button,
-#popup_tag button {
+#popup_tag button,
+#popup_note_tag button {
 	display: inline-block;
 	background-color: #0CC481;
 	border: none;
 	color: #fff;
 	cursor: pointer;
 	font-size: 18px;
+	letter-spacing: 1px;
 	margin-right: 20px;
 	padding: 10px 14px;
 }
@@ -260,6 +267,39 @@ body #popup_tag {
 
 #popup_note textarea:focus { outline: 2px solid #0CC481; }
 
+#popup_note_tag .create_add_tag { margin-bottom: 25px; }
+
+#popup_note_tag .tag_list {
+	width: 100%;
+	min-height: 200px;
+	background-color: #fff;
+	margin-bottom: 25px;
+	padding: 10px;
+}
+
+#popup_note_tag  .tag_list_tag {
+	display: inline-block;
+	background-color: #F3F3F3;
+	border-radius: 10px;
+	cursor: pointer;
+	margin-right: 10px;
+	padding: 5px 10px;
+
+	-webkit-transition: background-color 0.2s ease-in-out;
+	-o-transition: background-color 0.2s ease-in-out;
+	transition: background-color 0.2s ease-in-out;
+
+	-webkit-user-select: none;      
+	-moz-user-select: none; 
+	-ms-user-select: none; 
+	user-select: none; 
+}
+
+#popup_note_tag .tag_list_tag:hover { background-color: #0CC481; color: #fff; }
+#popup_note_tag .tag_list_tag:last-of-type { margin-right: 0;}
+
+#popup_note_tag .selected_tag { background-color: #0CC481; color: #fff; }
+
 /*********************** POPUP end ********************************************/
 
 /************************ WORK SPACE **************************************/
@@ -276,7 +316,7 @@ body #popup_tag {
 /************************* SIDEBAR ***************************************/
 
 #sidebar {
-/*	width: 30%;*/
+	/*	width: 30%;*/
 	background-color: #F4F1F1;
 	border-right: 2px solid lightgray;
 	overflow-x: visible;
@@ -350,6 +390,24 @@ body #popup_tag {
 }
 
 .note_info p:last-of-type { margin-right: 0; }
+
+.note_info .add_tag {
+	display: none;
+	border: 1px solid #C3C3C3;
+	color: #C3C3C3;
+	cursor: pointer;
+	margin-right: 10px;
+	padding: 1px 4px;
+	border-radius: 50%;
+
+	-webkit-transition: background-color 0.2s ease-in-out;
+	-o-transition: background-color 0.2s ease-in-out;
+	transition: background-color 0.2s ease-in-out;
+}
+
+.note_info .add_tag:hover {
+	background-color: #F9F9F9;
+}
 
 .note_info .notes_tags {
 	background-color: #F3F3F3;

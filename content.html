@@ -31,7 +31,7 @@
 				<span class="popup_close"><i class="fa fa-times" aria-hidden="true"></i></span>
 				<label for="folder_select">Folder Parent:</label>
 				<select id="folder_select" class="folders_tree"></select>
-				<button class="create">Create</button>
+				<button class="create_folder">Create</button>
 				<button class="delete_folder">Delete</button>
 			</form>
 		</section>
@@ -45,7 +45,7 @@
 				<select id="folder_select_note" class="folders_tree"></select>
 				<label>Note Text:</label>
 				<textarea class="form-control"></textarea>
-				<button type="button" class="btn btn-primary create">Create</button>
+				<button type="button" class="btn btn-primary create_note">Create</button>
 			</form>
 		</section>
 
@@ -56,9 +56,21 @@
 				<span class="popup_close"><i class="fa fa-times" aria-hidden="true"></i></span>
 				<label for="tag_select">Tag Parent:</label>
 				<select id="tag_select" class="tags_tree"></select>
-				<button class="create">Create</button>
+				<button class="create_tag">Create</button>
 				<button class="delete_tag">Delete</button>
 			</form>
+		</section>
+
+			<section id="popup_note_tag">
+			<form action="#">
+				<label for="tag_note_name">Tag Name:</label>
+				<input type="text" id="tag_note_name">
+				<span class="popup_close"><i class="fa fa-times" aria-hidden="true"></i></span>
+				<button class="create_add_tag">Create</button>
+				<div class="tag_list"></div>
+				<button class="add_note_tag">Add</button>
+			</form>
+
 		</section>
 
 		<section id="application">
@@ -70,6 +82,7 @@
 				<p class="note_title"></p>
 				<div class="note_info">
 					<p class="notes_folder"></p>
+					<span class="add_tag">+</span>
 					<p class="notes_tags"></p>
 				</div>
 				<textarea readonly></textarea>
@@ -78,9 +91,9 @@
 
 	</div>
 	<script
-	src="https://code.jquery.com/jquery-3.2.1.js"
-	integrity="sha256-DZAnKJ/6XZ9si04Hgrsxu/8s717jcIzLy3oi35EouyE="
-	crossorigin="anonymous"></script>
+  src="https://code.jquery.com/jquery-3.2.1.js"
+  integrity="sha256-DZAnKJ/6XZ9si04Hgrsxu/8s717jcIzLy3oi35EouyE="
+  crossorigin="anonymous"></script>
 	<script src="js/structure.js"></script>
 	<script src="js/main.js"></script>
 </body>
