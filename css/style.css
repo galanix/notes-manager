@@ -288,12 +288,14 @@ body #popup_tag {
 	margin-bottom: 20px;
 }
 
-.folders ul span {
+.folders ul span,
+.tags ul span {
 	letter-spacing: 0.5px;
 	margin-bottom: 3px;
 }
 
-.folders ul span i {
+.folders ul span i, 
+.tags ul span i {
 	color: #0CC481;
 }
 

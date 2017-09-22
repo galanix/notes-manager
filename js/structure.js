@@ -1,4 +1,4 @@
-localStorage.clear();
+// localStorage.clear();
 
 // Creating folders
 let data = (localStorage.getItem("structure")) 
@@ -24,8 +24,8 @@ let idFolderCounter = (localStorage.getItem("idFolderCounter"))
 let idNoteCounter = (localStorage.getItem("idNoteCounter")) 
 ? localStorage.getItem("idNoteCounter") : 0;
 
-let idTagCounter = (localStorage.getItem("idNoteCounter")) 
-? localStorage.getItem("idNoteCounter") : 0;
+let idTagCounter = (localStorage.getItem("idTagCounter")) 
+? localStorage.getItem("idTagCounter") : 0;
 
 let select = $(".folders_tree");
 
@@ -153,7 +153,7 @@ function parseTags(tags) {
 // Takes a folder object and turns it into a <li>
 function parseTag(tag) { 
 	let li = $("<li>");
-	li.append(`<span data-folders-tree-id="${tag.id}" class="tag_name">
+	li.append(`<span data-tags-tree-id="${tag.id}" class="tag_name">
 		<i class="fa tag" aria-hidden="true"></i> <i class="fa fa-tag" aria-hidden="true"></i> 
 		${tag.name}</span>`);
 	if(tag.children) li.append(parseTags(tag.children));
@@ -187,28 +187,29 @@ function renderFoldersDisplay(folders) {
 	}
 }
 
+// Render tags tree  with open or close folders
 function renderTagsDisplay(tags) { 
 	for (key in tags) {
 		let item = tags[key];
 		let display = item.display;
 		let id = item.id;
 		let tagsSpan = $(`.tags span[data-tags-tree-id="${id}"]`);
-		let folderI = $(`.tags span[data-tags-tree-id="${id}"] .folder`);
+		let tagI = $(`.tags span[data-tags-tree-id="${id}"] .tag`);
 		if (display === "block") {
 			tagsSpan.siblings("ul").css("display", "block");
 		} else {
 			tagsSpan.siblings("ul").css("display", "none");
 		}
 		if (display === "block" && tagsSpan.next("ul").children().length) {
-			folderI.removeClass("fa-angle-right").addClass("fa-angle-down");
+			tagI.removeClass("fa-angle-right").addClass("fa-angle-down");
 		} else {
-			folderI.removeClass("fa-angle-down").addClass("fa-angle-right");
+			tagI.removeClass("fa-angle-down").addClass("fa-angle-right");
 		}
 		if (!tagsSpan.next("ul").children().length) {
-			folderI.remove();
+			tagI.remove();
 		}
 		if (item.children) {
-			renderFoldersDisplay(item.children);
+			renderTagsDisplay(item.children);
 		}
 	}
 }
@@ -343,7 +344,7 @@ function updateTagsData() {
 	};
 
 	findedObj =	find(data.tags, $(".tags_tree option:selected").attr("data-tags-select-id"));
-	findedObj.children.push(newFolder);
+	findedObj.children.push(newTag);
 
 	localStorage.setItem("structure", JSON.stringify(data));
 	localStorage.setItem("idTagCounter", idTagCounter);
@@ -360,6 +361,7 @@ $(".folders").append(parseFolders(data.folders));
 $(".tags").append(parseTags(data.tags));
 renderNotes(data.notes);
 renderFoldersDisplay(data.folders);
+renderTagsDisplay(data.tags);
 renderNoteFields();
 paddingCheck();
 
@@ -369,7 +371,7 @@ paddingCheck();
 // ******************************* EXECUTE COMMANDS ******************************************
 
 if ( $("#application textarea").attr("data-textarea-id") ) 
-$("#application textarea").attr("data-textarea-id", findLatestNote().id);
+	$("#application textarea").attr("data-textarea-id", findLatestNote().id);
 
 // ******************************* CALL FUNCTIONS end **************************************
 
@@ -450,12 +452,12 @@ $("#popup_folder .create").on("click", function() {
 $("#popup_tag .create").on("click", function() {
 	if ( $("#tag_name").val() ) {
 		updateTagsData();
-		$("#popup_note .folders_tree").find("option").remove();
+		$("#popup_tag .tags_tree").find("*").remove();
 		renderTagSelect(data.tags, 0);
 		$(".tags").find("*").remove();
-		$(".tags").append(parseFolders(data.tags));
+		$(".tags").append(parseTags(data.tags));
 		renderNotes(data.notes);
-		renderFoldersDisplay(data.tags);
+		renderTagsDisplay(data.tags);
 		renderNoteFields();
 		renderNoteSize();
 	}
@@ -465,13 +467,11 @@ $("#popup_tag .create").on("click", function() {
 
 });
 
-// Delete and render data in select and sidebar
+// Delete folder and render data in select and sidebar
 $("#popup_folder .delete_folder").on("click", function() {
 	let selectedOptionId = $("#popup_folder select option:selected").attr("data-folders-select-id");
 	if ( $("#popup_folder select").val() && selectedOptionId != "root" ) {
 		let findedArr = findParent(data.folders, selectedOptionId);
-		console.log(selectedOptionId);
-		console.log(findedArr);
 		for (let i = 0; i < findedArr.length; i++) {
 			if (findedArr[i].id == selectedOptionId) {
 				let index = findedArr.indexOf(findedArr[i]);
@@ -493,6 +493,34 @@ $("#popup_folder .delete_folder").on("click", function() {
 
 	$("#popup_folder").fadeOut(500);
 	$("#popup_folder form")[0].reset();
+});
+
+// Delete tag and render data in select and sidebar
+$("#popup_tag .delete_tag").on("click", function() {
+	let selectedOptionId = $("#popup_tag select option:selected").attr("data-tags-select-id");
+	if ( $("#popup_tag select").val() && selectedOptionId != "root" ) {
+		let findedArr = findParent(data.tags, selectedOptionId);
+		for (let i = 0; i < findedArr.length; i++) {
+			if (findedArr[i].id == selectedOptionId) {
+				let index = findedArr.indexOf(findedArr[i]);
+				findedArr.splice( findedArr.indexOf(findedArr[i]), 1);
+			}
+		}
+
+		localStorage.setItem("structure", JSON.stringify(data));
+
+		$("#popup_tag .tags_tree").find("option").not(".select_root").remove();
+		renderTagSelect(data.tags, 0);
+		$(".tags").find("*").remove();
+		$(".tags").append(parseTags(data.tags));
+		renderNotes(data.notes);
+		renderTagsDisplay(data.tags);
+		renderNoteFields();
+		renderNoteSize();
+	}
+
+	$("#popup_tag").fadeOut(500);
+	$("#popup_tag form")[0].reset();
 });
 
 // Add new note to localStorage then render tree in sidebar
@@ -522,10 +550,10 @@ $(".folders").on("dblclick", function(e) {
 		childUl.toggle();
 		// Change folder open or close icon
 		if ( $( childUl ).css("display").toLowerCase() === "none" ) {
-			$(target).children("i").removeClass("fa-angle-down").addClass("fa-angle-right");
+			$(target).children(".folder").removeClass("fa-angle-down").addClass("fa-angle-right");
 		} 
 		if ( $( childUl ).css("display").toLowerCase() === "block" ) {
-			$(target).children("i").removeClass("fa-angle-right").addClass("fa-angle-down");
+			$(target).children(".folder").removeClass("fa-angle-right").addClass("fa-angle-down");
 		}
 		renderNoteSize();
 		let findedObj = find(data.folders, $(target).attr("data-folders-tree-id"));
@@ -545,12 +573,16 @@ $(".folders").on("dblclick", function(e) {
 		parentUl.toggle();
 		// Change folder open or close icon
 		if ( $( parentUl ).css("display").toLowerCase() === "none" ) {
-			$(target).removeClass("fa-angle-down").addClass("fa-angle-right");
-			$(target).siblings().removeClass("fa-angle-down").addClass("fa-angle-right");
+			if ( $(target).hasClass("fa-folder-o") ) 
+				$(target).siblings().removeClass("fa-angle-down").addClass("fa-angle-right");
+			else 
+				$(target).removeClass("fa-angle-down").addClass("fa-angle-right");
 		} 
 		if ( $( parentUl ).css("display").toLowerCase() === "block" ) {
-			$(target).removeClass("fa-angle-right").addClass("fa-angle-down");
-			$(target).siblings().removeClass("fa-angle-right").addClass("fa-angle-down");
+			if ( $(target).hasClass("fa-folder-o") ) 
+				$(target).siblings().removeClass("fa-angle-right").addClass("fa-angle-down");
+			else
+				$(target).removeClass("fa-angle-right").addClass("fa-angle-down");
 		}
 		renderNoteSize();
 		let findedObj = find(data.folders, $(target).parent().attr("data-folders-tree-id"));
@@ -566,20 +598,64 @@ $(".folders").on("dblclick", function(e) {
 	}
 });
 
+
+
+
 // Toggle tags to open and close in tree format
 $(".tags").on("dblclick", function(e) {
 	let target = e.target;
-	if ( $(target).hasClass("tag_name") ) {
+	// Toggle tags to open and close by clicking on folder name
+	if ( $(target).hasClass("tag_name") && $(target).siblings("ul").children().length ) {
 		let childUl = $(target).siblings("ul");
 		childUl.toggle();
-		setTimeout(function() {
-			if ( $( childUl ).css("display").toLowerCase() === "none" ) {
-				$(target).children("i").removeClass("fa-angle-down").addClass("fa-angle-right");
-			} 
-			if ( $( childUl ).css("display").toLowerCase() === "block" ) {
-				$(target).children("i").removeClass("fa-angle-right").addClass("fa-angle-down");
-			}
-		}, 10);
+		// Change folder open or close icon
+		if ( $( childUl ).css("display").toLowerCase() === "none" ) {
+			$(target).children(".tag").removeClass("fa-angle-down").addClass("fa-angle-right");
+		} 
+		if ( $( childUl ).css("display").toLowerCase() === "block" ) {
+			$(target).children(".tag").removeClass("fa-angle-right").addClass("fa-angle-down");
+		}
+		renderNoteSize();
+		let findedObj = find(data.tags, $(target).attr("data-tags-tree-id"));
+		let span = $(`.tag_name[data-tags-tree-id="${findedObj.id}"]`);
+		// Change display property to render tags tree  with open or close tags
+		if (findedObj.display === "block" && span.next("ul").children().length) {
+			findedObj.display = "none";
+			localStorage.setItem("structure", JSON.stringify(data));
+		} else {
+			findedObj.display = "block";
+			localStorage.setItem("structure", JSON.stringify(data));
+		}
+	}
+
+	// Toggle tags to open and close by clicking on folder icons(arrow, fodler)
+	if( $(target).hasClass("fa") && $(target).parent().siblings("ul").children().length ) {
+		let parentUl = $(target).parent().siblings("ul");
+		parentUl.toggle();
+		// Change folder open or close icon
+		if ( $( parentUl ).css("display").toLowerCase() === "none" ) {
+			if ( $(target).hasClass("fa-tag") ) 
+				$(target).siblings().removeClass("fa-angle-down").addClass("fa-angle-right");
+			else 
+				$(target).removeClass("fa-angle-down").addClass("fa-angle-right");
+		} 
+		if ( $( parentUl ).css("display").toLowerCase() === "block" ) {
+			if ( $(target).hasClass("fa-tag") ) 
+				$(target).siblings().removeClass("fa-angle-right").addClass("fa-angle-down");
+			else
+				$(target).removeClass("fa-angle-right").addClass("fa-angle-down");
+		}
+		renderNoteSize();
+		let findedObj = find(data.tags, $(target).parent().attr("data-tags-tree-id"));
+		let span = $(`.tag_name[data-tags-tree-id="${findedObj.id}"]`);
+		// Change display property to render tags tree  with open or close tags
+		if (findedObj.display === "block" && span.next("ul").children().length) {
+			findedObj.display = "none";
+			localStorage.setItem("structure", JSON.stringify(data));
+		} else {
+			findedObj.display = "block";
+			localStorage.setItem("structure", JSON.stringify(data));
+		}
 	}
 });
 
