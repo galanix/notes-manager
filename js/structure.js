@@ -189,7 +189,7 @@ function renderFoldersDisplay(folders) {
 
 // Render tags tree  with open or close folders
 function renderTagsDisplay(tags) { 
-	for (key in tags) {
+	for (let key in tags) {
 		let item = tags[key];
 		let display = item.display;
 		let id = item.id;
@@ -252,71 +252,93 @@ function findLatestNote() {
 	return maxNote;
 }
 
-function selectTag() {
-	$("#popup_note_tag .tag_list").find("*").remove();
-	renderNoteTagsDisplay(data.tags);
+function renderLatestNote() {
+	let latestNote = findLatestNote();
+	let noteTitle = $("#note .note_title");
+	let noteTags = $("#note .notes_tags");
+	let notesFolder = $("#note .notes_folder");
+	let textArea = $("#application textarea");
 
-		$("#popup_note_tag").on("click", function(e) {
-			let target = e.target;
-			if ( $(target).hasClass("tag_list_tag") )
-				$(target).toggleClass("selected_tag");
-		});
+	if (latestNote) {
+		noteTitle.html(latestNote.title);
+		let latestNoteFolder = find(data.folders, latestNote.folder);
+		notesFolder.html(`<i class="fa fa-folder-o" aria-hidden="true"></i> ${latestNoteFolder.name}`);
+		textArea.html(latestNote.text);
+		textArea.attr("data-textarea-id", latestNote.id);
+
+		// if ( !latestNote.tags ) noteTags.css({"display": "none"});
+		// if ( latestNote.tags == true ) {
+		// 	for (let i = 0; i < latestNote.tags.length; i++) {
+		// 		noteTags.append(`
+		// 			<span class="tag_list_tag">${latestNote.tags[i]}</span>
+		// 			`);
+		// 	}
+		// }
+	}
 }
+
 
 // ************************** CHECK FUNCTIONS ************************************
 
 // Check and render padding for tags in note_info
 function paddingCheck() {
-	if ( $("#note .notes_tags").html().length > 0 ) $("#note .notes_tags").css({"padding": "5px 10px", "display": "inline-block"});
-	else $("#note .notes_tags").css({"padding": "0px"});
+	if ( $("#note .notes_tags span") ) $("#note .notes_tags span").css({"padding": "5px 10px", "display": "inline-block"});
+	else $("#note .notes_tags span").css({"padding": "0px"});
 }
 
 // Check and render add_tag button in note_info
 function checkNoteForAddTag() {
-	if ( $(".note_title").text().length > 0 )
+	if ( $(".note_title").text().length > 0 ) { 
 		$(".add_tag").css("display", "inline-block");
+	}
 	else
 		$(".add_tag").css("display", "none");
+}
+
+// Check and add .selected_tag class to tags that are applied to note
+function checkSelectedTags() {
+	let textArea = $("#application textarea");
+	let spanTags = $(".tag_list .tag_list_tag");
+	let note = find(data.notes, textArea.attr("data-textarea-id"));
+
+	for (let i = 0; i < spanTags.length; i++) {
+		for (let j = 0; j < note.tags.length; j++) {
+			if ( note.tags[j] == $(spanTags[i]).attr("data-tags-tree-id") )
+				$(spanTags[i]).addClass("selected_tag");
+		}
+	}
 }
 
 // ************************** CHECK FUNCTIONS end ************************************
 
 // Render note fields(title, tags..) and render last(date) note on load
 function renderNoteFields() {
-	let latestNote = findLatestNote();
 	let noteTitle = $("#note .note_title");
 	let noteTags = $("#note .notes_tags");
 	let notesFolder = $("#note .notes_folder");
 	let textArea = $("#application textarea");
 	
-	if (latestNote) {
-		noteTitle.html(latestNote.title);
-		if ( latestNote.tags ) { 
-			for (let i = 0; i < latestNote.tags; i++) {
-				noteTitle.append(latestNote.tags[i]);
-			} 
-			noteTags.html(latestNote.tags);		
-		}	 
-		let latestNoteFolder = find(data.folders, latestNote.folder);
-		notesFolder.html(`<i class="fa fa-folder-o" aria-hidden="true"></i> ${latestNoteFolder.name}`);
-		textArea.html(latestNote.text);
-		textArea.attr("data-textarea-id", latestNote.id);
-		if ( latestNote.tags ) $("#note .notes_tags").css({"display": "none"});
-	}
-
 	for (let i = 0; i < data.notes.length; i++) {
 		let item = data.notes[i];
-		if ( data.notes[i].id == textArea.attr("data-textarea-id") ) {
+		if ( item.id == textArea.attr("data-textarea-id") ) {
 			noteTitle.html(item.title);
-			if ( item.tags ) {
-				noteTags.html(item.tags);
-				for (let i = 0; i < item.tags; i++) {
-					noteTitle.append(item.tags[i]);
-				}
-			}
-
+			textArea.val(item.text);
 			let folder = find(data.folders, item.folder);
 			notesFolder.html(`<i class="fa fa-folder-o" aria-hidden="true"></i> ${folder.name}`);
+		}
+	}
+}
+
+// Render tags(spans) in note_info
+function renderTags() {
+		let note = find(data.notes, $("#application textarea").attr("data-textarea-id"));
+	$(".notes_tags").find("span").remove();
+	for (let i = 0; i < note.tags.length; i++) {
+		let tag = find(data.tags, note.tags[i]);
+		if ( tag ) {
+			$(".notes_tags").append(`<span class="tag_list_tag">${tag.name}</span>`);
+		}	else {
+			$(".notes_tags").find("span").remove();
 		}
 	}
 }
@@ -369,6 +391,7 @@ function updateNotesData() {
 		"title": noteTitle,
 		"text": noteText,
 		"folder": folderID,
+		"tags": [],
 		"date": noteDate
 	};
 
@@ -392,6 +415,7 @@ function updateTagsData() {
 		"id": idTagCounter,
 		"name": tagName,
 		"display": "block",
+		"selected": false,
 		"children": []
 	};
 
@@ -415,9 +439,10 @@ renderNotes(data.notes);
 renderFoldersDisplay(data.folders);
 renderTagsDisplay(data.tags);
 renderNoteFields();
+renderLatestNote();
 paddingCheck();
 checkNoteForAddTag();
-
+renderTags();
 
 // ******************************* CALL FUNCTIONS end **************************************
 
@@ -425,8 +450,6 @@ checkNoteForAddTag();
 
 if ( $("#application textarea").attr("data-textarea-id") ) 
 	$("#application textarea").attr("data-textarea-id", findLatestNote().id);
-
-
 
 
 // ******************************* CALL FUNCTIONS end **************************************
@@ -445,7 +468,10 @@ $(".btn_folders").on("click", function() {
 
 	$("#popup_folder").fadeIn(500);
 	$(document).keydown(function(e) {
-		if (e.keyCode == 27) $("#popup_folder").fadeOut(500);
+		if (e.keyCode == 27) {
+			$("#popup_folder").fadeOut(500);
+			$("#popup_folder form")[0].reset();
+		}
 	});
 
 
@@ -460,7 +486,10 @@ $(".btn_notes").on("click", function() {
 
 	$("#popup_note").fadeIn(500);
 	$(document).keydown(function(e) {
-		if (e.keyCode == 27) $("#popup_note").fadeOut(500);
+		if (e.keyCode == 27) {
+			$("#popup_note").fadeOut(500);
+			$("#popup_note form")[0].reset();
+		}
 	});
 
 
@@ -475,7 +504,10 @@ $(".btn_tags").on("click", function() {
 
 	$("#popup_tag").fadeIn(500);
 	$(document).keydown(function(e) {
-		if (e.keyCode == 27) $("#popup_tag").fadeOut(500);
+		if (e.keyCode == 27) {
+			$("#popup_tag").fadeOut(500);
+			$("#popup_tag form")[0].reset();
+		}
 	});
 
 
@@ -487,13 +519,18 @@ $(".btn_tags").on("click", function() {
 
 // Open add tag popup
 $(".add_tag").on("click", function() {
-
 	$("#popup_note_tag").fadeIn(500);
-	$(document).keydown(function(e) {
-		if (e.keyCode == 27) $("#popup_note_tag").fadeOut(500);
-	});
+	$("#popup_note_tag .tag_list").find("*").remove();
+	renderNoteTagsDisplay(data.tags);
 
-	selectTag();
+	checkSelectedTags();
+
+	$(document).keydown(function(e) {
+		if (e.keyCode == 27) {
+			$("#popup_note_tag").fadeOut(500);
+			$("#popup_note_tag form")[0].reset();
+		}
+	});
 
 	$(".popup_close").on("click", function() {
 		$("#popup_note_tag").fadeOut(500);
@@ -501,6 +538,24 @@ $(".add_tag").on("click", function() {
 	});
 
 });
+
+// $(".tag_list_tag").on("click", function() {
+	$("#popup_note_tag").on("click", function(e) {
+		let target = e.target;
+		let textArea = $("#application textarea");
+		let note = find(data.notes, textArea.attr("data-textarea-id"));
+		if ( $(target).hasClass("tag_list_tag") ) {
+			$(target).toggleClass("selected_tag");
+			note.tags = [];
+			$.each($(".tag_list .tag_list_tag"), function() {
+				if ( $(this).hasClass("selected_tag") ) {
+					note.tags.push( $(this).attr("data-tags-tree-id") );
+					localStorage.setItem("structure", JSON.stringify(data));
+				}
+			});
+		}
+	});
+// });
 
 // Create folder render data in folder select and sidebar
 $("#popup_folder .create_folder").on("click", function() {
@@ -552,24 +607,27 @@ $("#popup_note_tag .create_add_tag").on("click", function() {
 		renderTagsDisplay(data.tags);
 		renderNoteFields();
 		renderNoteSize();
-		selectTag();
+		$("#popup_note_tag .tag_list").find("*").remove();
+		renderNoteTagsDisplay(data.tags);
+		checkSelectedTags();
 	}
-	selectTag();
 });
 
 $("#popup_note_tag .add_note_tag").on("click", function() {
 	let selectedTags = [];
-	let note = find(data.notes, $("#application textarea").attr("data-textarea-id"));
 
+	
 	$("#popup_note_tag .tag_list_tag").each(function(index) {
 		if ( $(this).hasClass("selected_tag") )
-			selectedTags.push($(this).attr("data-tags-tree-id"));
+			selectedTags.push( $(this).attr("data-tags-tree-id") );
 	});
 
 	note.tags = selectedTags;
 	localStorage.setItem("structure", JSON.stringify(data));
 
+	renderTags();
 
+	$("#popup_note_tag").fadeOut(500);
 
 });
 
@@ -771,22 +829,16 @@ $(".folders").on("click", function(e) {
 	if ( $(target).hasClass("note") && $(".edit").css("display") != "none" ) {
 		let noteID = $(target).attr("data-note-id");
 		textArea.attr("data-textarea-id", noteID);
-		for (let i = 0; i < data.notes.length; i++) {
-			if (data.notes[i].id == noteID) {
-				textArea.val(data.notes[i].text);
-				renderNoteFields();
-			}
-		} 
+		renderNoteFields();
+		checkNoteForAddTag();
+		renderTags();
 	}
 	if ( $(target).parent().hasClass("note") && $(".edit").css("display") != "none" ) {
 		let noteID = $(target).parent().attr("data-note-id");
 		textArea.attr("data-textarea-id", noteID);
-		for (let i = 0; i < data.notes.length; i++) {
-			if (data.notes[i].id == noteID) {
-				textArea.val(data.notes[i].text);
-				renderNoteFields();
-			}
-		} 
+		renderNoteFields();
+		checkNoteForAddTag();
+		renderTags();
 	}
 	paddingCheck();
 });
@@ -843,71 +895,3 @@ $(".delete_note").on("click", function() {
 	$(".save_note").css("display", "none");
 	workTextarea.prop("readonly", true);
 });
-
-// Add tag to note
-
-// let testData = {  
-// 	"folders":[  
-// 	{  
-// 		"id":"root",
-// 		"name":"Folders",
-// 		"display":"block",
-// 		"children":[  
-// 		{  
-// 			"id":1,
-// 			"name":"1",
-// 			"display":"block",
-// 			"children":[  
-// 			{  
-// 				"id":2,
-// 				"name":"1.1",
-// 				"display":"block",
-// 				"children":[  
-// 				{  
-// 					"id":3,
-// 					"name":"1.1.1",
-// 					"display":"block",
-// 					"children":[  
-
-// 					]
-// 				}
-// 				],
-// 				"isParent":true
-// 			},
-// 			{  
-// 				"id":4,
-// 				"name":"1.2",
-// 				"display":"block",
-// 				"children":[  
-
-// 				]
-// 			}
-// 			],
-// 			"isParent":true
-// 		},
-// 		{  
-// 			"id":5,
-// 			"name":"2",
-// 			"display":"block",
-// 			"children":[  
-// 			{  
-// 				"id":6,
-// 				"name":"2.1",
-// 				"display":"block",
-// 				"children":[  
-
-// 				]
-// 			}
-// 			],
-// 			"isParent":true
-// 		}
-// 		],
-// 		"isParent":true
-// 	}
-// 	],
-// 	"notes":{  
-
-// 	}
-// }
-
-

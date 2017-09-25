@@ -389,8 +389,6 @@ body #popup_note_tag {
 	margin-right: 10px;
 }
 
-.note_info p:last-of-type { margin-right: 0; }
-
 .note_info .add_tag {
 	display: none;
 	border: 1px solid #C3C3C3;
@@ -410,16 +408,32 @@ body #popup_note_tag {
 }
 
 .note_info .notes_tags {
+	display: inline-block;
+	padding: 0;
+}
+
+.note_info .notes_tags span {
+	display: inline-block;
 	background-color: #F3F3F3;
 	border-radius: 10px;
+	color: #C3C3C3;
 	cursor: pointer;
+	font-size: 14px;
+	margin-right: 10px;
+	padding: 5px 10px;
 
 	-webkit-transition: background-color 0.2s ease-in-out;
 	-o-transition: background-color 0.2s ease-in-out;
 	transition: background-color 0.2s ease-in-out;
+
+	-webkit-user-select: none;      
+	-moz-user-select: none; 
+	-ms-user-select: none; 
+	user-select: none; 
 }
 
-.note_info .notes_tags:hover { background-color: #F9F9F9; }
+.note_info .tag_list_tag:hover { background-color: #F9F9F9;}
+.note_info .tag_list_tag:last-of-type { margin-right: 0;}
 
 #note textarea {
 	width: 100%;
