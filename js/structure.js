@@ -68,7 +68,7 @@ function findParent(arr, id) {
 	return null;
 }
 
-// Render select list 
+// Render folder select list 
 function renderFolderSelect(arr, counter) {
 	for(let i = 0; i < arr.length; i++) {
 		let name = arr[i].name;
@@ -89,6 +89,7 @@ function renderFolderSelect(arr, counter) {
 	}
 }
 
+// Render tag select list 
 function renderTagSelect(arr, counter) {
 	for(let i = 0; i < arr.length; i++) {
 		let name = arr[i].name;
@@ -221,7 +222,6 @@ function renderNoteTagsDisplay(tags) {
 		let tagsDiv = $("#popup_note_tag .tag_list");
 		if ( item.id != "root" ) 
 			tagsDiv.append(`<span class="tag_list_tag" data-tags-tree-id="${item.id}" >${name}</span>`);
-
 		if ( item.children )
 			renderNoteTagsDisplay(item.children);
 	}
@@ -265,18 +265,8 @@ function renderLatestNote() {
 		notesFolder.html(`<i class="fa fa-folder-o" aria-hidden="true"></i> ${latestNoteFolder.name}`);
 		textArea.html(latestNote.text);
 		textArea.attr("data-textarea-id", latestNote.id);
-
-		// if ( !latestNote.tags ) noteTags.css({"display": "none"});
-		// if ( latestNote.tags == true ) {
-		// 	for (let i = 0; i < latestNote.tags.length; i++) {
-		// 		noteTags.append(`
-		// 			<span class="tag_list_tag">${latestNote.tags[i]}</span>
-		// 			`);
-		// 	}
-		// }
 	}
 }
-
 
 // ************************** CHECK FUNCTIONS ************************************
 
@@ -331,29 +321,40 @@ function renderNoteFields() {
 
 // Render tags(spans) in note_info
 function renderTags() {
-		let note = find(data.notes, $("#application textarea").attr("data-textarea-id"));
+	let note = find(data.notes, $("#application textarea").attr("data-textarea-id"));
 	$(".notes_tags").find("span").remove();
-	for (let i = 0; i < note.tags.length; i++) {
-		let tag = find(data.tags, note.tags[i]);
-		if ( tag ) {
-			$(".notes_tags").append(`<span class="tag_list_tag">${tag.name}</span>`);
-		}	else {
-			$(".notes_tags").find("span").remove();
+	if ( note ) { 
+		for (let i = 0; i < note.tags.length; i++) {
+			let tag = find(data.tags, note.tags[i]);
+			if ( tag ) {
+				$(".notes_tags").append(`<span class="tag_list_tag">${tag.name}</span>`);
+			}	
+			// else {
+			// 	$(".notes_tags").find("span").remove();
+			// }
 		}
 	}
 }
 
 // Render notes in sidebar tree
-function renderNotes(arr) {
+function renderNotes(folders) {
 	$("#sidebar").find(".note").remove();
-	for (let i = 0; i < arr.length; i++) {
-		let item = arr[i];
+	for (let i = 0; i < folders.length; i++) {
+		let item = folders[i];
 		let id = item.id;
 		let folderID = item.folder;
 		let foldersSpan = $(`.folders span[data-folders-tree-id="${folderID}"]`);
-		let ul = foldersSpan.next("ul");
-		ul.append(`<span data-note-id="${id}" class="note"><i class="fa fa-sticky-note-o" aria-hidden="true"></i>
+		let folderUl = foldersSpan.next("ul");
+		folderUl.append(`<span data-note-id="${id}" class="note"><i class="fa fa-sticky-note-o" aria-hidden="true"></i>
 			${item.title}</span>`);
+
+		let noteTags = item.tags;
+		for (let j = 0; j < noteTags.length; j++) {
+			let tagSpan = $(`.tags span[data-tags-tree-id="${noteTags[j]}"]`);
+			let tagUl = tagSpan.next("ul");
+			tagUl.append(`<span data-note-id="${id}" class="note"><i class="fa fa-sticky-note-o" aria-hidden="true"></i>
+				${item.title}</span>`);
+		}
 	}
 }
 
@@ -415,7 +416,6 @@ function updateTagsData() {
 		"id": idTagCounter,
 		"name": tagName,
 		"display": "block",
-		"selected": false,
 		"children": []
 	};
 
@@ -611,6 +611,8 @@ $("#popup_note_tag .create_add_tag").on("click", function() {
 		renderNoteTagsDisplay(data.tags);
 		checkSelectedTags();
 	}
+
+	$("#popup_note_tag form")[0].reset();
 });
 
 $("#popup_note_tag .add_note_tag").on("click", function() {
@@ -625,6 +627,13 @@ $("#popup_note_tag .add_note_tag").on("click", function() {
 	note.tags = selectedTags;
 	localStorage.setItem("structure", JSON.stringify(data));
 
+	$(".tags").find("*").remove();
+	$(".tags").append(parseTags(data.tags));
+	renderNotes(data.notes);
+	renderTagsDisplay(data.tags);
+	renderNoteFields();
+	paddingCheck();
+	checkNoteForAddTag();
 	renderTags();
 
 	$("#popup_note_tag").fadeOut(500);
@@ -635,11 +644,18 @@ $("#popup_note_tag .add_note_tag").on("click", function() {
 $("#popup_folder .delete_folder").on("click", function() {
 	let selectedOptionId = $("#popup_folder select option:selected").attr("data-folders-select-id");
 	if ( $("#popup_folder select").val() && selectedOptionId != "root" ) {
+		// Delete notes(for now) in folder
+		for (let i = 0; i < data.notes.length; i++) {
+			if ( data.notes[i].folder == selectedOptionId ) {
+				let index = data.notes.indexOf(data.notes[i]);
+				data.notes.splice(index, 1);
+			}
+		}
 		let findedArr = findParent(data.folders, selectedOptionId);
 		for (let i = 0; i < findedArr.length; i++) {
 			if (findedArr[i].id == selectedOptionId) {
 				let index = findedArr.indexOf(findedArr[i]);
-				findedArr.splice( findedArr.indexOf(findedArr[i]), 1);
+				findedArr.splice(index, 1);
 			}
 		}
 
@@ -653,34 +669,45 @@ $("#popup_folder .delete_folder").on("click", function() {
 		renderFoldersDisplay(data.folders);
 		renderNoteFields();
 		renderNoteSize();
-	}
 
+	}
 	$("#popup_folder form")[0].reset();
 });
 
 // Delete tag and render data in select and sidebar
 $("#popup_tag .delete_tag").on("click", function() {
 	let selectedOptionId = $("#popup_tag select option:selected").attr("data-tags-select-id");
+	let textArea = $("#application textarea");
+	let note = find(data.notes, textArea.attr("data-textarea-id"));
 	if ( $("#popup_tag select").val() && selectedOptionId != "root" ) {
 		let findedArr = findParent(data.tags, selectedOptionId);
 		for (let i = 0; i < findedArr.length; i++) {
-			if (findedArr[i].id == selectedOptionId) {
+			if ( findedArr[i].id == selectedOptionId ) {
 				let index = findedArr.indexOf(findedArr[i]);
-				findedArr.splice( findedArr.indexOf(findedArr[i]), 1);
+				findedArr.splice(findedArr.indexOf(findedArr[i]), 1);
 			}
 		}
 
-		localStorage.setItem("structure", JSON.stringify(data));
-
-		$("#popup_tag .tags_tree").find("option").not(".select_root").remove();
-		renderTagSelect(data.tags, 0);
-		$(".tags").find("*").remove();
-		$(".tags").append(parseTags(data.tags));
-		renderNotes(data.notes);
-		renderTagsDisplay(data.tags);
-		renderNoteFields();
-		renderNoteSize();
+		for (let i = 0; i < note.tags.length; i++) {
+			if ( note.tags[i] ==  selectedOptionId ) {
+				let index = note.tags.indexOf(note.tags[i]);
+				note.tags.splice(index, 1);
+			}
+		}
 	}
+	localStorage.setItem("structure", JSON.stringify(data));
+	
+	$("#popup_tag .tags_tree").find("option").not(".select_root").remove();
+	renderTagSelect(data.tags, 0);
+	$(".tags").find("*").remove();
+	$(".tags").append(parseTags(data.tags));
+	renderNotes(data.notes);
+	renderTagsDisplay(data.tags);
+	renderNoteFields();
+	checkNoteForAddTag();
+	renderTags();
+	renderNoteSize();
+
 
 	$("#popup_tag form")[0].reset();
 });
@@ -688,21 +715,99 @@ $("#popup_tag .delete_tag").on("click", function() {
 // Add new note to localStorage then render tree in sidebar
 $("#popup_note .create_note").on("click", function() {
 	let selectedOptionId = $("#popup_note select option:selected").attr("data-folders-select-id");
+	let textArea = $("#application textarea");
 	if ( $("#note_name").val() && selectedOptionId != "root" ) {
 		updateNotesData();
 		$(".folders").find("*").remove();
 		$(".folders").append(parseFolders(data.folders));
 		renderNotes(data.notes);
 		renderFoldersDisplay(data.folders);
-		renderNoteFields();
-		renderNoteSize();
-		checkNoteForAddTag();
 	}
+
+	let latestNote = findLatestNote();
+	textArea.attr("data-textarea-id", latestNote.id);
+	renderNoteFields();
+	checkNoteForAddTag();
+	renderTags();
+	renderNoteSize();
 
 	$("#popup_note").fadeOut(500);
 	$("#popup_note form")[0].reset();
 });
 
+// Show note on right side of app
+$("#sidebar").on("click", function(e) {
+	let target = e.target;
+	let textArea = $("#application textarea");
+	if ( $(target).hasClass("note") && $(".edit").css("display") != "none" ) {
+		let noteID = $(target).attr("data-note-id");
+		textArea.attr("data-textarea-id", noteID);
+		renderNoteFields();
+		checkNoteForAddTag();
+		renderTags();
+	}
+	if ( $(target).parent().hasClass("note") && $(".edit").css("display") != "none" ) {
+		let noteID = $(target).parent().attr("data-note-id");
+		textArea.attr("data-textarea-id", noteID);
+		renderNoteFields();
+		checkNoteForAddTag();
+		renderTags();
+	}
+	paddingCheck();
+});
+
+// Remove attr readonly from textarea. Also shows save and delete buttons. Hide edit button.
+$(".edit").on("click", function() {
+	let workTextarea = $("#application textarea");
+	if ( workTextarea.val() ) {
+		$(".edit").css("display", "none");
+		$(".delete_note").css("display", "inline-block");
+		$(".save_note").css("display", "inline-block");
+		workTextarea.removeAttr("readonly");
+	}
+});
+
+// Save text in textarea in localStorage. Show edit button, hide save and delete buttons.
+$(".save_note").on("click", function() {
+	let workTextarea = $("#application textarea");
+	for (let i = 0; i < data.notes.length; i++) {
+		if ( data.notes[i].id == workTextarea.attr("data-textarea-id") ) {
+			data.notes[i].text = workTextarea.val();
+			localStorage.setItem("structure", JSON.stringify(data));
+		}
+	}
+	$(".edit").css("display", "inline-block");
+	$(".delete_note").css("display", "none");
+	$(".save_note").css("display", "none");
+	workTextarea.prop("readonly", true);
+});
+
+// Delete note in localStorage. Show edit button, hide save and delete buttons. Render tree in sidebar.
+$(".delete_note").on("click", function() {
+	let workTextarea = $("#application textarea");
+	for (let i = 0; i < data.notes.length; i++) {
+		if ( data.notes[i].id == workTextarea.attr("data-textarea-id") ) {
+			let index = data.notes.indexOf(data.notes[i]);
+			data.notes.splice(index, 1);
+			localStorage.setItem("structure", JSON.stringify(data));
+		}
+		renderNotes(data.notes);
+		renderFoldersDisplay(data.folders);
+	}
+	let latestNote = findLatestNote();
+	if ( latestNote ) { 
+		workTextarea.attr("data-textarea-id", latestNote.id);
+		renderNoteFields();
+		checkNoteForAddTag();
+		renderTags();
+		renderNoteSize();
+	}
+
+	$(".edit").css("display", "inline-block");
+	$(".delete_note").css("display", "none");
+	$(".save_note").css("display", "none");
+	workTextarea.prop("readonly", true);
+});
 
 // Toggle folders to open and close in tree format
 $(".folders").on("dblclick", function(e) {
@@ -791,7 +896,7 @@ $(".tags").on("dblclick", function(e) {
 		}
 	}
 
-	// Toggle tags to open and close by clicking on folder icons(arrow, fodler)
+	// Toggle tags to open and close by clicking on tag icons(arrow, tag)
 	if( $(target).hasClass("fa") && $(target).parent().siblings("ul").children().length ) {
 		let parentUl = $(target).parent().siblings("ul");
 		parentUl.toggle();
@@ -820,78 +925,4 @@ $(".tags").on("dblclick", function(e) {
 			localStorage.setItem("structure", JSON.stringify(data));
 		}
 	}
-});
-
-// Show note on right side of app
-$(".folders").on("click", function(e) {
-	let target = e.target;
-	let textArea = $("#application textarea");
-	if ( $(target).hasClass("note") && $(".edit").css("display") != "none" ) {
-		let noteID = $(target).attr("data-note-id");
-		textArea.attr("data-textarea-id", noteID);
-		renderNoteFields();
-		checkNoteForAddTag();
-		renderTags();
-	}
-	if ( $(target).parent().hasClass("note") && $(".edit").css("display") != "none" ) {
-		let noteID = $(target).parent().attr("data-note-id");
-		textArea.attr("data-textarea-id", noteID);
-		renderNoteFields();
-		checkNoteForAddTag();
-		renderTags();
-	}
-	paddingCheck();
-});
-
-// Remove attr readonly from textarea. Also shows save and delete buttons. Hide edit button.
-$(".edit").on("click", function() {
-	let workTextarea = $("#application textarea");
-	if ( workTextarea.val() ) {
-		$(".edit").css("display", "none");
-		$(".delete_note").css("display", "inline-block");
-		$(".save_note").css("display", "inline-block");
-		workTextarea.removeAttr("readonly");
-	}
-});
-
-// Save text in textarea in localStorage. Show edit button, hide save and delete buttons.
-$(".save_note").on("click", function() {
-	let workTextarea = $("#application textarea");
-	for (let i = 0; i < data.notes.length; i++) {
-		if ( data.notes[i].id == workTextarea.attr("data-textarea-id") ) {
-			data.notes[i].text = workTextarea.val();
-			localStorage.setItem("structure", JSON.stringify(data));
-		}
-	}
-	$(".edit").css("display", "inline-block");
-	$(".delete_note").css("display", "none");
-	$(".save_note").css("display", "none");
-	workTextarea.prop("readonly", true);
-});
-
-// Delete note in localStorage. Show edit button, hide save and delete buttons. Render tree in sidebar.
-$(".delete_note").on("click", function() {
-	let workTextarea = $("#application textarea");
-	for (let i = 0; i < data.notes.length; i++) {
-		if ( data.notes[i].id == workTextarea.attr("data-textarea-id") ) {
-			let index = data.notes.indexOf(data.notes[i]);
-			data.notes.splice(index, 1);
-			localStorage.setItem("structure", JSON.stringify(data));
-		}
-	}
-
-	select.find("option").not(".select_root").remove();
-	renderFolderSelect(data.folders, 0);
-	$(".folders").find("*").remove();
-	$(".folders").append(parseFolders(data.folders));
-	renderNotes(data.notes);
-	renderFoldersDisplay(data.folders);
-	renderNoteFields();
-	renderNoteSize();
-
-	workTextarea.val("");
-	$(".edit").css("display", "inline-block");
-	$(".delete_note").css("display", "none");
-	$(".save_note").css("display", "none");
-	workTextarea.prop("readonly", true);
 });
