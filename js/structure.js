@@ -1,3 +1,11 @@
+class Folder {
+    constructor(theID, theName) {
+        this.id = theID;
+        this.name = theName;
+        this.display = "block";
+        this.children = [];
+    }
+}
 let data = (localStorage.getItem("structure"))
     ? JSON.parse(localStorage.getItem("structure")) : {
     "folders": [{
@@ -368,7 +376,6 @@ checkNoteForAddTag();
 renderTags();
 if ($("#application textarea").attr("data-textarea-id"))
     $("#application textarea").attr("data-textarea-id", findLatestNote().id);
-$("#sidebar").css("height", $(window).outerHeight() - $("header").outerHeight());
 $(window).resize(function () {
     $("#sidebar").css("height", $(window).outerHeight() - $("header").outerHeight());
     renderNoteSize();
