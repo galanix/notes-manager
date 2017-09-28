@@ -1,3 +1,5 @@
+// localStorage.clear();
+// Creating folders
 let data = (localStorage.getItem("structure"))
     ? JSON.parse(localStorage.getItem("structure")) : {
     "folders": [{
@@ -20,19 +22,25 @@ let idNoteCounter = (localStorage.getItem("idNoteCounter"))
     ? localStorage.getItem("idNoteCounter") : 0;
 let idTagCounter = (localStorage.getItem("idTagCounter"))
     ? localStorage.getItem("idTagCounter") : 0;
+let select = $(".folders_tree");
+// Find and return nested object 
 function find(source, id) {
     for (let key in source) {
         let item = source[key];
         if (item.id == id)
             return item;
+        // Item not returned yet. Search its children by recursive call.
         if (item.children) {
             let subresult = find(item.children, id);
+            // If the item was found in the subchildren, return it.
             if (subresult)
                 return subresult;
         }
     }
+    // Nothing found yet? return null.
     return null;
 }
+// Find and return nested obj parent(arr)
 function findParent(arr, id) {
     for (let i = 0; i < arr.length; i++) {
         let item = arr[i];
@@ -51,30 +59,30 @@ function findParent(arr, id) {
     }
     return null;
 }
+// Render folder select list 
 function renderFolderSelect(arr, counter) {
     for (let i = 0; i < arr.length; i++) {
-        let item = arr[i];
-        let name = item.name;
-        let id = item.id;
-        if (item.children) {
+        let name = arr[i].name;
+        let id = arr[i].id;
+        if (arr[i].children) {
             let dashes = "";
             for (let i = 0; i < counter - 1; i++) {
                 dashes += "-";
             }
-            $(".folders_tree").append(`
+            select.append(`
 				<option data-folders-select-id="${id}" value="${name}">${dashes} ${name}</option>
 				`);
             dashes = "";
-            renderFolderSelect(item.children, counter + 1);
+            renderFolderSelect(arr[i].children, counter + 1);
         }
     }
 }
+// Render tag select list 
 function renderTagSelect(arr, counter) {
     for (let i = 0; i < arr.length; i++) {
-        let item = arr[i];
-        let name = item.name;
-        let id = item.id;
-        if (item.children) {
+        let name = arr[i].name;
+        let id = arr[i].id;
+        if (arr[i].children) {
             let dashes = "";
             for (let i = 0; i < counter - 1; i++) {
                 dashes += "-";
@@ -83,10 +91,11 @@ function renderTagSelect(arr, counter) {
 				<option data-tags-select-id="${id}" value="${name}">${dashes} ${name}</option>
 				`);
             dashes = "";
-            renderTagSelect(item.children, counter + 1);
+            renderTagSelect(arr[i].children, counter + 1);
         }
     }
 }
+// Set textarea(note) height equal to sidebar height
 function renderNoteSize() {
     setTimeout(function () {
         let sidebarHeight = $("#sidebar").outerHeight();
@@ -97,6 +106,7 @@ function renderNoteSize() {
         $("#note textarea").css("height", res);
     }, 10);
 }
+// Takes a folders array and turns it into a <ul>
 function parseFolders(folders) {
     let ul = $("<ul>");
     for (var i = 0; i < folders.length; i++) {
@@ -104,6 +114,7 @@ function parseFolders(folders) {
     }
     return ul;
 }
+// Takes a folder object and turns it into a <li>
 function parseFolder(folder) {
     let li = $("<li>");
     li.append(`<span data-folders-tree-id="${folder.id}" class="folder_name">
@@ -113,6 +124,7 @@ function parseFolder(folder) {
         li.append(parseFolders(folder.children));
     return li;
 }
+// Takes a folders array and turns it into a <ul>
 function parseTags(tags) {
     let ul = $("<ul>");
     for (var i = 0; i < tags.length; i++) {
@@ -120,6 +132,7 @@ function parseTags(tags) {
     }
     return ul;
 }
+// Takes a folder object and turns it into a <li>
 function parseTag(tag) {
     let li = $("<li>");
     li.append(`<span data-tags-tree-id="${tag.id}" class="tag_name">
@@ -129,8 +142,9 @@ function parseTag(tag) {
         li.append(parseTags(tag.children));
     return li;
 }
+// Render folders tree  with open or close folders
 function renderFoldersDisplay(folders) {
-    for (let key in folders) {
+    for (key in folders) {
         let item = folders[key];
         let display = item.display;
         let id = item.id;
@@ -156,6 +170,7 @@ function renderFoldersDisplay(folders) {
         }
     }
 }
+// Render tags tree  with open or close folders
 function renderTagsDisplay(tags) {
     for (let key in tags) {
         let item = tags[key];
@@ -182,8 +197,9 @@ function renderTagsDisplay(tags) {
             renderTagsDisplay(item.children);
     }
 }
+// Render tags list in #popup_note_tag div
 function renderNoteTagsDisplay(tags) {
-    for (let key in tags) {
+    for (key in tags) {
         let item = tags[key];
         let name = item.name;
         let tagsDiv = $("#popup_note_tag .tag_list");
@@ -193,9 +209,11 @@ function renderNoteTagsDisplay(tags) {
             renderNoteTagsDisplay(item.children);
     }
 }
+// Math max to array
 function getMaxOfArray(numArray) {
     return Math.max.apply(null, numArray);
 }
+// Find last(date) note and return it as object from data
 function findLatestNote() {
     let dataArr = [];
     let maxNote;
@@ -228,12 +246,15 @@ function renderLatestNote() {
         textArea.attr("data-textarea-id", latestNote.id);
     }
 }
+// ************************** CHECK FUNCTIONS ************************************
+// Check and render padding for tags in note_info
 function paddingCheck() {
     if ($("#note .notes_tags span"))
         $("#note .notes_tags span").css({ "padding": "5px 10px", "display": "inline-block" });
     else
         $("#note .notes_tags span").css({ "padding": "0px" });
 }
+// Check and render add_tag button in note_info
 function checkNoteForAddTag() {
     if ($(".note_title").text().length > 0) {
         $(".add_tag").css("display", "inline-block");
@@ -241,6 +262,7 @@ function checkNoteForAddTag() {
     else
         $(".add_tag").css("display", "none");
 }
+// Check and add .selected_tag class to tags that are applied to note
 function checkSelectedTags() {
     let textArea = $("#application textarea");
     let spanTags = $(".tag_list .tag_list_tag");
@@ -252,6 +274,8 @@ function checkSelectedTags() {
         }
     }
 }
+// ************************** CHECK FUNCTIONS end ************************************
+// Render note fields(title, tags..) and render last(date) note on load
 function renderNoteFields() {
     let noteTitle = $("#note .note_title");
     let noteTags = $("#note .notes_tags");
@@ -267,6 +291,7 @@ function renderNoteFields() {
         }
     }
 }
+// Render tags(spans) in note_info
 function renderTags() {
     let note = find(data.notes, $("#application textarea").attr("data-textarea-id"));
     $(".notes_tags").find("span").remove();
@@ -276,9 +301,13 @@ function renderTags() {
             if (tag) {
                 $(".notes_tags").append(`<span class="tag_list_tag">${tag.name}</span>`);
             }
+            // else {
+            // 	$(".notes_tags").find("span").remove();
+            // }
         }
     }
 }
+// Render notes in sidebar tree
 function renderNotes(folders) {
     $("#sidebar").find(".note").remove();
     for (let i = 0; i < folders.length; i++) {
@@ -288,16 +317,17 @@ function renderNotes(folders) {
         let foldersSpan = $(`.folders span[data-folders-tree-id="${folderID}"]`);
         let folderUl = foldersSpan.next("ul");
         folderUl.append(`<span data-note-id="${id}" class="note"><i class="fa fa-sticky-note-o" aria-hidden="true"></i>
-				${item.title}</span>`);
+			${item.title}</span>`);
         let noteTags = item.tags;
         for (let j = 0; j < noteTags.length; j++) {
             let tagSpan = $(`.tags span[data-tags-tree-id="${noteTags[j]}"]`);
             let tagUl = tagSpan.next("ul");
             tagUl.append(`<span data-note-id="${id}" class="note"><i class="fa fa-sticky-note-o" aria-hidden="true"></i>
-					${item.title}</span>`);
+				${item.title}</span>`);
         }
     }
 }
+// Add new folder to localStorage and iterate idFolderCounter
 function updateFoldersData() {
     let folderName = $("#folder_name").val();
     let findedObj;
@@ -313,6 +343,7 @@ function updateFoldersData() {
     localStorage.setItem("idFolderCounter", idFolderCounter);
     idFolderCounter++;
 }
+// Add new note to localStorage and iterate idNoteCounter
 function updateNotesData() {
     let noteTitle = $("#note_name").val();
     let noteText = $("#popup_note textarea").val();
@@ -351,6 +382,7 @@ function updateTagsData() {
     localStorage.setItem("idTagCounter", idTagCounter);
     idTagCounter++;
 }
+// ******************************* CALL FUNCTIONS **************************************
 renderFolderSelect(data.folders, 0);
 renderTagSelect(data.tags, 0);
 idFolderCounter++;
@@ -366,13 +398,17 @@ renderLatestNote();
 paddingCheck();
 checkNoteForAddTag();
 renderTags();
+// ******************************* CALL FUNCTIONS end **************************************
+// ******************************* EXECUTE COMMANDS ******************************************
 if ($("#application textarea").attr("data-textarea-id"))
     $("#application textarea").attr("data-textarea-id", findLatestNote().id);
+// ******************************* CALL FUNCTIONS end **************************************
 $("#sidebar").css("height", $(window).outerHeight() - $("header").outerHeight());
 $(window).resize(function () {
     $("#sidebar").css("height", $(window).outerHeight() - $("header").outerHeight());
     renderNoteSize();
 });
+// Open create folder popup
 $(".btn_folders").on("click", function () {
     $("#popup_folder").fadeIn(500);
     $(document).keydown(function (e) {
@@ -386,6 +422,7 @@ $(".btn_folders").on("click", function () {
         $("#popup_folder form")[0].reset();
     });
 });
+// Open create note popup
 $(".btn_notes").on("click", function () {
     $("#popup_note").fadeIn(500);
     $(document).keydown(function (e) {
@@ -399,6 +436,7 @@ $(".btn_notes").on("click", function () {
         $("#popup_note form")[0].reset();
     });
 });
+// Open create tag popup
 $(".btn_tags").on("click", function () {
     $("#popup_tag").fadeIn(500);
     $(document).keydown(function (e) {
@@ -412,6 +450,7 @@ $(".btn_tags").on("click", function () {
         $("#popup_tag form")[0].reset();
     });
 });
+// Open add tag popup
 $(".add_tag").on("click", function () {
     $("#popup_note_tag").fadeIn(500);
     $("#popup_note_tag .tag_list").find("*").remove();
@@ -428,6 +467,7 @@ $(".add_tag").on("click", function () {
         $("#popup_note_tag form")[0].reset();
     });
 });
+// $(".tag_list_tag").on("click", function() {
 $("#popup_note_tag").on("click", function (e) {
     let target = e.target;
     let textArea = $("#application textarea");
@@ -443,10 +483,12 @@ $("#popup_note_tag").on("click", function (e) {
         });
     }
 });
+// });
+// Create folder render data in folder select and sidebar
 $("#popup_folder .create_folder").on("click", function () {
     if ($("#folder_name").val()) {
         updateFoldersData();
-        $(".folders_tree").find("option").not(".select_root").remove();
+        select.find("option").not(".select_root").remove();
         renderFolderSelect(data.folders, 0);
         $(".folders").find("*").remove();
         $(".folders").append(parseFolders(data.folders));
@@ -458,6 +500,7 @@ $("#popup_folder .create_folder").on("click", function () {
     $("#popup_folder").fadeOut(500);
     $("#popup_folder form")[0].reset();
 });
+// Create tag render data in tags select and sidebar
 $("#popup_tag .create_tag").on("click", function () {
     if ($("#tag_name").val()) {
         updateTagsData();
@@ -473,6 +516,7 @@ $("#popup_tag .create_tag").on("click", function () {
     $("#popup_tag").fadeOut(500);
     $("#popup_tag form")[0].reset();
 });
+// Create and add tag render data in tags list and sidebar
 $("#popup_note_tag .create_add_tag").on("click", function () {
     if ($("#tag_note_name").val()) {
         updateTagsData();
@@ -492,9 +536,7 @@ $("#popup_note_tag .create_add_tag").on("click", function () {
 });
 $("#popup_note_tag .add_note_tag").on("click", function () {
     let selectedTags = [];
-    let textArea = $("#application textarea");
-    let note = find(data.notes, textArea.attr("data-textarea-id"));
-    $("#popup_note_tag .tag_list_tag").each(function () {
+    $("#popup_note_tag .tag_list_tag").each(function (index) {
         if ($(this).hasClass("selected_tag"))
             selectedTags.push($(this).attr("data-tags-tree-id"));
     });
@@ -510,9 +552,11 @@ $("#popup_note_tag .add_note_tag").on("click", function () {
     renderTags();
     $("#popup_note_tag").fadeOut(500);
 });
+// Delete folder and render data in select and sidebar
 $("#popup_folder .delete_folder").on("click", function () {
     let selectedOptionId = $("#popup_folder select option:selected").attr("data-folders-select-id");
     if ($("#popup_folder select").val() && selectedOptionId != "root") {
+        // Delete notes(for now) in folder
         for (let i = 0; i < data.notes.length; i++) {
             if (data.notes[i].folder == selectedOptionId) {
                 let index = data.notes.indexOf(data.notes[i]);
@@ -527,7 +571,7 @@ $("#popup_folder .delete_folder").on("click", function () {
             }
         }
         localStorage.setItem("structure", JSON.stringify(data));
-        $(".folders_tree").find("option").not(".select_root").remove();
+        select.find("option").not(".select_root").remove();
         renderFolderSelect(data.folders, 0);
         $(".folders").find("*").remove();
         $(".folders").append(parseFolders(data.folders));
@@ -538,6 +582,7 @@ $("#popup_folder .delete_folder").on("click", function () {
     }
     $("#popup_folder form")[0].reset();
 });
+// Delete tag and render data in select and sidebar
 $("#popup_tag .delete_tag").on("click", function () {
     let selectedOptionId = $("#popup_tag select option:selected").attr("data-tags-select-id");
     let textArea = $("#application textarea");
@@ -570,6 +615,7 @@ $("#popup_tag .delete_tag").on("click", function () {
     renderNoteSize();
     $("#popup_tag form")[0].reset();
 });
+// Add new note to localStorage then render tree in sidebar
 $("#popup_note .create_note").on("click", function () {
     let selectedOptionId = $("#popup_note select option:selected").attr("data-folders-select-id");
     let textArea = $("#application textarea");
@@ -589,6 +635,7 @@ $("#popup_note .create_note").on("click", function () {
     $("#popup_note").fadeOut(500);
     $("#popup_note form")[0].reset();
 });
+// Show note on right side of app
 $("#sidebar").on("click", function (e) {
     let target = e.target;
     let textArea = $("#application textarea");
@@ -608,6 +655,7 @@ $("#sidebar").on("click", function (e) {
     }
     paddingCheck();
 });
+// Remove attr readonly from textarea. Also shows save and delete buttons. Hide edit button.
 $(".edit").on("click", function () {
     let workTextarea = $("#application textarea");
     if (workTextarea.val()) {
@@ -617,6 +665,7 @@ $(".edit").on("click", function () {
         workTextarea.removeAttr("readonly");
     }
 });
+// Save text in textarea in localStorage. Show edit button, hide save and delete buttons.
 $(".save_note").on("click", function () {
     let workTextarea = $("#application textarea");
     for (let i = 0; i < data.notes.length; i++) {
@@ -630,6 +679,7 @@ $(".save_note").on("click", function () {
     $(".save_note").css("display", "none");
     workTextarea.prop("readonly", true);
 });
+// Delete note in localStorage. Show edit button, hide save and delete buttons. Render tree in sidebar.
 $(".delete_note").on("click", function () {
     let workTextarea = $("#application textarea");
     for (let i = 0; i < data.notes.length; i++) {
@@ -654,11 +704,14 @@ $(".delete_note").on("click", function () {
     $(".save_note").css("display", "none");
     workTextarea.prop("readonly", true);
 });
+// Toggle folders to open and close in tree format
 $(".folders").on("dblclick", function (e) {
     let target = e.target;
+    // Toggle folders to open and close by clicking on folder name
     if ($(target).hasClass("folder_name") && $(target).siblings("ul").children().length) {
         let childUl = $(target).siblings("ul");
         childUl.toggle();
+        // Change folder open or close icon
         if ($(childUl).css("display").toLowerCase() === "none") {
             $(target).children(".folder").removeClass("fa-angle-down").addClass("fa-angle-right");
         }
@@ -668,6 +721,7 @@ $(".folders").on("dblclick", function (e) {
         renderNoteSize();
         let findedObj = find(data.folders, $(target).attr("data-folders-tree-id"));
         let span = $(`.folder_name[data-folders-tree-id="${findedObj.id}"]`);
+        // Change display property to render folders tree  with open or close folders
         if (findedObj.display === "block" && span.next("ul").children().length) {
             findedObj.display = "none";
             localStorage.setItem("structure", JSON.stringify(data));
@@ -677,9 +731,11 @@ $(".folders").on("dblclick", function (e) {
             localStorage.setItem("structure", JSON.stringify(data));
         }
     }
+    // Toggle folders to open and close by clicking on folder icons(arrow, fodler)
     if ($(target).hasClass("fa") && $(target).parent().siblings("ul").children().length) {
         let parentUl = $(target).parent().siblings("ul");
         parentUl.toggle();
+        // Change folder open or close icon
         if ($(parentUl).css("display").toLowerCase() === "none") {
             if ($(target).hasClass("fa-folder-o"))
                 $(target).siblings().removeClass("fa-angle-down").addClass("fa-angle-right");
@@ -695,6 +751,7 @@ $(".folders").on("dblclick", function (e) {
         renderNoteSize();
         let findedObj = find(data.folders, $(target).parent().attr("data-folders-tree-id"));
         let span = $(`.folder_name[data-folders-tree-id="${findedObj.id}"]`);
+        // Change display property to render folders tree  with open or close folders
         if (findedObj.display === "block" && span.next("ul").children().length) {
             findedObj.display = "none";
             localStorage.setItem("structure", JSON.stringify(data));
@@ -705,11 +762,14 @@ $(".folders").on("dblclick", function (e) {
         }
     }
 });
+// Toggle tags to open and close in tree format
 $(".tags").on("dblclick", function (e) {
     let target = e.target;
+    // Toggle tags to open and close by clicking on folder name
     if ($(target).hasClass("tag_name") && $(target).siblings("ul").children().length) {
         let childUl = $(target).siblings("ul");
         childUl.toggle();
+        // Change folder open or close icon
         if ($(childUl).css("display").toLowerCase() === "none") {
             $(target).children(".tag").removeClass("fa-angle-down").addClass("fa-angle-right");
         }
@@ -719,6 +779,7 @@ $(".tags").on("dblclick", function (e) {
         renderNoteSize();
         let findedObj = find(data.tags, $(target).attr("data-tags-tree-id"));
         let span = $(`.tag_name[data-tags-tree-id="${findedObj.id}"]`);
+        // Change display property to render tags tree  with open or close tags
         if (findedObj.display === "block" && span.next("ul").children().length) {
             findedObj.display = "none";
             localStorage.setItem("structure", JSON.stringify(data));
@@ -728,9 +789,11 @@ $(".tags").on("dblclick", function (e) {
             localStorage.setItem("structure", JSON.stringify(data));
         }
     }
+    // Toggle tags to open and close by clicking on tag icons(arrow, tag)
     if ($(target).hasClass("fa") && $(target).parent().siblings("ul").children().length) {
         let parentUl = $(target).parent().siblings("ul");
         parentUl.toggle();
+        // Change folder open or close icon
         if ($(parentUl).css("display").toLowerCase() === "none") {
             if ($(target).hasClass("fa-tag"))
                 $(target).siblings().removeClass("fa-angle-down").addClass("fa-angle-right");
@@ -746,6 +809,7 @@ $(".tags").on("dblclick", function (e) {
         renderNoteSize();
         let findedObj = find(data.tags, $(target).parent().attr("data-tags-tree-id"));
         let span = $(`.tag_name[data-tags-tree-id="${findedObj.id}"]`);
+        // Change display property to render tags tree  with open or close tags
         if (findedObj.display === "block" && span.next("ul").children().length) {
             findedObj.display = "none";
             localStorage.setItem("structure", JSON.stringify(data));
@@ -756,4 +820,3 @@ $(".tags").on("dblclick", function (e) {
         }
     }
 });
-//# sourceMappingURL=structure.js.map
