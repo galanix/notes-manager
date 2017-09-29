@@ -1,27 +1,27 @@
 // localStorage.clear();
 // Creating folders
 let data = (localStorage.getItem("structure"))
-    ? JSON.parse(localStorage.getItem("structure")) : {
+? JSON.parse(localStorage.getItem("structure")) : {
     "folders": [{
-            "id": "root",
-            "name": "Folders",
-            "display": "block",
-            "children": []
-        }],
+        "id": "root",
+        "name": "Folders",
+        "display": "block",
+        "children": []
+    }],
     "notes": [],
     "tags": [{
-            "id": "root",
-            "name": "Tags",
-            "display": "block",
-            "children": []
-        }]
+        "id": "root",
+        "name": "Tags",
+        "display": "block",
+        "children": []
+    }]
 };
 let idFolderCounter = (localStorage.getItem("idFolderCounter"))
-    ? localStorage.getItem("idFolderCounter") : 0;
+? localStorage.getItem("idFolderCounter") : 0;
 let idNoteCounter = (localStorage.getItem("idNoteCounter"))
-    ? localStorage.getItem("idNoteCounter") : 0;
+? localStorage.getItem("idNoteCounter") : 0;
 let idTagCounter = (localStorage.getItem("idTagCounter"))
-    ? localStorage.getItem("idTagCounter") : 0;
+? localStorage.getItem("idTagCounter") : 0;
 let select = $(".folders_tree");
 // Find and return nested object 
 function find(source, id) {
@@ -70,8 +70,8 @@ function renderFolderSelect(arr, counter) {
                 dashes += "-";
             }
             select.append(`
-				<option data-folders-select-id="${id}" value="${name}">${dashes} ${name}</option>
-				`);
+                <option data-folders-select-id="${id}" value="${name}">${dashes} ${name}</option>
+                `);
             dashes = "";
             renderFolderSelect(arr[i].children, counter + 1);
         }
@@ -88,8 +88,8 @@ function renderTagSelect(arr, counter) {
                 dashes += "-";
             }
             $("#popup_tag .tags_tree").append(`
-				<option data-tags-select-id="${id}" value="${name}">${dashes} ${name}</option>
-				`);
+                <option data-tags-select-id="${id}" value="${name}">${dashes} ${name}</option>
+                `);
             dashes = "";
             renderTagSelect(arr[i].children, counter + 1);
         }
@@ -118,8 +118,8 @@ function parseFolders(folders) {
 function parseFolder(folder) {
     let li = $("<li>");
     li.append(`<span data-folders-tree-id="${folder.id}" class="folder_name">
-		<i class="fa folder" aria-hidden="true"></i> <i class="fa fa-folder-o" aria-hidden="true"></i> 
-		${folder.name}</span>`);
+      <i class="fa folder" aria-hidden="true"></i> <i class="fa fa-folder-o" aria-hidden="true"></i> 
+      ${folder.name}</span>`);
     if (folder.children)
         li.append(parseFolders(folder.children));
     return li;
@@ -136,8 +136,8 @@ function parseTags(tags) {
 function parseTag(tag) {
     let li = $("<li>");
     li.append(`<span data-tags-tree-id="${tag.id}" class="tag_name">
-		<i class="fa tag" aria-hidden="true"></i> <i class="fa fa-tag" aria-hidden="true"></i> 
-		${tag.name}</span>`);
+      <i class="fa tag" aria-hidden="true"></i> <i class="fa fa-tag" aria-hidden="true"></i> 
+      ${tag.name}</span>`);
     if (tag.children)
         li.append(parseTags(tag.children));
     return li;
@@ -317,13 +317,13 @@ function renderNotes(folders) {
         let foldersSpan = $(`.folders span[data-folders-tree-id="${folderID}"]`);
         let folderUl = foldersSpan.next("ul");
         folderUl.append(`<span data-note-id="${id}" class="note"><i class="fa fa-sticky-note-o" aria-hidden="true"></i>
-			${item.title}</span>`);
+         ${item.title}</span>`);
         let noteTags = item.tags;
         for (let j = 0; j < noteTags.length; j++) {
             let tagSpan = $(`.tags span[data-tags-tree-id="${noteTags[j]}"]`);
             let tagUl = tagSpan.next("ul");
             tagUl.append(`<span data-note-id="${id}" class="note"><i class="fa fa-sticky-note-o" aria-hidden="true"></i>
-				${item.title}</span>`);
+                ${item.title}</span>`);
         }
     }
 }
@@ -468,21 +468,21 @@ $(".add_tag").on("click", function () {
     });
 });
 // $(".tag_list_tag").on("click", function() {
-$("#popup_note_tag").on("click", function (e) {
-    let target = e.target;
-    let textArea = $("#application textarea");
-    let note = find(data.notes, textArea.attr("data-textarea-id"));
-    if ($(target).hasClass("tag_list_tag")) {
-        $(target).toggleClass("selected_tag");
-        note.tags = [];
-        $.each($(".tag_list .tag_list_tag"), function () {
-            if ($(this).hasClass("selected_tag")) {
-                note.tags.push($(this).attr("data-tags-tree-id"));
-                localStorage.setItem("structure", JSON.stringify(data));
-            }
-        });
-    }
-});
+    $("#popup_note_tag").on("click", function (e) {
+        let target = e.target;
+        let textArea = $("#application textarea");
+        let note = find(data.notes, textArea.attr("data-textarea-id"));
+        if ($(target).hasClass("tag_list_tag")) {
+            $(target).toggleClass("selected_tag");
+            note.tags = [];
+            $.each($(".tag_list .tag_list_tag"), function () {
+                if ($(this).hasClass("selected_tag")) {
+                    note.tags.push($(this).attr("data-tags-tree-id"));
+                    localStorage.setItem("structure", JSON.stringify(data));
+                }
+            });
+        }
+    });
 // });
 // Create folder render data in folder select and sidebar
 $("#popup_folder .create_folder").on("click", function () {

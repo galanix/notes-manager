@@ -28,7 +28,7 @@ $(document).ready(function () {
             return null;
     }
     function checkAccess() {
-        let location = window.location;
+        var location = window.location;
         if (get_cookie("access")) {
             if (location == "http://app.loc/"
                 || location == "http://app.loc/index.html") {
@@ -42,11 +42,11 @@ $(document).ready(function () {
         }
     }
     function renderNoteSizeLoad() {
-        let sidebarHeight = $("#sidebar").outerHeight();
-        let noteTitleHeight = $("#note .note_title").outerHeight();
-        let noteInfo = $("#note .note_info").outerHeight();
-        let sum = noteTitleHeight + noteInfo;
-        let res = sidebarHeight - sum;
+        var sidebarHeight = $("#sidebar").outerHeight();
+        var noteTitleHeight = $("#note .note_title").outerHeight();
+        var noteInfo = $("#note .note_info").outerHeight();
+        var sum = noteTitleHeight + noteInfo;
+        var res = sidebarHeight - sum;
         $("#note textarea").css("height", res);
     }
     checkAccess();
@@ -55,7 +55,7 @@ $(document).ready(function () {
     }, 1500);
     renderNoteSizeLoad();
     $(".enter_app_page").on("click", function () {
-        $.getJSON("js/pass.json", function (result) {
+        $.getJSON("scripts/pass.json", function (result) {
             if ($("#user_name").val() === result.name &&
                 $("#user_password").val() === result.password) {
                 set_cookie("access", "granted", 2018, 2, 5);
@@ -67,10 +67,10 @@ $(document).ready(function () {
         delete_cookie("access");
         window.location.replace("http://app.loc/index.html");
     });
-    $.getJSON("js/pass.json", function (result) {
-        let firstLetter = result.name.slice(0, 1).toUpperCase();
+    $.getJSON("scripts/pass.json", function (result) {
+        var firstLetter = result.name.slice(0, 1).toUpperCase();
         $("#logo").html(firstLetter);
         $("#name").html(result.name);
     });
 });
-//# sourceMappingURL=main.js.map
+//# sourceMappingURL=cockie.js.map

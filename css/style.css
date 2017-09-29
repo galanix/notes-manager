@@ -26,6 +26,8 @@ body input:focus {
 	outline: none;
 }
 
+.hidden { display: none; }
+
 
 /******************** Sign In Form  *********************************/
 

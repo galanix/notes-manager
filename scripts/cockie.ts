@@ -73,7 +73,7 @@ function renderNoteSizeLoad() {
 
 	// Form page on click Enter adds coockie and redirect to content page
 	$(".enter_app_page").on("click", function() {
-		$.getJSON("js/pass.json", function(result: any) {
+		$.getJSON("scripts/pass.json", function(result: any) {
 			if ( $("#user_name").val() === result.name && 
 				$("#user_password").val() === result.password ) {
 				set_cookie( "access", "granted", 2018, 2, 5, );
@@ -89,7 +89,7 @@ function renderNoteSizeLoad() {
 	});
 
 	// Change logo and user name
-	$.getJSON("js/pass.json", function(result: any) {
+	$.getJSON("scripts/pass.json", function(result: any) {
 		let firstLetter = result.name.slice(0, 1).toUpperCase();
 		$("#logo").html(firstLetter);
 		$("#name").html(result.name);
