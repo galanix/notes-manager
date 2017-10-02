@@ -26,7 +26,7 @@ body input:focus {
 	outline: none;
 }
 
-.hidden { display: none; }
+body .hidden { display: none; }
 
 
 /******************** Sign In Form  *********************************/

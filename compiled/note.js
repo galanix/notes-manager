@@ -1,4 +1,4 @@
-define(["require", "exports", "./main", "./main"], function (require, exports, main_1, main_2) {
+define(["require", "exports", "./tag", "./data", "./main"], function (require, exports, tag_1, data_1, main_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     var Note = (function () {
@@ -26,14 +26,14 @@ define(["require", "exports", "./main", "./main"], function (require, exports, m
         Note.findLatestNote = function () {
             var dataArr = [];
             var maxNote;
-            for (var i = 0; i < main_1.data.notes.length; i++) {
-                var item = main_1.data.notes[i];
+            for (var i = 0; i < data_1.data.notes.length; i++) {
+                var item = data_1.data.notes[i];
                 var parseDate = Date.parse(item.date);
                 dataArr.push(parseDate);
             }
             var max = this.getMaxOfArray(dataArr);
-            for (var i = 0; i < main_1.data.notes.length; i++) {
-                var item = main_1.data.notes[i];
+            for (var i = 0; i < data_1.data.notes.length; i++) {
+                var item = data_1.data.notes[i];
                 var parseDate = Date.parse(item.date);
                 if (parseDate == max) {
                     maxNote = item;
@@ -49,7 +49,7 @@ define(["require", "exports", "./main", "./main"], function (require, exports, m
             var textArea = $("#application textarea");
             if (latestNote) {
                 noteTitle.html(latestNote.title);
-                var latestNoteFolder = main_2.find(main_1.data.folders, latestNote.folder);
+                var latestNoteFolder = main_1.find(data_1.data.folders, latestNote.folder);
                 notesFolder.html("<i class=\"fa fa-folder-o\" aria-hidden=\"true\"></i> " + latestNoteFolder.name);
                 textArea.html(latestNote.text);
                 textArea.attr("data-textarea-id", latestNote.id);
@@ -60,14 +60,19 @@ define(["require", "exports", "./main", "./main"], function (require, exports, m
             var noteTags = $("#note .notes_tags");
             var notesFolder = $("#note .notes_folder");
             var textArea = $("#application textarea");
-            for (var i = 0; i < main_1.data.notes.length; i++) {
-                var item = main_1.data.notes[i];
+            for (var i = 0; i < data_1.data.notes.length; i++) {
+                var item = data_1.data.notes[i];
                 if (item.id == textArea.attr("data-textarea-id")) {
                     noteTitle.html(item.title);
                     textArea.val(item.text);
-                    var folder = main_2.find(main_1.data.folders, item.folder);
+                    var folder = main_1.find(data_1.data.folders, item.folder);
                     notesFolder.html("<i class=\"fa fa-folder-o\" aria-hidden=\"true\"></i> " + folder.name);
                 }
+            }
+            if (data_1.data.notes.length <= 0) {
+                noteTitle.html(null);
+                textArea.val(null);
+                notesFolder.html(null);
             }
         };
         Note.renderNotes = function (folders) {
@@ -86,6 +91,18 @@ define(["require", "exports", "./main", "./main"], function (require, exports, m
                     tagUl.append("<span data-note-id=\"" + id + "\" class=\"note\"><i class=\"fa fa-sticky-note-o\" aria-hidden=\"true\"></i>\n\t\t\t\t\t" + item.title + "</span>");
                 }
             }
+        };
+        Note.noteWrapper = function () {
+            Note.renderNoteFields();
+            tag_1.Tag.checkNoteForAddTag();
+            tag_1.Tag.renderTags();
+            Note.renderNoteSize();
+        };
+        Note.returnEdit = function () {
+            $(".edit").css("display", "inline-block");
+            $(".delete_note").css("display", "none");
+            $(".save_note").css("display", "none");
+            $("#application textarea").prop("readonly", true);
         };
         return Note;
     }());

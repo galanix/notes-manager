@@ -1,4 +1,4 @@
-define(["require", "exports", "./note", "./main"], function (require, exports, note_1, main_1) {
+define(["require", "exports", "./note", "./data"], function (require, exports, note_1, data_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     var Folder = (function () {
@@ -65,13 +65,28 @@ define(["require", "exports", "./note", "./main"], function (require, exports, n
                 }
             }
         };
+        Folder.deleteNotesInFolder = function (obj) {
+            for (var key in obj) {
+                var item = obj[key];
+                for (var i = 0; i < data_1.data.notes.length; i++) {
+                    if (data_1.data.notes[i].folder == item.id) {
+                        var index = data_1.data.notes.indexOf(data_1.data.notes[i]);
+                        data_1.data.notes.splice(index, 1);
+                        i--;
+                        localStorage.setItem("structure", JSON.stringify(data_1.data));
+                    }
+                }
+                if (item.children)
+                    this.deleteNotesInFolder(item.children);
+            }
+        };
         Folder.folderWrapper = function () {
             $(".folders_tree").find("option").not(".select_root").remove();
-            Folder.renderFolderSelect(main_1.data.folders, 0);
+            Folder.renderFolderSelect(data_1.data.folders, 0);
             $(".folders").find("*").remove();
-            $(".folders").append(Folder.parseFolders(main_1.data.folders));
-            note_1.Note.renderNotes(main_1.data.notes);
-            Folder.renderFoldersDisplay(main_1.data.folders);
+            $(".folders").append(Folder.parseFolders(data_1.data.folders));
+            note_1.Note.renderNotes(data_1.data.notes);
+            Folder.renderFoldersDisplay(data_1.data.folders);
             note_1.Note.renderNoteFields();
             note_1.Note.renderNoteSize();
         };

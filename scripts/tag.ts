@@ -1,4 +1,6 @@
-import { data } from "./main";
+import { Note } from "./note"; 
+
+import { data } from "./data";
 import { find } from "./main";
 import { findParent } from "./main";
 
@@ -138,6 +140,16 @@ export class Tag {
 	static paddingCheck() {
 		if ( $("#note .notes_tags span") ) $("#note .notes_tags span").css({"padding": "5px 10px", "display": "inline-block"});
 		else $("#note .notes_tags span").css({"padding": "0px"});
+	}
+
+	// Wrapper for tag functions call
+	 static tagWrapper() {
+		$(".tags").find("*").remove();
+		$(".tags").append(Tag.parseTags(data.tags));
+		Note.renderNotes(data.notes);
+		Tag.renderTagsDisplay(data.tags);
+		Note.renderNoteFields();
+		Note.renderNoteSize();
 	}
 
 }

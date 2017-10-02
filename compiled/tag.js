@@ -1,4 +1,4 @@
-define(["require", "exports", "./main", "./main"], function (require, exports, main_1, main_2) {
+define(["require", "exports", "./note", "./data", "./main"], function (require, exports, note_1, data_1, main_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     var Tag = (function () {
@@ -85,7 +85,7 @@ define(["require", "exports", "./main", "./main"], function (require, exports, m
         Tag.checkSelectedTags = function () {
             var textArea = $("#application textarea");
             var spanTags = $(".tag_list .tag_list_tag");
-            var note = main_2.find(main_1.data.notes, textArea.attr("data-textarea-id"));
+            var note = main_1.find(data_1.data.notes, textArea.attr("data-textarea-id"));
             for (var i = 0; i < spanTags.length; i++) {
                 for (var j = 0; j < note.tags.length; j++) {
                     if (note.tags[j] == $(spanTags[i]).attr("data-tags-tree-id"))
@@ -94,11 +94,11 @@ define(["require", "exports", "./main", "./main"], function (require, exports, m
             }
         };
         Tag.renderTags = function () {
-            var note = main_2.find(main_1.data.notes, $("#application textarea").attr("data-textarea-id"));
+            var note = main_1.find(data_1.data.notes, $("#application textarea").attr("data-textarea-id"));
             $(".notes_tags").find("span").remove();
             if (note) {
                 for (var i = 0; i < note.tags.length; i++) {
-                    var tag = main_2.find(main_1.data.tags, note.tags[i]);
+                    var tag = main_1.find(data_1.data.tags, note.tags[i]);
                     if (tag) {
                         $(".notes_tags").append("<span class=\"tag_list_tag\">" + tag.name + "</span>");
                     }
@@ -110,6 +110,14 @@ define(["require", "exports", "./main", "./main"], function (require, exports, m
                 $("#note .notes_tags span").css({ "padding": "5px 10px", "display": "inline-block" });
             else
                 $("#note .notes_tags span").css({ "padding": "0px" });
+        };
+        Tag.tagWrapper = function () {
+            $(".tags").find("*").remove();
+            $(".tags").append(Tag.parseTags(data_1.data.tags));
+            note_1.Note.renderNotes(data_1.data.notes);
+            Tag.renderTagsDisplay(data_1.data.tags);
+            note_1.Note.renderNoteFields();
+            note_1.Note.renderNoteSize();
         };
         return Tag;
     }());

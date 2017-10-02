@@ -1,4 +1,6 @@
-import { data } from "./main";
+import { Tag } from "./tag"
+
+import { data } from "./data";
 import { find } from "./main";
 import { findParent } from "./main";
 
@@ -90,6 +92,11 @@ export class Note {
 				notesFolder.html(`<i class="fa fa-folder-o" aria-hidden="true"></i> ${folder.name}`);
 			}
 		}
+		if ( data.notes.length <= 0 ) {
+			noteTitle.html(null);
+			textArea.val(null);
+			notesFolder.html(null);
+		}
 	}
 
 	// Render notes in sidebar tree
@@ -112,5 +119,21 @@ export class Note {
 					${item.title}</span>`);
 			}
 		}
+	}
+
+	// Wrapper for note functions call
+	static noteWrapper() { 
+		Note.renderNoteFields();
+		Tag.checkNoteForAddTag();
+		Tag.renderTags();
+		Note.renderNoteSize();
+	}
+
+	// Wrapper for click on save or delete button
+	static returnEdit() {
+		$(".edit").css("display", "inline-block");
+		$(".delete_note").css("display", "none");
+		$(".save_note").css("display", "none");
+		$("#application textarea").prop("readonly", true);
 	}
 }

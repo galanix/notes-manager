@@ -1,6 +1,6 @@
-import { Note } from "./note" 
+import { Note } from "./note"; 
 
-import { data } from "./main";
+import { data } from "./data";
 import { find } from "./main";
 import { findParent } from "./main";
 
@@ -85,17 +85,34 @@ export class Folder {
 		}
 	}
 
+	// Delete notes in folder and subfolders
+	static deleteNotesInFolder(obj: any) {
+		for (let key in obj) {
+			let item = obj[key];
+			for (let i = 0; i < data.notes.length; i++) {
+				if ( data.notes[i].folder == item.id ) {
+					let index: number = data.notes.indexOf(data.notes[i]);
+					data.notes.splice(index, 1);
+					i--;
+					localStorage.setItem("structure", JSON.stringify(data));
+				}
+			}
+			if (item.children)
+				this.deleteNotesInFolder(item.children);
+		}
+	}
+
 	// Wrapper for folder functions call
-static folderWrapper() {
-	$(".folders_tree").find("option").not(".select_root").remove();
-	Folder.renderFolderSelect(data.folders, 0);
-	$(".folders").find("*").remove();
-	$(".folders").append(Folder.parseFolders(data.folders));
-	Note.renderNotes(data.notes);
-	Folder.renderFoldersDisplay(data.folders);
-	Note.renderNoteFields();
-	Note.renderNoteSize();
-}
+	static folderWrapper() {
+		$(".folders_tree").find("option").not(".select_root").remove();
+		Folder.renderFolderSelect(data.folders, 0);
+		$(".folders").find("*").remove();
+		$(".folders").append(Folder.parseFolders(data.folders));
+		Note.renderNotes(data.notes);
+		Folder.renderFoldersDisplay(data.folders);
+		Note.renderNoteFields();
+		Note.renderNoteSize();
+	}
 }
 
 
