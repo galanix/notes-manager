@@ -92,6 +92,68 @@ define(["require", "exports", "./tag", "./data", "./main"], function (require, e
                 }
             }
         };
+        Note.checkNotesInFolders = function (obj) {
+            obj.notRenderInSelect = true;
+            localStorage.setItem("structure", JSON.stringify(data_1.data));
+            for (var i = 0; i < data_1.data.notes.length; i++) {
+                if (data_1.data.notes[i].folder == obj.id) {
+                    if ($("#popup_folder .popup_delete_notes_wrapper").css("display").toLowerCase() == "none")
+                        $("#popup_folder .popup_delete_notes_wrapper").show();
+                }
+            }
+            if (obj.children) {
+                var checkNotesInFoldersAgain_1 = function (arr) {
+                    for (var key in arr) {
+                        var item = arr[key];
+                        item.notRenderInSelect = true;
+                        localStorage.setItem("structure", JSON.stringify(data_1.data));
+                        for (var i = 0; i < data_1.data.notes.length; i++) {
+                            if (data_1.data.notes[i].folder == item.id) {
+                                if ($("#popup_folder .popup_delete_notes_wrapper").css("display").toLowerCase() == "none")
+                                    $("#popup_folder .popup_delete_notes_wrapper").show();
+                            }
+                        }
+                        if (item.children)
+                            checkNotesInFoldersAgain_1(item.children);
+                    }
+                };
+                checkNotesInFoldersAgain_1(obj.children);
+            }
+        };
+        Note.moveNoteInFolder = function (oldFolder, newFolder) {
+            for (var key in oldFolder) {
+                var item = oldFolder[key];
+                for (var i = 0; i < data_1.data.notes.length; i++) {
+                    if (data_1.data.notes[i].folder == item.id) {
+                        data_1.data.notes[i].folder = newFolder.id;
+                        localStorage.setItem("structure", JSON.stringify(data_1.data));
+                    }
+                }
+                if (item.children)
+                    this.moveNoteInFolder(item.children, newFolder);
+            }
+        };
+        Note.moveNoteWrapper = function () {
+            $("#popup_folder select option:not(:selected)").prop("disabled", false);
+            $("#popup_folder .popup_delete_notes_wrapper").hide();
+            $("#popup_folder").fadeOut(500);
+            $("#popup_folder form")[0].reset();
+        };
+        Note.deleteNotesInFolder = function (obj) {
+            for (var key in obj) {
+                var item = obj[key];
+                for (var i = 0; i < data_1.data.notes.length; i++) {
+                    if (data_1.data.notes[i].folder == item.id) {
+                        var index = data_1.data.notes.indexOf(data_1.data.notes[i]);
+                        data_1.data.notes.splice(index, 1);
+                        i--;
+                        localStorage.setItem("structure", JSON.stringify(data_1.data));
+                    }
+                }
+                if (item.children)
+                    this.deleteNotesInFolder(item.children);
+            }
+        };
         Note.noteWrapper = function () {
             Note.renderNoteFields();
             tag_1.Tag.checkNoteForAddTag();

@@ -1,4 +1,4 @@
-define(["require", "exports", "./note", "./data"], function (require, exports, note_1, data_1) {
+define(["require", "exports", "./note", "./data", "./main"], function (require, exports, note_1, data_1, main_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     var Folder = (function () {
@@ -18,9 +18,27 @@ define(["require", "exports", "./note", "./data"], function (require, exports, n
                     for (var i_1 = 0; i_1 < counter - 1; i_1++) {
                         dashes += "-";
                     }
-                    $(".folders_tree").append("\n\t\t\t\t\t<option data-folders-select-id=\"" + id + "\" value=\"" + name_1 + "\">" + dashes + " " + name_1 + "</option>\n\t\t\t\t\t");
+                    $(".folders_tree").append("\n\t\t\t\t\t\t<option data-folders-select-id=\"" + id + "\" value=\"" + name_1 + "\">" + dashes + " " + name_1 + "</option>\n\t\t\t\t\t\t");
                     dashes = "";
                     this.renderFolderSelect(item.children, counter + 1);
+                }
+            }
+        };
+        Folder.renderNotDeletedFolderSelect = function (arr, counter) {
+            for (var i = 0; i < arr.length; i++) {
+                var item = arr[i];
+                var name_2 = item.name;
+                var id = item.id;
+                if (item.children) {
+                    var dashes = "";
+                    for (var i_2 = 0; i_2 < counter - 1; i_2++) {
+                        dashes += "-";
+                    }
+                    if (!item.notRenderInSelect) {
+                        $(".not_deleted_folders").append("\n\t\t\t\t\t\t<option data-folders-select-id=\"" + id + "\" value=\"" + name_2 + "\">" + dashes + " " + name_2 + "</option>\n\t\t\t\t\t\t");
+                        dashes = "";
+                    }
+                    this.renderNotDeletedFolderSelect(item.children, counter + 1);
                 }
             }
         };
@@ -65,19 +83,15 @@ define(["require", "exports", "./note", "./data"], function (require, exports, n
                 }
             }
         };
-        Folder.deleteNotesInFolder = function (obj) {
-            for (var key in obj) {
-                var item = obj[key];
-                for (var i = 0; i < data_1.data.notes.length; i++) {
-                    if (data_1.data.notes[i].folder == item.id) {
-                        var index = data_1.data.notes.indexOf(data_1.data.notes[i]);
-                        data_1.data.notes.splice(index, 1);
-                        i--;
-                        localStorage.setItem("structure", JSON.stringify(data_1.data));
-                    }
+        Folder.deleteFolders = function () {
+            var selectedOptionId = $("#popup_folder .main_form select option:selected").attr("data-folders-select-id");
+            var findedArr = main_1.findParent(data_1.data.folders, selectedOptionId);
+            for (var i = 0; i < findedArr.length; i++) {
+                if (findedArr[i].id == selectedOptionId) {
+                    var index = findedArr.indexOf(findedArr[i]);
+                    findedArr.splice(index, 1);
+                    localStorage.setItem("structure", JSON.stringify(data_1.data));
                 }
-                if (item.children)
-                    this.deleteNotesInFolder(item.children);
             }
         };
         Folder.folderWrapper = function () {

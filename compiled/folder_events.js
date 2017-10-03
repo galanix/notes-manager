@@ -29,21 +29,47 @@ define(["require", "exports", "./folder", "./tag", "./note", "./data", "./main",
             $("#popup_folder .delete_folder").on("click", function () {
                 var selectedOptionId = $("#popup_folder select option:selected").attr("data-folders-select-id");
                 if ($("#popup_folder select").val() && selectedOptionId != "root") {
-                    var findedFolder = main_2.findParent(data_1.data.folders, selectedOptionId);
-                    folder_1.Folder.deleteNotesInFolder(findedFolder);
-                    var findedArr = main_2.findParent(data_1.data.folders, selectedOptionId);
-                    for (var i = 0; i < findedArr.length; i++) {
-                        if (findedArr[i].id == selectedOptionId) {
-                            var index = findedArr.indexOf(findedArr[i]);
-                            findedArr.splice(index, 1);
-                            localStorage.setItem("structure", JSON.stringify(data_1.data));
-                        }
+                    $("#popup_folder .main_form option:not(:selected)").prop("disabled", true);
+                    var findedFolder_1 = main_1.find(data_1.data.folders, selectedOptionId);
+                    var findedFolderParent_1 = main_2.findParent(data_1.data.folders, selectedOptionId);
+                    note_1.Note.checkNotesInFolders(findedFolder_1);
+                    if ($("#popup_folder .popup_delete_notes_wrapper").css("display").toLowerCase() == "block") {
+                        $("#popup_folder").on("click", function (e) {
+                            var target = e.target;
+                            var $target = $(target);
+                            if ($target.hasClass("delete_notes_yes")) {
+                                note_1.Note.deleteNotesInFolder(findedFolder_1);
+                                folder_1.Folder.deleteFolders();
+                                folder_1.Folder.folderWrapper();
+                                note_1.Note.renderLatestNote();
+                                tag_1.Tag.checkNoteForAddTag();
+                                note_1.Note.moveNoteWrapper();
+                            }
+                            if ($target.hasClass('delete_notes_no')) {
+                                $(".notes_in_folder").find("option").not(".select_root").remove();
+                                folder_1.Folder.renderNotDeletedFolderSelect(data_1.data.folders, 0);
+                                $("#popup_folder .main_form").hide();
+                                $("#popup_folder .select_folder").show();
+                                if ($("#popup_folder .select_folder select").val() && selectedOptionId != "root") {
+                                    $("#popup_folder .note_to_folder").on("click", function (e) {
+                                        var selectFolderSelected = $("#popup_folder .select_folder select option:selected").attr("data-folders-select-id");
+                                        var newFolder = main_1.find(data_1.data.folders, selectFolderSelected);
+                                        note_1.Note.moveNoteInFolder(findedFolderParent_1, newFolder);
+                                        folder_1.Folder.deleteFolders();
+                                        folder_1.Folder.folderWrapper();
+                                        note_1.Note.moveNoteWrapper();
+                                        $("#popup_folder .main_form").show();
+                                        $("#popup_folder .select_folder").hide();
+                                    });
+                                }
+                            }
+                        });
                     }
-                    folder_1.Folder.folderWrapper();
-                    note_1.Note.renderLatestNote();
-                    tag_1.Tag.checkNoteForAddTag();
+                    else {
+                        folder_1.Folder.deleteFolders();
+                        folder_1.Folder.folderWrapper();
+                    }
                 }
-                $("#popup_folder form")[0].reset();
             });
             $(".folders").on("dblclick", function (e) {
                 var target = e.target;

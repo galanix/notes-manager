@@ -42,24 +42,54 @@ export class FolderEvents {
 		$("#popup_folder .delete_folder").on("click", function() {
 			let selectedOptionId: any = $("#popup_folder select option:selected").attr("data-folders-select-id");
 			if ( $("#popup_folder select").val() && selectedOptionId != "root" ) {
-				// Delete notes(for now) in folder
-				let findedFolder: any = findParent(data.folders, selectedOptionId);
+				$("#popup_folder .main_form option:not(:selected)").prop("disabled", true);
+				let findedFolder: any = find(data.folders, selectedOptionId);
+				let findedFolderParent: any = findParent(data.folders, selectedOptionId);
+				Note.checkNotesInFolders(findedFolder);
 
-				Folder.deleteNotesInFolder(findedFolder);
-				let findedArr: any = findParent(data.folders, selectedOptionId);
-				for (let i = 0; i < findedArr.length; i++) {
-					if ( findedArr[i].id == selectedOptionId ) {
-						let index: number = findedArr.indexOf(findedArr[i]);
-						findedArr.splice(index, 1);
-						localStorage.setItem("structure", JSON.stringify(data));
-					}
+				if ( $("#popup_folder .popup_delete_notes_wrapper").css("display").toLowerCase() == "block" ) { 
+					$("#popup_folder").on("click", function(e: any) {
+						let target = e.target;
+						let $target = $(target);
+
+						if ( $target.hasClass("delete_notes_yes") ) {
+							Note.deleteNotesInFolder(findedFolder);
+							Folder.deleteFolders();
+							Folder.folderWrapper();
+							Note.renderLatestNote();
+							Tag.checkNoteForAddTag();
+							Note.moveNoteWrapper();
+						}
+
+						if ( $target.hasClass('delete_notes_no') ) {
+
+							$(".notes_in_folder").find("option").not(".select_root").remove();
+							Folder.renderNotDeletedFolderSelect(data.folders, 0);
+
+							$("#popup_folder .main_form").hide();
+							$("#popup_folder .select_folder").show();
+							
+							if ( $("#popup_folder .select_folder select").val() && selectedOptionId != "root" ) { 
+								$("#popup_folder .note_to_folder").on("click", function(e: any) {
+									let selectFolderSelected: any = 
+									$("#popup_folder .select_folder select option:selected").attr("data-folders-select-id");
+									let newFolder = find(data.folders, selectFolderSelected);
+									Note.moveNoteInFolder(findedFolderParent, newFolder);
+									Folder.deleteFolders();
+									Folder.folderWrapper();
+									Note.moveNoteWrapper();
+
+									$("#popup_folder .main_form").show();
+									$("#popup_folder .select_folder").hide();
+								}); 
+							}
+						}
+					});
+				} else {
+					Folder.deleteFolders();
+					Folder.folderWrapper();
 				}
-				
-				Folder.folderWrapper();
-				Note.renderLatestNote();
-				Tag.checkNoteForAddTag();	
 			}
-			$("#popup_folder form")[0].reset();
 		});
 
 		// Toggle folders to open and close in tree format

@@ -24,7 +24,7 @@
 		</header>
 
 		<section id="popup_folder">
-			<form action="#">
+			<form action="#" class="main_form">
 				<label for="folder_name">Folder Name:</label>
 				<input type="text" id="folder_name">
 				<span class="popup_close"><i class="fa fa-times" aria-hidden="true"></i></span>
@@ -32,6 +32,16 @@
 				<select id="folder_select" class="folders_tree"></select>
 				<button class="create_folder">Create</button>
 				<button class="delete_folder">Delete</button>
+				<div class="popup_delete_notes_wrapper">
+					<p class="notes_in_folder">Do you want delete notes?</p>
+					<button class="delete_notes_yes">Yes</button>
+					<button class="delete_notes_no">No</button>
+				</div>
+			</form>
+			<form action="#" class="select_folder">
+			<label for="add_note_select">Choose folder to move notes:</label>
+			<select id="add_note_select" class="not_deleted_folders"></select>
+			<button class="note_to_folder">Move</button>
 			</form>
 		</section>
 
@@ -60,7 +70,7 @@
 			</form>
 		</section>
 
-			<section id="popup_note_tag">
+		<section id="popup_note_tag">
 			<form action="#">
 				<label for="tag_note_name">Tag Name:</label>
 				<input type="text" id="tag_note_name">
@@ -71,6 +81,18 @@
 			</form>
 
 		</section>
+
+<!-- 		<section id="popup_delete_notes">
+			<div class="popup_delete_notes_wrapper">
+				<p class="notes_in_folder">There are notes in this folder. Do you want delete notes?</p>
+				<p class="notes_in_subfolder">There are notes in subfolder of this this folder. Do you want delete notes?</p>
+				<span class="delete_notes_yes">Yes</span>
+				<span class="delete_notes_no">No</span>	
+			<form action="#">
+				<select id="delete_note_select" class="folders_tree"></select>
+			</form>
+			</div>
+		</section> -->
 
 		<section id="application">
 			<div id="sidebar">
@@ -90,10 +112,10 @@
 
 	</div>
 	<script
-  src="https://code.jquery.com/jquery-3.2.1.js"
-  integrity="sha256-DZAnKJ/6XZ9si04Hgrsxu/8s717jcIzLy3oi35EouyE="
-  crossorigin="anonymous"></script>
-  <script src="compiled/cockie.js"></script>
+	src="https://code.jquery.com/jquery-3.2.1.js"
+	integrity="sha256-DZAnKJ/6XZ9si04Hgrsxu/8s717jcIzLy3oi35EouyE="
+	crossorigin="anonymous"></script>
+	<script src="compiled/cockie.js"></script>
 	<script data-main="compiled/main" src="scripts/require.js"></script>
 </body>
 </html>

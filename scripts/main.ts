@@ -13,7 +13,6 @@ import { data } from "./data"
 
 // localStorage.clear();
 
-
 let idFolderCounter: any = (localStorage.getItem("idFolderCounter")) 
 ? localStorage.getItem("idFolderCounter") : 0;
 
@@ -140,4 +139,19 @@ NoteEvents.noteEvents();
 // ************************************* CALL EVENTS end ************************************
 
 
-// console.log("data: ", data);
+	// // Check if folder or subfolders has notes
+	// static checkNotesInFolders(obj: any) {
+	// 	for(let key in obj) {
+	// 		let item = obj[key];
+	// 		item.notRenderInSelect = true;
+	// 		localStorage.setItem("structure", JSON.stringify(data));
+	// 		for (let i = 0; i < data.notes.length; i++) {
+	// 			if ( data.notes[i].folder == item.id ) {
+	// 				if ( $("#popup_folder .popup_delete_notes_wrapper").css("display").toLowerCase() == "none" )
+	// 				$("#popup_folder .popup_delete_notes_wrapper").show();
+	// 			}
+	// 		}
+	// 		if (item.children)
+	// 			this.checkNotesInFolders(item.children);
+	// 	}
+	// }

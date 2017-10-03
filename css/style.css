@@ -161,6 +161,16 @@ body #popup_note_tag {
 	background-color: rgba(0,0,0,.8);
 }
 
+#popup_folder button { margin-bottom: 25px; }
+#popup_folder .popup_delete_notes_wrapper { display: none; }
+#popup_folder .select_folder { display: none; }
+
+#popup_folder p {
+	color: #fff;
+	font-size: 20px;
+	margin-bottom: 15px;
+}
+
 #popup_folder label, 
 #popup_note label, 
 #popup_tag label,

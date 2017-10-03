@@ -120,6 +120,75 @@ export class Note {
 			}
 		}
 	}
+	// Check if folder or subfolders has notes
+	static checkNotesInFolders(obj: any) {
+		obj.notRenderInSelect = true;
+		localStorage.setItem("structure", JSON.stringify(data));
+		for (let i = 0; i < data.notes.length; i++) {
+			if ( data.notes[i].folder == obj.id ) {
+				if ( $("#popup_folder .popup_delete_notes_wrapper").css("display").toLowerCase() == "none" )
+					$("#popup_folder .popup_delete_notes_wrapper").show();
+			}
+		}
+		if (obj.children) { 
+			let checkNotesInFoldersAgain = (arr: any) => {
+				for(let key in arr) {
+					let item = arr[key];
+					item.notRenderInSelect = true;
+					localStorage.setItem("structure", JSON.stringify(data));
+					for (let i = 0; i < data.notes.length; i++) {
+						if ( data.notes[i].folder == item.id ) {
+							if ( $("#popup_folder .popup_delete_notes_wrapper").css("display").toLowerCase() == "none" )
+								$("#popup_folder .popup_delete_notes_wrapper").show();
+						}
+					}
+					if (item.children)
+						checkNotesInFoldersAgain(item.children);
+				}
+			} 
+			checkNotesInFoldersAgain(obj.children);
+		}
+	}
+
+	// Move notes to another folder
+	static moveNoteInFolder(oldFolder: any, newFolder: any) {
+		for(let key in oldFolder) {
+			let item = oldFolder[key];
+			for (let i = 0; i < data.notes.length; i++) {
+				if ( data.notes[i].folder == item.id ) {
+					data.notes[i].folder = newFolder.id;
+					localStorage.setItem("structure", JSON.stringify(data));
+				}
+			}
+			if (item.children)
+				this.moveNoteInFolder(item.children, newFolder);
+		}
+	}
+
+	// Move notes wrapper
+	static moveNoteWrapper() {
+		$("#popup_folder select option:not(:selected)").prop("disabled", false);
+		$("#popup_folder .popup_delete_notes_wrapper").hide();
+		$("#popup_folder").fadeOut(500);
+		$("#popup_folder form")[0].reset();
+	}
+
+	// Delete notes in folder and subfolders
+	static deleteNotesInFolder(obj: any) {
+		for (let key in obj) {
+			let item = obj[key];
+			for (let i = 0; i < data.notes.length; i++) {
+				if ( data.notes[i].folder == item.id ) {
+					let index: number = data.notes.indexOf(data.notes[i]);
+					data.notes.splice(index, 1);
+					i--;
+					localStorage.setItem("structure", JSON.stringify(data));
+				}
+			}
+			if (item.children)
+				this.deleteNotesInFolder(item.children);
+		}
+	}
 
 	// Wrapper for note functions call
 	static noteWrapper() { 

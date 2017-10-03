@@ -25,16 +25,39 @@ export class Folder {
 			let name: string = item.name;
 			let id: number = item.id;
 
-			if (item.children) {
+			if ( item.children ) {
 				let dashes: string = "";
 				for (let i = 0; i < counter - 1; i++) {
 					dashes += "-";
 				}
-				$(".folders_tree").append(`
-					<option data-folders-select-id="${id}" value="${name}">${dashes} ${name}</option>
-					`);
-				dashes = "";
+					$(".folders_tree").append(`
+						<option data-folders-select-id="${id}" value="${name}">${dashes} ${name}</option>
+						`);
+					dashes = "";
 				this.renderFolderSelect(item.children, counter + 1);
+			} 
+		}
+	}
+
+		// Render folder select without folders selected to delete list 
+	static renderNotDeletedFolderSelect(arr: any, counter: number): any {
+		for(let i = 0; i < arr.length; i++) {
+			let item: any = arr[i];
+			let name: string = item.name;
+			let id: number = item.id;
+
+			if ( item.children ) {
+				let dashes: string = "";
+				for (let i = 0; i < counter - 1; i++) {
+					dashes += "-";
+				}
+				if ( !item.notRenderInSelect ) { 
+					$(".not_deleted_folders").append(`
+						<option data-folders-select-id="${id}" value="${name}">${dashes} ${name}</option>
+						`);
+					dashes = "";
+				}
+				this.renderNotDeletedFolderSelect(item.children, counter + 1);
 			} 
 		}
 	}
@@ -85,20 +108,16 @@ export class Folder {
 		}
 	}
 
-	// Delete notes in folder and subfolders
-	static deleteNotesInFolder(obj: any) {
-		for (let key in obj) {
-			let item = obj[key];
-			for (let i = 0; i < data.notes.length; i++) {
-				if ( data.notes[i].folder == item.id ) {
-					let index: number = data.notes.indexOf(data.notes[i]);
-					data.notes.splice(index, 1);
-					i--;
-					localStorage.setItem("structure", JSON.stringify(data));
-				}
+	// Delete folders
+	static deleteFolders() {
+		let selectedOptionId: any = $("#popup_folder .main_form select option:selected").attr("data-folders-select-id");
+		let findedArr: any = findParent(data.folders, selectedOptionId);
+		for (let i = 0; i < findedArr.length; i++) {
+			if ( findedArr[i].id == selectedOptionId ) {
+				let index: number = findedArr.indexOf(findedArr[i]);
+				findedArr.splice(index, 1);
+				localStorage.setItem("structure", JSON.stringify(data));
 			}
-			if (item.children)
-				this.deleteNotesInFolder(item.children);
 		}
 	}
 
