@@ -94,9 +94,20 @@ export class Note {
 		}
 		if ( data.notes.length <= 0 ) {
 			noteTitle.html(null);
-			textArea.val(null);
 			notesFolder.html(null);
+			noteTags.html(null);
+			textArea.val(null);
 		}
+	}
+
+	// Set textarea(note) height equal to sidebar height
+	static renderNoteSizeLoad() {
+		let sidebarHeight: number = $("#sidebar").outerHeight();
+		let noteTitleHeight: number = $("#note .note_title").outerHeight();
+		let noteInfo: number = $("#note .note_info").outerHeight();
+		let sum: number = noteTitleHeight + noteInfo;
+		let res: number = sidebarHeight - sum;
+		$("#note textarea").css("height", res);
 	}
 
 	// Render notes in sidebar tree

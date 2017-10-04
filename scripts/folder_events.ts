@@ -15,14 +15,12 @@ export class FolderEvents {
 			$("#popup_folder").fadeIn(500);
 			$(document).keydown(function(e: any) {
 				if (e.keyCode == 27) {
-					$("#popup_folder").fadeOut(500);
-					$("#popup_folder form")[0].reset();
+					Folder.resetOnCloseWrapper();
 				}
 			});
 
 			$(".popup_close").on("click", function() {
-				$("#popup_folder").fadeOut(500);
-				$("#popup_folder form")[0].reset();
+				Folder.resetOnCloseWrapper();
 			});
 		});
 
@@ -33,27 +31,27 @@ export class FolderEvents {
 				Folder.folderWrapper();
 			}
 
-			$("#popup_folder").fadeOut(500);
-			$("#popup_folder form")[0].reset();
-
+			Folder.resetOnCloseWrapper();
 		});
 
-		// Delete folder and render data in select and sidebar
+		// Delete folder and render data in select and sidebar. Ask to delte or move notes to another folder.
 		$("#popup_folder .delete_folder").on("click", function() {
 			let selectedOptionId: any = $("#popup_folder select option:selected").attr("data-folders-select-id");
+			let selectedFolder = $(`span[data-folders-tree-id="${selectedOptionId}"]`);
 			if ( $("#popup_folder select").val() && selectedOptionId != "root" ) {
 				$("#popup_folder .main_form option:not(:selected)").prop("disabled", true);
 				let findedFolder: any = find(data.folders, selectedOptionId);
 				let findedFolderParent: any = findParent(data.folders, selectedOptionId);
 				Note.checkNotesInFolders(findedFolder);
 
+				// checkNotesInFolders if find notes SHOW popup_delete_notes_wrapper content
 				if ( $("#popup_folder .popup_delete_notes_wrapper").css("display").toLowerCase() == "block" ) { 
 					$("#popup_folder").on("click", function(e: any) {
 						let target = e.target;
 						let $target = $(target);
-
+						// If user want to delete notes
 						if ( $target.hasClass("delete_notes_yes") ) {
-							Note.deleteNotesInFolder(findedFolder);
+							Note.deleteNotesInFolder(findedFolderParent);
 							Folder.deleteFolders();
 							Folder.folderWrapper();
 							Note.renderLatestNote();
@@ -61,14 +59,16 @@ export class FolderEvents {
 							Note.moveNoteWrapper();
 						}
 
+						if ( selectedFolder.siblings().length > 1 || 
+							selectedFolder.parent().not(selectedFolder.parent(`span[data-folders-tree-id="root"]`)).length > 1 ) { 
+							// If user doesn't want to delete notes
 						if ( $target.hasClass('delete_notes_no') ) {
-
 							$(".notes_in_folder").find("option").not(".select_root").remove();
 							Folder.renderNotDeletedFolderSelect(data.folders, 0);
 
 							$("#popup_folder .main_form").hide();
 							$("#popup_folder .select_folder").show();
-							
+							// New select whithout folders that will be deleted
 							if ( $("#popup_folder .select_folder select").val() && selectedOptionId != "root" ) { 
 								$("#popup_folder .note_to_folder").on("click", function(e: any) {
 									let selectFolderSelected: any = 
@@ -79,12 +79,14 @@ export class FolderEvents {
 									Folder.folderWrapper();
 									Note.moveNoteWrapper();
 
+									$("#popup_folder .popup_delete_notes_wrapper").hide();
 									$("#popup_folder .main_form").show();
 									$("#popup_folder .select_folder").hide();
 								}); 
 							}
 						}
-					});
+					}
+				});
 				} else {
 					Folder.deleteFolders();
 					Folder.folderWrapper();

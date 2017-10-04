@@ -1,3 +1,7 @@
+/// <reference path="typings/jquery/index.d.ts" />
+
+import { Cockie } from "./cockie";
+
 import { Folder } from "./folder";
 import { Tag } from "./tag";
 import { Note } from "./note";
@@ -5,7 +9,7 @@ import { Note } from "./note";
 import { FolderEvents } from "./folder_events";
 import { TagEvents } from "./tag_events";
 import { NoteEvents } from "./note_events";
-import { GeneralEvents } from "./general_events"
+import { GeneralEvents } from "./general_events";
 
 import { data } from "./data"
 
@@ -111,6 +115,12 @@ export function updateNotesData() {
 
 // ******************************* CALL FUNCTIONS **************************************
 
+Cockie.checkAccess();
+// Set display property of html tag to block(none by default)
+setTimeout(function() {
+	$("html").css("visibility", "visible");
+}, 1500);
+Note.renderNoteSizeLoad();
 Folder.renderFolderSelect(data.folders, 0);
 Tag.renderTagSelect(data.tags, 0);
 idFolderCounter++;
@@ -131,27 +141,10 @@ Tag.renderTags();
 
 // ************************************* CALL EVENTS  ************************************
 
+Cockie.cockieEvents();
 GeneralEvents.generalEvents();
 FolderEvents.folderEvents();
 TagEvents.tagEvents();
 NoteEvents.noteEvents();
 
 // ************************************* CALL EVENTS end ************************************
-
-
-	// // Check if folder or subfolders has notes
-	// static checkNotesInFolders(obj: any) {
-	// 	for(let key in obj) {
-	// 		let item = obj[key];
-	// 		item.notRenderInSelect = true;
-	// 		localStorage.setItem("structure", JSON.stringify(data));
-	// 		for (let i = 0; i < data.notes.length; i++) {
-	// 			if ( data.notes[i].folder == item.id ) {
-	// 				if ( $("#popup_folder .popup_delete_notes_wrapper").css("display").toLowerCase() == "none" )
-	// 				$("#popup_folder .popup_delete_notes_wrapper").show();
-	// 			}
-	// 		}
-	// 		if (item.children)
-	// 			this.checkNotesInFolders(item.children);
-	// 	}
-	// }

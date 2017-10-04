@@ -9,13 +9,11 @@ define(["require", "exports", "./folder", "./tag", "./note", "./data", "./main",
                 $("#popup_folder").fadeIn(500);
                 $(document).keydown(function (e) {
                     if (e.keyCode == 27) {
-                        $("#popup_folder").fadeOut(500);
-                        $("#popup_folder form")[0].reset();
+                        folder_1.Folder.resetOnCloseWrapper();
                     }
                 });
                 $(".popup_close").on("click", function () {
-                    $("#popup_folder").fadeOut(500);
-                    $("#popup_folder form")[0].reset();
+                    folder_1.Folder.resetOnCloseWrapper();
                 });
             });
             $("#popup_folder .create_folder").on("click", function () {
@@ -23,44 +21,48 @@ define(["require", "exports", "./folder", "./tag", "./note", "./data", "./main",
                     main_3.updateFoldersData();
                     folder_1.Folder.folderWrapper();
                 }
-                $("#popup_folder").fadeOut(500);
-                $("#popup_folder form")[0].reset();
+                folder_1.Folder.resetOnCloseWrapper();
             });
             $("#popup_folder .delete_folder").on("click", function () {
                 var selectedOptionId = $("#popup_folder select option:selected").attr("data-folders-select-id");
+                var selectedFolder = $("span[data-folders-tree-id=\"" + selectedOptionId + "\"]");
                 if ($("#popup_folder select").val() && selectedOptionId != "root") {
                     $("#popup_folder .main_form option:not(:selected)").prop("disabled", true);
-                    var findedFolder_1 = main_1.find(data_1.data.folders, selectedOptionId);
+                    var findedFolder = main_1.find(data_1.data.folders, selectedOptionId);
                     var findedFolderParent_1 = main_2.findParent(data_1.data.folders, selectedOptionId);
-                    note_1.Note.checkNotesInFolders(findedFolder_1);
+                    note_1.Note.checkNotesInFolders(findedFolder);
                     if ($("#popup_folder .popup_delete_notes_wrapper").css("display").toLowerCase() == "block") {
                         $("#popup_folder").on("click", function (e) {
                             var target = e.target;
                             var $target = $(target);
                             if ($target.hasClass("delete_notes_yes")) {
-                                note_1.Note.deleteNotesInFolder(findedFolder_1);
+                                note_1.Note.deleteNotesInFolder(findedFolderParent_1);
                                 folder_1.Folder.deleteFolders();
                                 folder_1.Folder.folderWrapper();
                                 note_1.Note.renderLatestNote();
                                 tag_1.Tag.checkNoteForAddTag();
                                 note_1.Note.moveNoteWrapper();
                             }
-                            if ($target.hasClass('delete_notes_no')) {
-                                $(".notes_in_folder").find("option").not(".select_root").remove();
-                                folder_1.Folder.renderNotDeletedFolderSelect(data_1.data.folders, 0);
-                                $("#popup_folder .main_form").hide();
-                                $("#popup_folder .select_folder").show();
-                                if ($("#popup_folder .select_folder select").val() && selectedOptionId != "root") {
-                                    $("#popup_folder .note_to_folder").on("click", function (e) {
-                                        var selectFolderSelected = $("#popup_folder .select_folder select option:selected").attr("data-folders-select-id");
-                                        var newFolder = main_1.find(data_1.data.folders, selectFolderSelected);
-                                        note_1.Note.moveNoteInFolder(findedFolderParent_1, newFolder);
-                                        folder_1.Folder.deleteFolders();
-                                        folder_1.Folder.folderWrapper();
-                                        note_1.Note.moveNoteWrapper();
-                                        $("#popup_folder .main_form").show();
-                                        $("#popup_folder .select_folder").hide();
-                                    });
+                            if (selectedFolder.siblings().length > 1 ||
+                                selectedFolder.parent().not(selectedFolder.parent("span[data-folders-tree-id=\"root\"]")).length > 1) {
+                                if ($target.hasClass('delete_notes_no')) {
+                                    $(".notes_in_folder").find("option").not(".select_root").remove();
+                                    folder_1.Folder.renderNotDeletedFolderSelect(data_1.data.folders, 0);
+                                    $("#popup_folder .main_form").hide();
+                                    $("#popup_folder .select_folder").show();
+                                    if ($("#popup_folder .select_folder select").val() && selectedOptionId != "root") {
+                                        $("#popup_folder .note_to_folder").on("click", function (e) {
+                                            var selectFolderSelected = $("#popup_folder .select_folder select option:selected").attr("data-folders-select-id");
+                                            var newFolder = main_1.find(data_1.data.folders, selectFolderSelected);
+                                            note_1.Note.moveNoteInFolder(findedFolderParent_1, newFolder);
+                                            folder_1.Folder.deleteFolders();
+                                            folder_1.Folder.folderWrapper();
+                                            note_1.Note.moveNoteWrapper();
+                                            $("#popup_folder .popup_delete_notes_wrapper").hide();
+                                            $("#popup_folder .main_form").show();
+                                            $("#popup_folder .select_folder").hide();
+                                        });
+                                    }
                                 }
                             }
                         });

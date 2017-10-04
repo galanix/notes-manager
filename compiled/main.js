@@ -1,4 +1,4 @@
-define(["require", "exports", "./folder", "./tag", "./note", "./folder_events", "./tag_events", "./note_events", "./general_events", "./data"], function (require, exports, folder_1, tag_1, note_1, folder_events_1, tag_events_1, note_events_1, general_events_1, data_1) {
+define(["require", "exports", "./cockie", "./folder", "./tag", "./note", "./folder_events", "./tag_events", "./note_events", "./general_events", "./data"], function (require, exports, cockie_1, folder_1, tag_1, note_1, folder_events_1, tag_events_1, note_events_1, general_events_1, data_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     var idFolderCounter = (localStorage.getItem("idFolderCounter"))
@@ -79,6 +79,11 @@ define(["require", "exports", "./folder", "./tag", "./note", "./folder_events", 
         idNoteCounter++;
     }
     exports.updateNotesData = updateNotesData;
+    cockie_1.Cockie.checkAccess();
+    setTimeout(function () {
+        $("html").css("visibility", "visible");
+    }, 1500);
+    note_1.Note.renderNoteSizeLoad();
     folder_1.Folder.renderFolderSelect(data_1.data.folders, 0);
     tag_1.Tag.renderTagSelect(data_1.data.tags, 0);
     idFolderCounter++;
@@ -94,6 +99,7 @@ define(["require", "exports", "./folder", "./tag", "./note", "./folder_events", 
     tag_1.Tag.paddingCheck();
     tag_1.Tag.checkNoteForAddTag();
     tag_1.Tag.renderTags();
+    cockie_1.Cockie.cockieEvents();
     general_events_1.GeneralEvents.generalEvents();
     folder_events_1.FolderEvents.folderEvents();
     tag_events_1.TagEvents.tagEvents();

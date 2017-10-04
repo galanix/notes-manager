@@ -18,7 +18,7 @@ define(["require", "exports", "./note", "./data", "./main"], function (require, 
                     for (var i_1 = 0; i_1 < counter - 1; i_1++) {
                         dashes += "-";
                     }
-                    $(".folders_tree").append("\n\t\t\t\t\t\t<option data-folders-select-id=\"" + id + "\" value=\"" + name_1 + "\">" + dashes + " " + name_1 + "</option>\n\t\t\t\t\t\t");
+                    $(".folders_tree").append("\n\t\t\t\t\t<option data-folders-select-id=\"" + id + "\" value=\"" + name_1 + "\">" + dashes + " " + name_1 + "</option>\n\t\t\t\t\t");
                     dashes = "";
                     this.renderFolderSelect(item.children, counter + 1);
                 }
@@ -103,6 +103,12 @@ define(["require", "exports", "./note", "./data", "./main"], function (require, 
             Folder.renderFoldersDisplay(data_1.data.folders);
             note_1.Note.renderNoteFields();
             note_1.Note.renderNoteSize();
+        };
+        Folder.resetOnCloseWrapper = function () {
+            $("#popup_folder").fadeOut(500);
+            $("#popup_folder form")[0].reset();
+            $("#popup_folder .popup_delete_notes_wrapper").hide();
+            $("#popup_folder .main_form option:not(:selected)").prop("disabled", false);
         };
         return Folder;
     }());

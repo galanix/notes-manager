@@ -30,16 +30,16 @@ export class Folder {
 				for (let i = 0; i < counter - 1; i++) {
 					dashes += "-";
 				}
-					$(".folders_tree").append(`
-						<option data-folders-select-id="${id}" value="${name}">${dashes} ${name}</option>
-						`);
-					dashes = "";
+				$(".folders_tree").append(`
+					<option data-folders-select-id="${id}" value="${name}">${dashes} ${name}</option>
+					`);
+				dashes = "";
 				this.renderFolderSelect(item.children, counter + 1);
 			} 
 		}
 	}
 
-		// Render folder select without folders selected to delete list 
+	// Render folder select without folders selected to delete list 
 	static renderNotDeletedFolderSelect(arr: any, counter: number): any {
 		for(let i = 0; i < arr.length; i++) {
 			let item: any = arr[i];
@@ -131,6 +131,14 @@ export class Folder {
 		Folder.renderFoldersDisplay(data.folders);
 		Note.renderNoteFields();
 		Note.renderNoteSize();
+	}
+
+	// Wrapper for reset actions on popup close
+	static resetOnCloseWrapper() {
+		$("#popup_folder").fadeOut(500);
+		$("#popup_folder form")[0].reset();
+		$("#popup_folder .popup_delete_notes_wrapper").hide();
+		$("#popup_folder .main_form option:not(:selected)").prop("disabled", false);
 	}
 }
 

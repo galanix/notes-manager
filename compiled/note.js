@@ -71,9 +71,18 @@ define(["require", "exports", "./tag", "./data", "./main"], function (require, e
             }
             if (data_1.data.notes.length <= 0) {
                 noteTitle.html(null);
-                textArea.val(null);
                 notesFolder.html(null);
+                noteTags.html(null);
+                textArea.val(null);
             }
+        };
+        Note.renderNoteSizeLoad = function () {
+            var sidebarHeight = $("#sidebar").outerHeight();
+            var noteTitleHeight = $("#note .note_title").outerHeight();
+            var noteInfo = $("#note .note_info").outerHeight();
+            var sum = noteTitleHeight + noteInfo;
+            var res = sidebarHeight - sum;
+            $("#note textarea").css("height", res);
         };
         Note.renderNotes = function (folders) {
             $("#sidebar").find(".note").remove();
