@@ -1,0 +1,21 @@
+	<section id="popup_folder">
+			<form action="#" class="main_form">
+				<label for="folder_name">Folder Name:</label>
+				<input type="text" id="folder_name">
+				<span class="popup_close"><i class="fa fa-times" aria-hidden="true"></i></span>
+				<label for="folder_select">Folder Parent:</label>
+				<select id="folder_select" class="folders_tree"></select>
+				<button class="create_folder" (click)="createFolder()">Create</button>
+				<button class="delete_folder" (click)="deleteFolder()">Delete</button>
+				<div class="popup_delete_notes_wrapper">
+					<p class="notes_in_folder">Do you want delete notes?</p>
+					<button class="delete_notes_yes">Yes</button>
+					<button class="delete_notes_no">No</button>
+				</div>
+			</form>
+			<form action="#" class="select_folder">
+			<label for="add_note_select">Choose folder to move notes:</label>
+			<select id="add_note_select" class="not_deleted_folders"></select>
+			<button class="note_to_folder">Move</button>
+			</form>
+		</section>

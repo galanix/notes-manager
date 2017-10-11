@@ -1,0 +1,15 @@
+<section id="application">
+	<div id="sidebar" (click)="showNote()">
+		<div class="folders" (dblclick)="toggleFolders()"></div>
+		<div class="tags" (dblclick)="toggleTags()"></div>
+	</div>
+	<div id="note">
+		<p class="note_title"></p>
+		<div class="note_info">
+			<p class="notes_folder"></p>
+			<span class="add_tag" (click)="addTag()">+</span>
+			<div class="notes_tags"></div>
+		</div>
+		<textarea readonly></textarea>
+	</div>
+</section>

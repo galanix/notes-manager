@@ -1,0 +1,10 @@
+		<section id="popup_note_tag" (click)="toggleTag()">
+			<form action="#">
+				<label for="tag_note_name">Tag Name:</label>
+				<input type="text" id="tag_note_name">
+				<span class="popup_close"><i class="fa fa-times" aria-hidden="true"></i></span>
+				<button class="create_add_tag" (click)="createTag()">Create</button>
+				<div class="tag_list"></div>
+				<button class="add_note_tag" (click)="addTags()">Add</button>
+			</form>
+		</section>

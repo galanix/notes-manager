@@ -1,0 +1,51 @@
+#form {
+	position: fixed;
+	z-index: 100000;
+	width: 100%; /* Full width (cover the whole page) */
+	height: 100%; /* Full height (cover the whole page) */
+	top: 0; 
+	left: 0;
+	right: 0;
+	bottom: 0;
+	background-color: #F4F1F1;
+}
+
+#form form {
+	width: 30%;
+	margin: 20px auto;
+}
+
+#form label {
+	display: block;
+	color: #0CC481;
+	font-size: 21px;
+	letter-spacing: 1px;
+	margin-bottom: 8px;
+}
+
+#form input {
+	width: 100%;
+	border: 1px solid lightgray;
+	margin-bottom: 20px;
+	text-indent: 15px;
+	padding: 10px;
+}
+
+#form input:focus {
+	border: 1px solid #0CC481;
+}
+
+#form input::placeholder {
+	color: lightgray;
+	letter-spacing: 1px;
+}
+
+#form .enter_app_page {
+	display: inline-block;
+	background-color: #0CC481;
+	border: none;
+	color: #fff;
+	font-size: 18px;
+	padding: 10px 14px;
+	text-decoration: none;
+}
