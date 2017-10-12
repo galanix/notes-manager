@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import {Md5} from 'ts-md5/dist/md5';
 
 import { EnterFormService } from '../services/enter-form.service';
 
@@ -23,9 +24,10 @@ export class EnterFormComponent implements OnInit {
 	// Form page on click Enter adds coockie and redirect to content page
 	enterAppPage(): void {
 		event.preventDefault();
+		let pass: any = $("#user_password").val();
 		$.getJSON("../../assets/pass.json", function(result: any) {
 			if ( $("#user_name").val() === result.name && 
-				$("#user_password").val() === result.password ) {
+				Md5.hashStr(pass) === result.password ) {
 				EnterFormService.set_cookie( "access", "granted", 2018, 2, 5, );
 			window.location.replace("http://localhost:4200/application");
 		}
