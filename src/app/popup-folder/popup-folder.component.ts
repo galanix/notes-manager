@@ -25,6 +25,7 @@ export class PopupFolderComponent implements OnInit {
 
 	}
 
+// Create folder render data in folder select and sidebar
 	createFolder(): void {
 		if ( $("#folder_name").val() ) {
 			GeneralService.updateFoldersData();
@@ -33,6 +34,7 @@ export class PopupFolderComponent implements OnInit {
 		FolderService.resetOnCloseWrapper();
 	}
 
+// Delete folder and render data in select and sidebar. Ask to delte or move notes to another folder
 	deleteFolder(): void {
 		let selectedOptionId: any = $("#popup_folder select option:selected").attr("data-folders-select-id");
 		let selectedFolder = $(`span[data-folders-tree-id="${selectedOptionId}"]`);

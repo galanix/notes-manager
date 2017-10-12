@@ -8,6 +8,7 @@ export class EnterFormService {
 
 	constructor() { }
 
+// ************************************ COOKIES FUNCTION **********************************************
 	static set_cookie = ( name: string, value: string, exp_y: number, 
 		exp_m: number, exp_d: number, path?: string, domain?: string, secure?: boolean ) => {
 		var cookie_string: string = name + "=" + encodeURI( value );
@@ -39,6 +40,7 @@ export class EnterFormService {
 		else
 			return null;
 	}
+	// ****************************** COOKIES FUNCTION end **********************************************
 
 	// Check if we have access=granted coockie
 	static checkAccess = () => {

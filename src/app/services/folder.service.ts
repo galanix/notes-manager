@@ -9,9 +9,7 @@ import * as $ from 'jquery';
 @Injectable()
 export class FolderService {
 
-  constructor(
-  	private generalService: GeneralService
-  	) { }
+  constructor() { }
 
   // Render folder select list 
 	static renderFolderSelect(arr: any, counter: number): any {

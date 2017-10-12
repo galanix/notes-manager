@@ -24,6 +24,7 @@ export class PopupNoteComponent implements OnInit {
 	ngOnInit() {
 	}
 
+// Add new note to localStorage then render tree in sidebar
 	createNote(): void {
 			let selectedOptionId: any = $("#popup_note select option:selected").attr("data-folders-select-id");
 			let textArea: any = $("#application textarea");
@@ -42,7 +43,4 @@ export class PopupNoteComponent implements OnInit {
 			$("#popup_note").fadeOut(500);
 			(<HTMLFormElement>$("#popup_note form")[0]).reset();
 	}
-
-	
-
 }

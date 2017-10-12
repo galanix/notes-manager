@@ -25,6 +25,7 @@ export class WorkSpaceComponent implements OnInit {
 	ngOnInit() {
 	}
 
+// Toggle folders to open and close in tree format
 	toggleFolders(): void {
 		let target: any = event.target;
 		let $target = $(target);

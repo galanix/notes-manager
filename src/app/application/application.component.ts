@@ -18,6 +18,7 @@ export class ApplicationComponent implements OnInit {
 
 	constructor() { }
 
+// Starting call of functions
 	ngOnInit() {
 		EnterFormService.checkAccess();
 		setTimeout(function() {
@@ -44,12 +45,13 @@ export class ApplicationComponent implements OnInit {
 	}
 
 	generalEvents(): void {
+		// Set latest note id to textarea attr data-textarea-id
 		if ( $("#application textarea").attr("data-textarea-id") ) 
 			$("#application textarea").attr("data-textarea-id", NoteService.findLatestNote().id);
-
+		// Set sidebar heigth to window.outerHeight()
 		$("#sidebar").css("height", $(window).outerHeight() - $("header").outerHeight());
 		NoteService.renderNoteSize();
-
+		// Set sidebar heigth to window.outerHeight() on resize
 		$(window).resize(function() {
 			$("#sidebar").css("height", $(window).outerHeight() - $("header").outerHeight());
 			NoteService.renderNoteSize();

@@ -26,6 +26,7 @@ export class HeaderComponent implements OnInit {
 		this.renderLogoAndUserName();
 	}
 
+	// Open folder popup
 	openFolderPopup():void {
 		$("#popup_folder").fadeIn(500);
 		$(document).keydown(function(e: any) {
@@ -38,6 +39,7 @@ export class HeaderComponent implements OnInit {
 		});
 	}
 
+	// Open tag popup
 	openTagPopup(): void {
 		$("#popup_tag").fadeIn(500);
 		$(document).keydown(function(e: any) {
@@ -52,6 +54,7 @@ export class HeaderComponent implements OnInit {
 		});
 	}
 
+	// Open note popup
 	openNotePopup(): void {
 		$("#popup_note").fadeIn(500);
 		$(document).keydown(function(e: any) {
@@ -67,6 +70,7 @@ export class HeaderComponent implements OnInit {
 		});
 	}
 
+	// Hide edit button and show save and delete buttons. Remove readonly from textarea
 	enableEdit(): void {
 		let workTextarea: any = $("#application textarea");
 		if ( workTextarea.val() ) {
@@ -77,6 +81,7 @@ export class HeaderComponent implements OnInit {
 		}
 	}
 
+	// Save text 
 	saveNote(): void {
 		let workTextarea: any = $("#application textarea");
 		for (let i = 0; i < GeneralService.data.notes.length; i++) {
@@ -113,12 +118,13 @@ export class HeaderComponent implements OnInit {
 		window.location.replace("http://localhost:4200/enter");
 	}
 
+	// Change logo and user name
 	renderLogoAndUserName(): void {
 		$.getJSON("../../assets/pass.json", function(result: any) {
-		let firstLetter = result.name.slice(0, 1).toUpperCase();
-		$("#logo").html(firstLetter);
-		$("#name").html(result.name);
-	});
-}
+			let firstLetter = result.name.slice(0, 1).toUpperCase();
+			$("#logo").html(firstLetter);
+			$("#name").html(result.name);
+		});
+	}
 
 }

@@ -5,12 +5,11 @@ import { NoteService } from './note.service';
 
 import * as $ from 'jquery';
 
+
 @Injectable()
 export class TagService {
 
-	constructor(
-		private generalService: GeneralService
-		) { }
+	constructor() { }
 
 	// Render tag select list 
 	static renderTagSelect(arr: any, counter: number): any {

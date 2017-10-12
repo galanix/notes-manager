@@ -8,10 +8,7 @@ import * as $ from 'jquery';
 @Injectable()
 export class NoteService {
 
-	constructor(
-		private generalService: GeneralService,
-		private tagService: TagService
-		) { }
+	constructor() { }
 
 	// Set textarea(note) height equal to sidebar height
 	static renderNoteSize() {
