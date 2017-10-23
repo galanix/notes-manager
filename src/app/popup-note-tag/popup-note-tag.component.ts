@@ -29,7 +29,7 @@ export class PopupNoteTagComponent implements OnInit {
 	toggleTag(): void {
 		let target: any = event.target;
 		let $target: any = $(target);
-		let textArea: any = $("#application textarea");
+		let textArea: any = $("#application #textarea_editor");
 		let note: any = GeneralService.find(GeneralService.data.notes, textArea.attr("data-textarea-id"));
 		if ( $target.hasClass("tag_list_tag") ) {
 			$target.toggleClass("selected_tag");
@@ -61,7 +61,7 @@ export class PopupNoteTagComponent implements OnInit {
 	// Add selected tags to note
 	addTags(): void {
 		let selectedTags: any = [];
-		let textArea: any = $("#application textarea");
+		let textArea: any = $("#application #textarea_editor");
 		let note: any = GeneralService.find(GeneralService.data.notes, textArea.attr("data-textarea-id"));
 
 		$("#popup_note_tag .tag_list_tag").each(function() {

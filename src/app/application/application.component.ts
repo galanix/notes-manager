@@ -22,8 +22,14 @@ export class ApplicationComponent implements OnInit {
 		EnterFormService.checkAccess();
 		setTimeout(function() {
 			$("html").css("visibility", "visible");
-		}, 500);
-		NoteService.renderNoteSizeLoad();
+		}, 1000);
+		setTimeout(function() {
+			NoteService.renderNoteSize(6);
+			NoteService.renderLatestNote();
+			TagService.checkNoteForAddTag();
+			TagService.paddingCheck();
+			TagService.renderTags();
+		}, 1000);
 		FolderService.renderFolderSelect(GeneralService.data.folders, 0);
 		TagService.renderTagSelect(GeneralService.data.tags, 0);
 		GeneralService.idFolderCounter++;
@@ -35,10 +41,6 @@ export class ApplicationComponent implements OnInit {
 		FolderService.renderFoldersDisplay(GeneralService.data.folders);
 		TagService.renderTagsDisplay(GeneralService.data.tags);
 		NoteService.renderNoteFields();
-		NoteService.renderLatestNote();
-		TagService.paddingCheck();
-		TagService.checkNoteForAddTag();
-		TagService.renderTags();
 
 		this.generalEvents();
 	}
@@ -49,11 +51,11 @@ export class ApplicationComponent implements OnInit {
 			$("#application textarea").attr("data-textarea-id", NoteService.findLatestNote().id);
 		// Set sidebar heigth to window.outerHeight()
 		$("#sidebar").css("height", $(window).outerHeight() - $("header").outerHeight());
-		NoteService.renderNoteSize();
+		NoteService.renderNoteSize(-10);
 		// Set sidebar heigth to window.outerHeight() on resize
 		$(window).resize(function() {
 			$("#sidebar").css("height", $(window).outerHeight() - $("header").outerHeight());
-			NoteService.renderNoteSize();
+			NoteService.renderNoteSize(-15);
 		});
 	}
 

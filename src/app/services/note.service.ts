@@ -1,25 +1,37 @@
 import { Injectable } from '@angular/core';
+// import { Subject } from 'rxjs/Subject';
 
 import { GeneralService } from './general.service';
 import { TagService } from './tag.service';
+
 
 import * as $ from 'jquery';
 
 @Injectable()
 export class NoteService {
+	// static WorkSpaceComponent = new Subject<any>();
 
-	constructor() { }
+	// constructor() { }
+
+	// onReady$ = NoteService.WorkSpaceComponent.asObservable();
+
+	// static onReady() {
+	// 	this.WorkSpaceComponent.next();
+	// }
 
 	// Set textarea(note) height equal to sidebar height
-	static renderNoteSize() {
-		setTimeout(function() {
-			let sidebarHeight: number = $("#sidebar").outerHeight();
-			let noteTitleHeight: number = $("#note .note_title").outerHeight();
-			let noteInfo: number = $("#note .note_info").outerHeight();
-			let sum: number = noteTitleHeight + noteInfo ;
-			let res: number = sidebarHeight - sum;
-			$("#note textarea").css("height", res);
-		}, 10);
+	static renderNoteSize(filler: number) {
+		let sidebarHeight: number = $("#sidebar").outerHeight();
+		let noteTitleHeight: number = $("#note .note_title").outerHeight();
+		let noteInfo: number = $("#note .note_info").outerHeight();
+		let editorTop: number = $("#note .cke_top").outerHeight();
+		let editorBottom: number = $("#note .cke_bottom").outerHeight();
+		let sumEditor: number = noteTitleHeight + noteInfo + editorBottom + editorTop + filler;
+		let sumTextarea: number = noteTitleHeight + noteInfo;
+		let resEditor: number = sidebarHeight - sumEditor;
+		let resTextarea: number = sidebarHeight - sumTextarea;
+		$("#note #textarea_editor").css("height", resTextarea);
+		$("#note .cke_contents").css("height", resEditor);
 	}
 
 	// Math max to array
@@ -53,7 +65,9 @@ export class NoteService {
 		let noteTitle: any = $("#note .note_title");
 		let noteTags: any = $("#note .notes_tags");
 		let notesFolder: any = $("#note .notes_folder");
-		let textArea: any = $("#application textarea");
+		let textArea: any = $("#textarea_editor");
+		let editor: any = $(".note_editor");
+		let editorContent: any = $(".cke_wysiwyg_frame").contents().find('body');
 
 		if (latestNote) {
 			noteTitle.html(latestNote.title);
@@ -61,6 +75,8 @@ export class NoteService {
 			notesFolder.html(`<i class="fa fa-folder-o" aria-hidden="true"></i> ${latestNoteFolder.name}`);
 			textArea.html(latestNote.text);
 			textArea.attr("data-textarea-id", latestNote.id);
+			editor.attr("data-editor-id", latestNote.id);
+			editorContent.html(latestNote.text);
 		}
 	}
 
@@ -69,13 +85,16 @@ export class NoteService {
 		let noteTitle: any = $("#note .note_title");
 		let noteTags: any = $("#note .notes_tags");
 		let notesFolder: any = $("#note .notes_folder");
-		let textArea: any = $("#application textarea");
+		let textArea: any = $("#application #textarea_editor");
+		let editor: any = $("#application .note_editor");
+		let editorContent: any = $(".cke_wysiwyg_frame").contents().find('body');
 
 		for (let i = 0; i < GeneralService.data.notes.length; i++) {
 			let item: any = GeneralService.data.notes[i];
-			if ( item.id == textArea.attr("data-textarea-id") ) {
+			if ( item.id == editor.attr("data-editor-id") ) {
 				noteTitle.html(item.title);
-				textArea.val(item.text);
+				editorContent.html(item.text);
+				textArea.html(item.text);
 				let folder = GeneralService.find(GeneralService.data.folders, item.folder);
 				notesFolder.html(`<i class="fa fa-folder-o" aria-hidden="true"></i> ${folder.name}`);
 			}
@@ -85,17 +104,17 @@ export class NoteService {
 			notesFolder.html(null);
 			noteTags.html(null);
 			textArea.val(null);
+			editor.val(null);
 		}
-	}
 
-	// Set textarea(note) height equal to sidebar height
-	static renderNoteSizeLoad() {
-		let sidebarHeight: number = $("#sidebar").outerHeight();
-		let noteTitleHeight: number = $("#note .note_title").outerHeight();
-		let noteInfo: number = $("#note .note_info").outerHeight();
-		let sum: number = noteTitleHeight + noteInfo;
-		let res: number = sidebarHeight - sum;
-		$("#note textarea").css("height", res);
+		// let callbacks: any = $.Callbacks();
+
+		// callbacks.add( NoteService.renderLatestNote );
+		// callbacks.add( NoteService.renderNoteSize );
+		// callbacks.add( TagService.checkNoteForAddTag );
+		// callbacks.add( TagService.paddingCheck );
+		// callbacks.add( TagService.renderTags );
+		// callbacks.fire(6);
 	}
 
 	// Render notes in sidebar tree
@@ -194,7 +213,7 @@ export class NoteService {
 		this.renderNoteFields();
 		TagService.checkNoteForAddTag();
 		TagService.renderTags();
-		this.renderNoteSize();
+		this.renderNoteSize(-10);
 	}
 
 	// Wrapper for click on save or delete button
@@ -202,7 +221,8 @@ export class NoteService {
 		$(".edit").css("display", "inline-block");
 		$(".delete_note").css("display", "none");
 		$(".save_note").css("display", "none");
-		$("#application textarea").prop("readonly", true);
+		$("#textarea_editor").show();
+		$(".note_editor").hide();
 	}
 
 }

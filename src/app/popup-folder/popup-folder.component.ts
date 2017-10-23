@@ -51,7 +51,7 @@ export class PopupFolderComponent implements OnInit {
 					let $target = $(target);
 					// If user want to delete notes
 					if ( $target.hasClass("delete_notes_yes") ) {
-						NoteService.deleteNotesInFolder(findedFolderParent);
+						NoteService.deleteNotesInFolder(findedFolder);
 						FolderService.deleteFolders();
 						FolderService.folderWrapper();
 						NoteService.renderLatestNote();

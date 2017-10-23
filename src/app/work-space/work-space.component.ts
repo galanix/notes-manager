@@ -3,29 +3,52 @@ import { Component, OnInit } from '@angular/core';
 import { 
 	EnterFormService, GeneralService,
 	FolderService, TagService, 
-	NoteService 
+	NoteService
 } from './index';
 
 import * as $ from 'jquery';
 
+declare var CKEDITOR:any;
+
 @Component({
 	selector: 'app-work-space',
 	templateUrl: './work-space.component.html',
-	styleUrls: ['./work-space.component.css']
+	styleUrls: ['./work-space.component.css'],
+	providers: [NoteService]
 })
 export class WorkSpaceComponent implements OnInit {
+	
+	private ckeditorContent: string;
+	editor: any;
+	private isReadOnly: boolean;
 
 	constructor(
 		private generalService: GeneralService,
 		private folderService: FolderService,
 		private tagService: TagService,
 		private noteService: NoteService
-		) { }
-
-	ngOnInit() {
+		) {  
+		this.ckeditorContent = `<p>Greetings from CKEditor...</p>`; 
 	}
 
-// Toggle folders to open and close in tree format
+	ngOnInit() {
+		// this.onReady();
+		// setTimeout(() => {
+		// 	console.log(this.onReady());
+		// });
+	}
+
+	// onReady = (): void => {
+	// 	CKEDITOR.on( 'instanceReady', function ( ev ) {
+	// 		let editor = ev.editor;
+	// 		if ( $(".edit").css("display").toLowerCase() == "none" )
+	// 			editor.setReadOnly(false);
+	// 		if ( $(".edit").css("display").toLowerCase() == "inline-block" )
+	// 			editor.setReadOnly(true);
+	// 	} );
+	// }
+
+	// Toggle folders to open and close in tree format
 	toggleFolders(): void {
 		let target: any = event.target;
 		let $target = $(target);
@@ -34,7 +57,7 @@ export class WorkSpaceComponent implements OnInit {
 			let childUl: any = $target.siblings("ul");
 			let $childUl: any = $(childUl);
 			childUl.toggle();
-			NoteService.renderNoteSize();
+			NoteService.renderNoteSize(-10);
 			let findedObj: any = GeneralService.find(GeneralService.data.folders, $target.attr("data-folders-tree-id"));
 			let span = $(`.folder_name[data-folders-tree-id="${findedObj.id}"]`);
 			// Change folder open or close icon and display property to render folders tree  with open or close folders
@@ -53,7 +76,7 @@ export class WorkSpaceComponent implements OnInit {
 			let parentUl: any = $target.parent().siblings("ul");
 			let $parentUl: any = $(parentUl);
 			parentUl.toggle();
-			NoteService.renderNoteSize();
+			NoteService.renderNoteSize(-10);
 			let findedObj: any = GeneralService.find(GeneralService.data.folders, $target.parent().attr("data-folders-tree-id"));
 			let span: any = $(`.folder_name[data-folders-tree-id="${findedObj.id}"]`);
 			// Change folder open or close icon and display property to render folders tree  with open or close folders
@@ -83,7 +106,7 @@ export class WorkSpaceComponent implements OnInit {
 		if ( $target.hasClass("tag_name") && $target.siblings("ul").children().length ) {
 			let childUl: any = $target.siblings("ul");
 			childUl.toggle();
-			NoteService.renderNoteSize();
+			NoteService.renderNoteSize(-10);
 			let findedObj: any = GeneralService.find(GeneralService.data.tags, $target.attr("data-tags-tree-id"));
 			let span: any = $(`.tag_name[data-tags-tree-id="${findedObj.id}"]`);
 			// Change folder open or close icon and display property to render tags tree  with open or close tags
@@ -102,7 +125,7 @@ export class WorkSpaceComponent implements OnInit {
 		if( $target.hasClass("fa") && $target.parent().siblings("ul").children().length ) {
 			let parentUl: any = $target.parent().siblings("ul");
 			parentUl.toggle();
-			NoteService.renderNoteSize();
+			NoteService.renderNoteSize(-10);
 			let findedObj: any = GeneralService.find(GeneralService.data.tags, $target.parent().attr("data-tags-tree-id"));
 			let span: any = $(`.tag_name[data-tags-tree-id="${findedObj.id}"]`);
 			// Change folder open or close icon and display property to render tags tree  with open or close tags
@@ -128,10 +151,12 @@ export class WorkSpaceComponent implements OnInit {
 	showNote(): void {
 		let target: any = event.target;
 		let $target: any = $(target);
-		let textArea: any = $("#application textarea");
+		let textArea: any = $("#application #textarea_editor");
+		let editor: any = $("#application .note_editor");
 		if ( $target.hasClass("note") && $(".edit").css("display") != "none" ) {
 			let noteID: number = $target.attr("data-note-id");
 			textArea.attr("data-textarea-id", noteID);
+			editor.attr("data-editor-id", noteID);
 			NoteService.renderNoteFields();
 			TagService.checkNoteForAddTag();
 			TagService.renderTags();
@@ -139,6 +164,7 @@ export class WorkSpaceComponent implements OnInit {
 		if ( $target.parent().hasClass("note") && $(".edit").css("display") != "none" ) {
 			let noteID: number = $target.parent().attr("data-note-id");
 			textArea.attr("data-textarea-id", noteID);
+			editor.attr("data-editor-id", noteID);
 			NoteService.renderNoteFields();
 			TagService.checkNoteForAddTag();
 			TagService.renderTags();

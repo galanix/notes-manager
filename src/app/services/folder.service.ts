@@ -123,7 +123,7 @@ export class FolderService {
 		NoteService.renderNotes(GeneralService.data.notes);
 		this.renderFoldersDisplay(GeneralService.data.folders);
 		NoteService.renderNoteFields();
-		NoteService.renderNoteSize();
+		NoteService.renderNoteSize(-10);
 	}
 
 	// Wrapper for reset actions on popup close

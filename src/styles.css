@@ -95,6 +95,7 @@ body #popup_note_tag {
 	width: 100%;
 	height: 100%;
 	background-color: rgba(0,0,0,.8);
+	z-index: 1000;
 }
 
 #popup_folder button { margin-bottom: 25px; }
@@ -385,21 +386,29 @@ body #popup_note_tag {
 .note_info .tag_list_tag:hover { background-color: #F9F9F9;}
 .note_info .tag_list_tag:last-of-type { margin-right: 0;}
 
-#note textarea {
+#note #textarea_editor {
 	width: 100%;
 	height: 100%;
 	border: none;
 	border-top: 2px solid #D3D3D3;
 	box-sizing: border-box;
-	font-size: 16px;
+	font-size: 13px;
+	line-height: 1.6;
+	word-wrap: break-word;
 	resize: none;
 	padding: 10px;
 	-webkit-appearance: none;
 	-moz-appearance: none;
 	appearance: none;
+	pointer-events: none;
 }
 
-#note textarea:focus { outline: none; }
+#note #textarea_editor:focus { outline: none; }
+
+.note_editor { display: none; }
+
+/*#cke_1_top { display: none; }
+#cke_editor1 { display: block; }*/
 
 .note {
 	display: block;
@@ -414,4 +423,4 @@ body #popup_note_tag {
 /************************* NOTE end *********************************************/
 
 
-	/************************ WORK SPACE end **************************************/
+/************************ WORK SPACE end **************************************/

@@ -102,7 +102,7 @@ export class TagService {
 
 	// Check and add .selected_tag class to tags that are applied to note
 	static checkSelectedTags() {
-		let textArea: any = $("#application textarea");
+		let textArea: any = $("#application #textarea_editor");
 		let spanTags: any = $(".tag_list .tag_list_tag");
 		let note: any = GeneralService.find(GeneralService.data.notes, textArea.attr("data-textarea-id"));
 
@@ -116,7 +116,7 @@ export class TagService {
 
 	// Render tags(spans) in note_info
 	static renderTags() {
-		let note: any = GeneralService.find(GeneralService.data.notes, $("#application textarea").attr("data-textarea-id"));
+		let note: any = GeneralService.find(GeneralService.data.notes, $("#application #textarea_editor").attr("data-textarea-id"));
 		$(".notes_tags").find("span").remove();
 		if ( note ) { 
 			for (let i = 0; i < note.tags.length; i++) {
@@ -141,7 +141,7 @@ export class TagService {
 		NoteService.renderNotes(GeneralService.data.notes);
 		this.renderTagsDisplay(GeneralService.data.tags);
 		NoteService.renderNoteFields();
-		NoteService.renderNoteSize();
+		NoteService.renderNoteSize(-10);
 	}
 
 }

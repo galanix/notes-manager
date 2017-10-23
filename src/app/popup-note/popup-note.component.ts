@@ -27,7 +27,7 @@ export class PopupNoteComponent implements OnInit {
 // Add new note to localStorage then render tree in sidebar
 	createNote(): void {
 			let selectedOptionId: any = $("#popup_note select option:selected").attr("data-folders-select-id");
-			let textArea: any = $("#application textarea");
+			let textArea: any = $("#application #editor");
 			if ( $("#note_name").val() && selectedOptionId != "root" ) {
 				GeneralService.updateNotesData();
 				$(".folders").find("*").remove();

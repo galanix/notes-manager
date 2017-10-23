@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+// import { WorkSpaceComponent } from '../work-space/work-space.component';
 
 import { 
 	EnterFormService, GeneralService,
@@ -11,7 +12,8 @@ import * as $ from 'jquery';
 @Component({
 	selector: 'app-header',
 	templateUrl: './header.component.html',
-	styleUrls: ['./header.component.css']
+	styleUrls: ['./header.component.css'],
+	providers: [NoteService]
 })
 export class HeaderComponent implements OnInit {
 
@@ -72,29 +74,35 @@ export class HeaderComponent implements OnInit {
 
 	// Hide edit button and show save and delete buttons. Remove readonly from textarea
 	enableEdit(): void {
-		let workTextarea: any = $("#application textarea");
-		if ( workTextarea.val() ) {
+		if ( $(".cke_wysiwyg_frame").contents().find('body').html().length > 0 ) {
 			$(".edit").css("display", "none");
 			$(".delete_note").css("display", "inline-block");
 			$(".save_note").css("display", "inline-block");
-			workTextarea.removeAttr("readonly");
+
+			$("#textarea_editor").hide();
+			$(".note_editor").show();
+			NoteService.renderNoteSize(6);
 		}
 	}
 
 	// Save text 
 	saveNote(): void {
-		let workTextarea: any = $("#application textarea");
+		let textArea: any = $("#textarea_editor");
+		let textContent: any = $(".cke_wysiwyg_frame").contents().find('body');
 		for (let i = 0; i < GeneralService.data.notes.length; i++) {
-			if ( GeneralService.data.notes[i].id == workTextarea.attr("data-textarea-id") ) {
-				GeneralService.data.notes[i].text = workTextarea.val();
+			if ( GeneralService.data.notes[i].id == $(".note_editor").attr("data-editor-id") ) {
+				GeneralService.data.notes[i].text = textContent.html();
 				localStorage.setItem("structure", JSON.stringify(GeneralService.data));
+				// textArea.val(GeneralService.data.notes[i].text);
+				textArea.hide().html(GeneralService.data.notes[i].text).show();
 			}
 		}
+
 		NoteService.returnEdit();
 	}
 
 	deleteNote(): void {
-		let workTextarea: any = $("#application textarea");
+		let workTextarea: any = $("#textarea_editor");
 		for (let i = 0; i < GeneralService.data.notes.length; i++) {
 			if ( GeneralService.data.notes[i].id == workTextarea.attr("data-textarea-id") ) {
 				let index: number = GeneralService.data.notes.indexOf(GeneralService.data.notes[i]);

@@ -39,7 +39,7 @@ export class PopupTagComponent implements OnInit {
 	// Delete tag and render data in select and sidebar
 	deleteTag(): void {
 		let selectedOptionId: any = $("#popup_tag select option:selected").attr("data-tags-select-id");
-		let textArea: any = $("#application textarea");
+		let textArea: any = $("#application #textarea_editor");
 		let note: any = GeneralService.find(GeneralService.data.notes, textArea.attr("data-textarea-id"));
 		if ( $("#popup_tag select").val() && selectedOptionId != "root" ) {
 			let findedArr: any = GeneralService.findParent(GeneralService.data.tags, selectedOptionId);
@@ -64,7 +64,7 @@ export class PopupTagComponent implements OnInit {
 		TagService.tagWrapper(); 
 		TagService.checkNoteForAddTag();
 		TagService.renderTags();
-		NoteService.renderNoteSize();
+		NoteService.renderNoteSize(-10);
 
 		(<HTMLFormElement>$("#popup_tag form")[0]).reset();
 	}

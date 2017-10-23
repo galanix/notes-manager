@@ -11,6 +11,12 @@ export class GeneralService {
 
 	constructor() { }
 
+	// toggleRead($event): void {
+	// 	// console.log($event.editor.setReadOnly);
+	// 	$event.editor.setReadOnly(true);
+	// 	return $event.editor;
+	// }
+
 	static data: any = (localStorage.getItem("structure")) 
 	? JSON.parse(localStorage.getItem("structure")) : {
 		"folders": [{
@@ -38,7 +44,7 @@ export class GeneralService {
 	? localStorage.getItem("idNoteCounter") : 0;
 
 	// Find and return nested object 
-	 static find(source: any, id: any): any {
+	static find(source: any, id: any): any {
 		for (let key in source) {
 			let item: any = source[key];
 			if (item.id == id)
@@ -56,7 +62,7 @@ export class GeneralService {
 	}
 
 	// Find and return nested obj parent(arr)
-	 static findParent<T>(arr: T[], id: number): T[] {
+	static findParent<T>(arr: T[], id: number): T[] {
 		for (let i = 0; i < arr.length; i++) {
 			let item: any = arr[i];
 			let children: T[] = item.children;
@@ -76,7 +82,7 @@ export class GeneralService {
 	}
 
 	// Add new folder to localStorage and iterate idFolderCounter
-	 static updateFoldersData() {
+	static updateFoldersData() {
 		let folderName: any =  $("#folder_name").val();
 		let findedObj: any;
 		let newFolder: Folder = new Folder();
@@ -95,7 +101,7 @@ export class GeneralService {
 	}
 
 	// Add new tag to localStorage and iterate idTagCounter
-	 static updateTagsData() {
+	static updateTagsData() {
 		let tagName: any;
 		if ( $("#popup_tag").css("display").toLowerCase() == "block" )
 			tagName =  $("#tag_name").val();
