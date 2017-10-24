@@ -197,6 +197,7 @@ export class NoteService {
 			let item = obj[key];
 			for (let i = 0; i < GeneralService.data.notes.length; i++) {
 				if ( GeneralService.data.notes[i].folder == item.id ) {
+					console.log("item.id: ", item.id);
 					let index: number = GeneralService.data.notes.indexOf(GeneralService.data.notes[i]);
 					GeneralService.data.notes.splice(index, 1);
 					i--;

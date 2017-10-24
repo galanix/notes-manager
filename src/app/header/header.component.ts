@@ -97,7 +97,6 @@ export class HeaderComponent implements OnInit {
 				textArea.hide().html(GeneralService.data.notes[i].text).show();
 			}
 		}
-
 		NoteService.returnEdit();
 	}
 

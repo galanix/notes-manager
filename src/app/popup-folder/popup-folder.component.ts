@@ -25,7 +25,7 @@ export class PopupFolderComponent implements OnInit {
 
 	}
 
-// Create folder render data in folder select and sidebar
+	// Create folder render data in folder select and sidebar
 	createFolder(): void {
 		if ( $("#folder_name").val() ) {
 			GeneralService.updateFoldersData();
@@ -34,7 +34,7 @@ export class PopupFolderComponent implements OnInit {
 		FolderService.resetOnCloseWrapper();
 	}
 
-// Delete folder and render data in select and sidebar. Ask to delte or move notes to another folder
+	// Delete folder and render data in select and sidebar. Ask to delte or move notes to another folder
 	deleteFolder(): void {
 		let selectedOptionId: any = $("#popup_folder select option:selected").attr("data-folders-select-id");
 		let selectedFolder = $(`span[data-folders-tree-id="${selectedOptionId}"]`);
@@ -51,9 +51,13 @@ export class PopupFolderComponent implements OnInit {
 					let $target = $(target);
 					// If user want to delete notes
 					if ( $target.hasClass("delete_notes_yes") ) {
-						NoteService.deleteNotesInFolder(findedFolder);
+						if ( selectedOptionId != "default" )
+							NoteService.deleteNotesInFolder(findedFolderParent);
+						if ( selectedOptionId == "default" )  
+							NoteService.deleteNotesInFolder(GeneralService.data.folders);
 						FolderService.deleteFolders();
 						FolderService.folderWrapper();
+						NoteService.renderNoteFields();
 						NoteService.renderLatestNote();
 						TagService.checkNoteForAddTag();
 						NoteService.moveNoteWrapper();
@@ -74,7 +78,10 @@ export class PopupFolderComponent implements OnInit {
 								let selectFolderSelected: any = 
 								$("#popup_folder .select_folder select option:selected").attr("data-folders-select-id");
 								let newFolder = GeneralService.find(GeneralService.data.folders, selectFolderSelected);
-								NoteService.moveNoteInFolder(findedFolderParent, newFolder);
+								if ( selectedOptionId != "default" )
+									NoteService.moveNoteInFolder(findedFolderParent, newFolder);
+								if ( selectedOptionId == "default" ) 
+									NoteService.moveNoteInFolder(GeneralService.data.folders, newFolder);
 								FolderService.deleteFolders();
 								FolderService.folderWrapper();
 								NoteService.moveNoteWrapper();

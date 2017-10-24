@@ -1,5 +1,5 @@
 export class Folder {
-	id: number;
+	id: any;
 	name: string;
 	display: string;
 	children: any;

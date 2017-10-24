@@ -1,6 +1,6 @@
 export class Note {
-	id: number;
-	folder: number;
+	id: any;
+	folder: any;
 	title: string;
 	text: any;
 	date: any;

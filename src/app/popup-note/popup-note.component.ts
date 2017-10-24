@@ -2,7 +2,9 @@ import { Component, OnInit } from '@angular/core';
 
 import { 
 	GeneralService, FolderService,
-	TagService, NoteService
+	TagService, NoteService,
+
+	Note
 } from './index';
 
 import * as $ from 'jquery';
@@ -24,23 +26,31 @@ export class PopupNoteComponent implements OnInit {
 	ngOnInit() {
 	}
 
-// Add new note to localStorage then render tree in sidebar
+	// Add new note to localStorage then render tree in sidebar
 	createNote(): void {
-			let selectedOptionId: any = $("#popup_note select option:selected").attr("data-folders-select-id");
-			let textArea: any = $("#application #editor");
-			if ( $("#note_name").val() && selectedOptionId != "root" ) {
-				GeneralService.updateNotesData();
-				$(".folders").find("*").remove();
-				$(".folders").append(FolderService.parseFolders(GeneralService.data.folders));
-				NoteService.renderNotes(GeneralService.data.notes);
-				FolderService.renderFoldersDisplay(GeneralService.data.folders);
-			}
+		let selectedOptionId: any = $("#popup_note select option:selected").attr("data-folders-select-id");
+		let textArea: any = $("#application #editor");
+		if ( $("#note_name").val() && selectedOptionId != "root" ) {
+			GeneralService.updateNotesData();
+			$(".folders").find("*").remove();
+			$(".folders").append(FolderService.parseFolders(GeneralService.data.folders));
+			NoteService.renderNotes(GeneralService.data.notes);
+			FolderService.renderFoldersDisplay(GeneralService.data.folders);
+		}
 
-			let latestNote: any = NoteService.findLatestNote();
-			textArea.attr("data-textarea-id", latestNote.id);
-			NoteService.noteWrapper();
+		if ( selectedOptionId == "root" ) {
+			GeneralService.updateNotesData();
+			$(".folders").find("*").remove();
+			$(".folders").append(FolderService.parseFolders(GeneralService.data.folders));
+			NoteService.renderNotes(GeneralService.data.notes);
+			FolderService.renderFoldersDisplay(GeneralService.data.folders);
+		}
 
-			$("#popup_note").fadeOut(500);
-			(<HTMLFormElement>$("#popup_note form")[0]).reset();
+		let latestNote: any = NoteService.findLatestNote();
+		textArea.attr("data-textarea-id", latestNote.id);
+		NoteService.noteWrapper();
+
+		$("#popup_note").fadeOut(500);
+		(<HTMLFormElement>$("#popup_note form")[0]).reset();
 	}
 }
