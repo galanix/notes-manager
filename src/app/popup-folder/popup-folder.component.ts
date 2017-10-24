@@ -51,10 +51,7 @@ export class PopupFolderComponent implements OnInit {
 					let $target = $(target);
 					// If user want to delete notes
 					if ( $target.hasClass("delete_notes_yes") ) {
-						if ( selectedOptionId != "default" )
-							NoteService.deleteNotesInFolder(findedFolderParent);
-						if ( selectedOptionId == "default" )  
-							NoteService.deleteNotesInFolder(GeneralService.data.folders);
+						NoteService.deleteNotesInFolder(findedFolder);
 						FolderService.deleteFolders();
 						FolderService.folderWrapper();
 						NoteService.renderNoteFields();
@@ -78,10 +75,7 @@ export class PopupFolderComponent implements OnInit {
 								let selectFolderSelected: any = 
 								$("#popup_folder .select_folder select option:selected").attr("data-folders-select-id");
 								let newFolder = GeneralService.find(GeneralService.data.folders, selectFolderSelected);
-								if ( selectedOptionId != "default" )
-									NoteService.moveNoteInFolder(findedFolderParent, newFolder);
-								if ( selectedOptionId == "default" ) 
-									NoteService.moveNoteInFolder(GeneralService.data.folders, newFolder);
+								NoteService.moveNoteInFolder(findedFolder, newFolder);
 								FolderService.deleteFolders();
 								FolderService.folderWrapper();
 								NoteService.moveNoteWrapper();
