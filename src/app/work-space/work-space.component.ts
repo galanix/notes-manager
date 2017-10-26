@@ -6,7 +6,8 @@ import {
 	NoteService
 } from './index';
 
-import * as $ from 'jquery';
+declare var $: any;
+// import * as $ from 'jquery';
 
 declare var CKEDITOR:any;
 
@@ -32,21 +33,14 @@ export class WorkSpaceComponent implements OnInit {
 	}
 
 	ngOnInit() {
-		// this.onReady();
-		// setTimeout(() => {
-		// 	console.log(this.onReady());
-		// });
+		this.dragNotes();
 	}
 
-	// onReady = (): void => {
-	// 	CKEDITOR.on( 'instanceReady', function ( ev ) {
-	// 		let editor = ev.editor;
-	// 		if ( $(".edit").css("display").toLowerCase() == "none" )
-	// 			editor.setReadOnly(false);
-	// 		if ( $(".edit").css("display").toLowerCase() == "inline-block" )
-	// 			editor.setReadOnly(true);
-	// 	} );
-	// }
+	dragNotes(): void {
+		$(".note").draggable({
+			containment: $(".folders"),
+		});
+	}
 
 	// Toggle folders to open and close in tree format
 	toggleFolders(): void {

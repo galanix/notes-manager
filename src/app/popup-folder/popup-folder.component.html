@@ -9,13 +9,13 @@
 				<button class="delete_folder" (click)="deleteFolder()">Delete</button>
 				<div class="popup_delete_notes_wrapper">
 					<p class="notes_in_folder">Do you want delete notes?</p>
-					<button class="delete_notes_yes">Yes</button>
-					<button class="delete_notes_no">No</button>
+					<button class="delete_notes_yes" (click)="deleteNotesYes()">Yes</button>
+					<button class="delete_notes_no" (click)="deleteNotesNo()">No</button>
 				</div>
 			</form>
 			<form action="#" class="select_folder">
 			<label for="add_note_select">Choose folder to move notes:</label>
 			<select id="add_note_select" class="not_deleted_folders"></select>
-			<button class="note_to_folder">Move</button>
+			<button class="note_to_folder" (click)="moveNotes()">Move</button>
 			</form>
 		</section>

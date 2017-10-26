@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 
-import * as $ from 'jquery';
+declare var $: any;
+// import * as $ from 'jquery';
 
 @Injectable()
 export class EnterFormService {

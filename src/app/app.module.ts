@@ -15,7 +15,8 @@ import {
   TagService, NoteService
 } from './index';
 
-import * as $ from 'jquery';
+declare var $: any;
+// import * as $ from 'jquery';
 // import { EditorComponent } from './editor/editor.component';
 
 

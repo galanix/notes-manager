@@ -6,7 +6,8 @@ import { Note } from '../data/note';
 
 import { FolderService } from './folder.service'
 
-import * as $ from 'jquery';
+declare var $: any;
+// import * as $ from 'jquery';
 
 @Injectable()
 export class GeneralService {
@@ -142,7 +143,8 @@ export class GeneralService {
 			if ( folderID != "root" )
 				newNote.folder = folderID;
 			if ( folderID == "root" ) {
-				FolderService.defaultFolder()
+				if( GeneralService.find(GeneralService.data.folders, "default") == null )
+					FolderService.defaultFolder()
 				newNote.folder = "default";
 			}
 			newNote.title = noteTitle;

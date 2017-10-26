@@ -3,7 +3,8 @@ import { Injectable } from '@angular/core';
 import { GeneralService } from './general.service';
 import { NoteService } from './note.service';
 
-import * as $ from 'jquery';
+declare var $: any;
+// import * as $ from 'jquery';
 
 
 @Injectable()
@@ -78,7 +79,7 @@ export class FolderService {
 
 		// Takes a folders array and turns it into a <ul>
 		static parseFolders(folders: any) { 
-			let ul: any = $("<ul>");
+			let ul: any = $(`<ul class="folder_content">`);
 			for(var i = 0; i < folders.length; i++) {
 				ul.append(this.parseFolder(folders[i]));
 			}
@@ -124,8 +125,9 @@ export class FolderService {
 
 		// Delete folders
 		static deleteFolders() {
-			let selectedOptionId: any = $("#popup_folder .main_form select option:selected").attr("data-folders-select-id");
+			let selectedOptionId: any = $("#popup_folder #folder_select option:selected").attr("data-folders-select-id");
 			let findedArr: any = GeneralService.findParent(GeneralService.data.folders, selectedOptionId);
+			let root: any = GeneralService.find(GeneralService.data.folders, "root");
 			if ( findedArr ) { 
 				for (let i = 0; i < findedArr.length; i++) {
 					if ( findedArr[i].id == selectedOptionId ) {
@@ -134,8 +136,11 @@ export class FolderService {
 						localStorage.setItem("structure", JSON.stringify(GeneralService.data));
 					}
 				}
-			} else {
-				GeneralService.data.folders.splice(1, 1);
+			} 
+			else {
+				console.log( "default: ", GeneralService.find(GeneralService.data.folders, "default") );
+				console.log("GeneralService.data.folders.splice(1): ", GeneralService.data.folders.splice(1) );
+				// GeneralService.data.folders.splice(1);
 				localStorage.setItem("structure", JSON.stringify(GeneralService.data));
 			}
 		}

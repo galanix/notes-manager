@@ -5,8 +5,8 @@ import {
 	TagService, NoteService
 } from './index';
 
-
-import * as $ from 'jquery';
+declare var $: any;
+// import * as $ from 'jquery';
 
 @Component({
 	selector: 'app-popup-note-tag',

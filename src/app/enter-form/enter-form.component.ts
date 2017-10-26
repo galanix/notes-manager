@@ -3,7 +3,8 @@ import {Md5} from 'ts-md5/dist/md5';
 
 import { EnterFormService } from '../services/enter-form.service';
 
-import * as $ from 'jquery';
+declare var $: any;
+// import * as $ from 'jquery';
 
 @Component({
 	selector: 'app-enter-form',

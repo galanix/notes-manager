@@ -4,8 +4,8 @@ import { Injectable } from '@angular/core';
 import { GeneralService } from './general.service';
 import { TagService } from './tag.service';
 
-
-import * as $ from 'jquery';
+declare var $: any;
+// import * as $ from 'jquery';
 
 @Injectable()
 export class NoteService {
@@ -103,7 +103,7 @@ export class NoteService {
 				noteTitle.html(null);
 				notesFolder.html(null);
 				noteTags.html(null);
-				textArea.val(null);
+				textArea.html(null);
 				editor.val(null);
 			}
 
@@ -168,100 +168,85 @@ export class NoteService {
 			}
 		}
 
-		// // Move notes to another folder
-		// static moveNoteInFolder(oldFolder: any, newFolder: any) {
-			// 	for(let key in oldFolder) {
-				// 		let item = oldFolder[key];
-				// 		for (let i = 0; i < GeneralService.data.notes.length; i++) {
-					// 			if ( GeneralService.data.notes[i].folder == item.id ) {
-						// 				GeneralService.data.notes[i].folder = newFolder.id;
-						// 				localStorage.setItem("structure", JSON.stringify(GeneralService.data));
-						// 			}
-						// 		}
-						// 		if (item.children)
-						// 			this.moveNoteInFolder(item.children, newFolder);
-						// 	}
-						// }
+		// Move notes wrapper
+		static moveNoteWrapper() {
+			$("#popup_folder select option:not(:selected)").prop("disabled", false);
+			$("#popup_folder .popup_delete_notes_wrapper").hide();
+			$("#popup_folder").fadeOut(500);
+			$("#popup_folder form").val(null);
+		}
 
-						// Move notes wrapper
-						static moveNoteWrapper() {
-							$("#popup_folder select option:not(:selected)").prop("disabled", false);
-							$("#popup_folder .popup_delete_notes_wrapper").hide();
-							$("#popup_folder").fadeOut(500);
-							$("#popup_folder form").val(null);
-						}
-
-						// Move notes to another folder
-						static moveNoteInFolder = (oldFolder: any, newFolder: any) => { 
-							for (let i = 0; i < GeneralService.data.notes.length; i++) {
-								if ( GeneralService.data.notes[i].folder == oldFolder.id ) {
-									GeneralService.data.notes[i].folder = newFolder.id;
-									localStorage.setItem("structure", JSON.stringify(GeneralService.data));
-								}
-							}
-							if ( oldFolder.children ) { 
-								let moveNoteInFolderAgain = (oldFolder: any, newFolder: any) => {
-									for(let key in oldFolder) {
-										let item = oldFolder[key];
-										for (let i = 0; i < GeneralService.data.notes.length; i++) {
-											if ( GeneralService.data.notes[i].folder == item.id ) {
-												GeneralService.data.notes[i].folder = newFolder.id;
-												localStorage.setItem("structure", JSON.stringify(GeneralService.data));
-											}
-										}
-										if (item.children)
-											moveNoteInFolderAgain(item.children, newFolder);
-									}
-								}
-								moveNoteInFolderAgain(oldFolder.children, newFolder);
+		// Move notes to another folder
+		static moveNoteInFolder = (oldFolder: any, newFolder: any) => { 
+			for (let i = 0; i < GeneralService.data.notes.length; i++) {
+				if ( GeneralService.data.notes[i].folder == oldFolder.id ) {
+					GeneralService.data.notes[i].folder = newFolder.id;
+					localStorage.setItem("structure", JSON.stringify(GeneralService.data));
+				}
+			}
+			if ( oldFolder.children ) { 
+				let moveNoteInFolderAgain = (oldFolder: any, newFolder: any) => {
+					for(let key in oldFolder) {
+						let item = oldFolder[key];
+						for (let i = 0; i < GeneralService.data.notes.length; i++) {
+							if ( GeneralService.data.notes[i].folder == item.id ) {
+								GeneralService.data.notes[i].folder = newFolder.id;
+								localStorage.setItem("structure", JSON.stringify(GeneralService.data));
 							}
 						}
-
-						// Delete notes in folder and subfolders
-						static deleteNotesInFolder = (obj: any) => {
-							for (let i = 0; i < GeneralService.data.notes.length; i++) {
-								if ( GeneralService.data.notes[i].folder == obj.id ) {
-									let index: number = GeneralService.data.notes.indexOf(GeneralService.data.notes[i]);
-									GeneralService.data.notes.splice(index, 1);
-									i--;
-									localStorage.setItem("structure", JSON.stringify(GeneralService.data));
-								}
-							}
-							if (obj.children) { 
-								let deleteNotesInFolderAgain = (arr: any) => {
-									for (let key in arr) {
-										let item = arr[key];
-										for (let i = 0; i < GeneralService.data.notes.length; i++) {
-											if ( GeneralService.data.notes[i].folder == item.id ) {
-												let index: number = GeneralService.data.notes.indexOf(GeneralService.data.notes[i]);
-												GeneralService.data.notes.splice(index, 1);
-												i--;
-												localStorage.setItem("structure", JSON.stringify(GeneralService.data));
-											}
-										}
-										if (item.children)
-											deleteNotesInFolderAgain(item.children);
-									}
-								}
-								deleteNotesInFolderAgain(obj.children);
-							}
-						}
-
-						// Wrapper for note functions call
-						static noteWrapper() { 
-							this.renderNoteFields();
-							TagService.checkNoteForAddTag();
-							TagService.renderTags();
-							this.renderNoteSize(-10);
-						}
-
-						// Wrapper for click on save or delete button
-						static returnEdit() {
-							$(".edit").css("display", "inline-block");
-							$(".delete_note").css("display", "none");
-							$(".save_note").css("display", "none");
-							$("#textarea_editor").show();
-							$(".note_editor").hide();
-						}
-
+						if (item.children)
+							moveNoteInFolderAgain(item.children, newFolder);
 					}
+				}
+				moveNoteInFolderAgain(oldFolder.children, newFolder);
+			}
+		}
+
+		// Delete notes in folder and subfolders
+		static deleteNotesInFolder = (obj: any) => {
+			for (let i = 0; i < GeneralService.data.notes.length; i++) {
+				if ( GeneralService.data.notes[i].folder == obj.id ) {
+					let index: number = GeneralService.data.notes.indexOf(GeneralService.data.notes[i]);
+					GeneralService.data.notes.splice(index, 1);
+					i--;
+					localStorage.setItem("structure", JSON.stringify(GeneralService.data));
+				}
+			}
+			if (obj.children) { 
+				let deleteNotesInFolderAgain = (arr: any) => {
+					for (let key in arr) {
+						let item = arr[key];
+						for (let i = 0; i < GeneralService.data.notes.length; i++) {
+							if ( GeneralService.data.notes[i].folder == item.id ) {
+								let index: number = GeneralService.data.notes.indexOf(GeneralService.data.notes[i]);
+								GeneralService.data.notes.splice(index, 1);
+								i--;
+								localStorage.setItem("structure", JSON.stringify(GeneralService.data));
+							}
+						}
+						if (item.children)
+							deleteNotesInFolderAgain(item.children);
+					}
+				}
+				deleteNotesInFolderAgain(obj.children);
+			}
+		}
+
+		// Wrapper for note functions call
+		static noteWrapper() { 
+			this.renderNoteFields();
+			TagService.checkNoteForAddTag();
+			TagService.renderTags();
+			this.renderNoteSize(-10);
+		}
+
+		// Wrapper for click on save or delete button
+		static returnEdit() {
+			$(".edit").css("display", "inline-block");
+			$(".delete_note").css("display", "none");
+			$(".save_note").css("display", "none");
+			$("#textarea_editor").show();
+			$(".note_editor").hide();
+		}
+
+	}

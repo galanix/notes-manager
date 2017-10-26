@@ -7,7 +7,9 @@ import {
 	NoteService
 } from './index';
 
-import * as $ from 'jquery';
+declare var $: any;
+// import * as $ from 'jquery';
+
 
 @Component({
 	selector: 'app-header',
@@ -26,6 +28,7 @@ export class HeaderComponent implements OnInit {
 
 	ngOnInit() {
 		this.renderLogoAndUserName();
+		$( "#logo" ).draggable();
 	}
 
 	// Open folder popup

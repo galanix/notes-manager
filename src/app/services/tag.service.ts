@@ -3,7 +3,8 @@ import { Injectable } from '@angular/core';
 import { GeneralService } from './general.service';
 import { NoteService } from './note.service';
 
-import * as $ from 'jquery';
+declare var $: any;
+// import * as $ from 'jquery';
 
 
 @Injectable()
