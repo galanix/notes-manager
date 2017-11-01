@@ -261,18 +261,25 @@ body #popup_note_tag {
 	display: -ms-flex;
 	display: -o-flex;
 	display: flex;
+
 	overflow: hidden;
 }
 
 /************************* SIDEBAR ***************************************/
 
-#sidebar {
-	/*	width: 30%;*/
-	background-color: #F4F1F1;
+.sidebar_wrapper {
+	display: table;
 	border-right: 2px solid lightgray;
+	overflow: hidden;
+}
+
+#sidebar {
+	width: 100%;
+	height: 100%;
+	background-color: #F4F1F1;
 	overflow-x: visible;
 	overflow-y: auto;
-	padding-right: 20px;
+	margin-right: 10px;
 }
 
 .ui-resizable { position: relative;}
@@ -288,39 +295,71 @@ body #popup_note_tag {
 .ui-resizable-ne { cursor: ne-resize; width: 9px; height: 9px; right: -5px; top: -5px;}
 
 .folders {
-	margin-bottom: 20px;
+	padding-bottom: 20px;
 }
 
-.folders ul span,
-.tags ul span {
-	letter-spacing: 0.5px;
-	margin-bottom: 3px;
-}
+	.folders ul span i, 
+	.tags ul span i {
+		color: #0CC481;
+	}
 
-.folders ul span i, 
-.tags ul span i {
-	color: #0CC481;
-}
-
-.folder_name, .tag_name {
-	display: -webkit-flex;
+	.folder_name, .tag_name {
+/*	display: -webkit-flex;
 	display: -moz-flex;
 	display: -ms-flex;
 	display: -o-flex;
-	display: flex;
-	min-width: 100px;
+	display: flex;*/
+	display: table;
 	cursor: pointer;
+	margin-bottom: 3px;
 
 	-webkit-user-select: none;
 	-moz-user-select: none; 
 	-ms-user-select: none; 
 }
 
-.colored { background-color: yellow; }
+.note {
+	display: table; 
+	cursor: pointer;
+	margin-bottom: 2px;
+
+	-webkit-user-select: none;
+	-moz-user-select: none; 
+	-ms-user-select: none; 
+}
+
+.drag_el {
+	font-weight: bold;
+}
+
+.highlight { background-color: yellow; }
 
 .folder_name i, .tag_name i {
 	padding-right: 5px;
 }
+
+/*************************** jQuery Sortable ********************************/
+
+body.dragging, body.dragging * {
+  cursor: move !important;
+}
+
+.dragged {
+  position: absolute;
+  opacity: 0.5;
+  z-index: 2000;
+}
+
+ol.example li.placeholder {
+  position: relative;
+  /** More li styles **/
+}
+ol.example li.placeholder:before {
+  position: absolute;
+  /** Define arrowhead **/
+}
+
+/*************************** jQuery Sortable end ********************************/
 
 /************************* SIDEBAR end ***************************************/
 
@@ -341,8 +380,13 @@ body #popup_note_tag {
 	padding: 5px 5px 5px 15px;
 }
 
-.note_info{
+.note_info {
 	padding: 5px 5px 5px 15px;
+
+	-webkit-user-select: none;  
+	-moz-user-select: none;    
+	-ms-user-select: none;      
+	user-select: none;
 }
 
 .note_info p {
@@ -419,18 +463,22 @@ body #popup_note_tag {
 
 .note_editor { display: none; }
 
+/*.folder_content { padding-bottom: 10px; padding-top: 10px; }*/
+
+/*.folder_li { display: table-cell; }*/
+
+/*.sortable { height: 300px; width: 400px;}*/
+
+.placeholder {
+	outline: 1px dashed #0CC481;
+	width: 100px;	
+	height: 17px;	 
+}
+
+.ui-resizable-e, .ui-resizable-w { width: 15px; }
+
 /*#cke_1_top { display: none; }
 #cke_editor1 { display: block; }*/
-
-.note {
-	display: block;
-	min-width: 100px;
-	cursor: pointer;
-
-	-webkit-user-select: none;
-	-moz-user-select: none; 
-	-ms-user-select: none; 
-}
 
 /************************* NOTE end *********************************************/
 

@@ -20,6 +20,7 @@ export class ApplicationComponent implements OnInit {
 
 	// Starting call of functions
 	ngOnInit() {
+		// localStorage.clear();
 		EnterFormService.checkAccess();
 		setTimeout(function() {
 			$("html").css("visibility", "visible");

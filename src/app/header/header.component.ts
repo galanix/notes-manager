@@ -117,7 +117,7 @@ export class HeaderComponent implements OnInit {
 		let latestNote: any = NoteService.findLatestNote();
 		if ( latestNote ) { 
 			workTextarea.attr("data-textarea-id", latestNote.id);
-			NoteService.noteWrapper();
+			NoteService.renderLatestNote();
 		}
 		NoteService.returnEdit();
 	}

@@ -1,7 +1,9 @@
 <section id="application">
-	<div id="sidebar" (click)="showNote()">
-		<div class="folders" (dblclick)="toggleFolders()"></div>
-		<div class="tags" (dblclick)="toggleTags()"></div>
+	<div class="sidebar_wrapper">
+		<div id="sidebar" (click)="showNote()">
+			<div class="folders" (dblclick)="toggleFolders()"></div>
+			<div class="tags" (dblclick)="toggleTags()"></div>
+		</div>
 	</div>
 	<div id="note">
 		<p class="note_title"></p>
@@ -11,11 +13,10 @@
 			<div class="notes_tags"></div>
 		</div>
 		<div id="textarea_editor" contenteditable="true" readonly></div>
-<!-- 		<textarea name="" id="textarea_editor" readonly></textarea> -->
 		<ckeditor class="note_editor"
 		[(ngModel)]="ckeditorContent"
 		[readonly]="false"
 		debounce="500">
 	</ckeditor> 
-	</div>
+</div>
 </section>
