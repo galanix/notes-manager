@@ -18,6 +18,9 @@ declare var $: any;
 	providers: [NoteService]
 })
 export class HeaderComponent implements OnInit {
+	noteHTMLonEdit: any;
+	noteHTMLonSave: any;
+	noteChanges: number;
 
 	constructor(
 		private generalService: GeneralService,
@@ -76,8 +79,8 @@ export class HeaderComponent implements OnInit {
 	}
 
 	// Hide edit button and show save and delete buttons. Remove readonly from textarea
-	enableEdit(): void {
-		if ( $(".cke_wysiwyg_frame").contents().find('body').html().length > 0 ) {
+	enableEdit = (): void  => {
+		if ( NoteService.findLatestNote() ) { 
 			$(".edit").css("display", "none");
 			$(".delete_note").css("display", "inline-block");
 			$(".save_note").css("display", "inline-block");
@@ -85,20 +88,28 @@ export class HeaderComponent implements OnInit {
 			$("#textarea_editor").hide();
 			$(".note_editor").show();
 			NoteService.renderNoteSize(6);
+			this.noteHTMLonEdit = $(".cke_editable").html();
+			console.log(this.noteHTMLonEdit);
 		}
 	}
 
 	// Save text 
-	saveNote(): void {
+	saveNote = (): void => {
+
 		let textArea: any = $("#textarea_editor");
 		let textContent: any = $(".cke_wysiwyg_frame").contents().find('body');
 		for (let i = 0; i < GeneralService.data.notes.length; i++) {
 			if ( GeneralService.data.notes[i].id == $(".note_editor").attr("data-editor-id") ) {
 				GeneralService.data.notes[i].text = textContent.html();
 				localStorage.setItem("structure", JSON.stringify(GeneralService.data));
-				// textArea.val(GeneralService.data.notes[i].text);
 				textArea.hide().html(GeneralService.data.notes[i].text).show();
 			}
+			this.noteHTMLonSave = $(".cke_editable").html();
+			console.log(this.noteHTMLonSave);
+			if ( this.noteHTMLonSave != this.noteHTMLonEdit )
+				GeneralService.data.notes[i].changesCounter++;
+			console.log(GeneralService.data.notes[i].changesCounter);
+			localStorage.setItem("structure", JSON.stringify(GeneralService.data));
 		}
 		NoteService.returnEdit();
 	}
@@ -119,6 +130,7 @@ export class HeaderComponent implements OnInit {
 			workTextarea.attr("data-textarea-id", latestNote.id);
 			NoteService.renderLatestNote();
 		}
+		NoteService.renderLatestNote();
 		NoteService.returnEdit();
 	}
 
@@ -130,11 +142,10 @@ export class HeaderComponent implements OnInit {
 
 	// Change logo and user name
 	renderLogoAndUserName(): void {
-		$.getJSON("../../assets/pass.json", function(result: any) {
+		$.getJSON("https://galanix.github.io/notes-manager/assets/pass.json", function(result: any) {
 			let firstLetter = result.name.slice(0, 1).toUpperCase();
 			$("#logo").html(firstLetter);
 			$("#name").html(result.name);
 		});
 	}
-
 }

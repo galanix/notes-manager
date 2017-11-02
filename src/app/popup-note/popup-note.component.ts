@@ -50,6 +50,7 @@ export class PopupNoteComponent implements OnInit {
 		let latestNote: any = NoteService.findLatestNote();
 		textArea.attr("data-textarea-id", latestNote.id);
 		NoteService.noteWrapper();
+		NoteService.renderLatestNote();
 
 		$("#popup_note").fadeOut(500);
 		(<HTMLFormElement>$("#popup_note form")[0]).reset();

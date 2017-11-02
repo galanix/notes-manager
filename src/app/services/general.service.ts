@@ -115,6 +115,7 @@ export class GeneralService {
 
 	static sortableFolders(): void {
 		$(".sortable").sortable({
+			handle: ".folder_name",
 			onDrop: function ($item, container, _super) {
 				container.el.removeClass("active");
 				_super($item, container);
@@ -137,6 +138,8 @@ export class GeneralService {
 					targetFolder.children.push(splicedFolderObj[0]);
 
 				localStorage.setItem("structure", JSON.stringify(GeneralService.data));
+				$("#folder_select option").remove();
+				FolderService.renderFolderSelect(GeneralService.data.folders, 0);
 			}
 		});
 
@@ -247,6 +250,7 @@ export class GeneralService {
 		newNote.text = noteText;
 		newNote.date = new Date();
 		newNote.tags = [];
+		newNote.changesCounter = 0;
 
 		GeneralService.data.notes.push(newNote);
 		localStorage.setItem("structure", JSON.stringify(GeneralService.data));

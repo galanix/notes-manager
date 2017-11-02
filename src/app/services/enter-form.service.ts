@@ -47,13 +47,13 @@ export class EnterFormService {
 	static checkAccess = () => {
 
 		if (  EnterFormService.get_cookie("access")  ) {
-			if ( window.location.href == "http://localhost:4200/enter")   {
-				window.location.href = "http://localhost:4200/application";
+			if ( window.location.href == "https://galanix.github.io/notes-manager/enter")   {
+				window.location.href = "https://galanix.github.io/notes-manager/application";
 			}
 		} 
 		else if ( EnterFormService.get_cookie("access") === null ) {
-			if ( window.location.href == "http://localhost:4200/application" ) {
-				window.location.href = "http://localhost:4200/enter";	
+			if ( window.location.href == "https://galanix.github.io/notes-manager/application" ) {
+				window.location.href = "https://galanix.github.io/notes-manager/enter";	
 			}
 		} 
 	}

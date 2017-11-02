@@ -70,6 +70,12 @@ export class NoteService {
 			textArea.attr("data-textarea-id", latestNote.id);
 			editor.attr("data-editor-id", latestNote.id);
 			editorContent.html(latestNote.text);
+		} else {
+			noteTitle.html(null);
+			notesFolder.html(null);
+			noteTags.html(null);
+			textArea.html(null);
+			editor.val(null);
 		}
 	}
 
@@ -215,11 +221,6 @@ export class NoteService {
 			}
 			deleteNotesInFolderAgain(obj.children);
 		}
-	}
-
-// Drag-and-drop notes
-	static dragNote(): void {
-		
 	}
 
 	// Wrapper for note functions call

@@ -77,30 +77,6 @@ export class FolderService {
 		$("#folder_select").find(`option[data-folders-select-id="default"]`).remove();
 	}
 
-	// // Takes a folders array and turns it into a <ul>
-	// static parseFolders(folders: any) { 
-	// 	let ul: any = $(`<ul class="folder_content">`);
-	// 	if ( !(ul.parent().hasClass("folders")) )
-	// 		ul.append(`<div class="notes_wrapper">`);
-	// 	for(var i = 0; i < folders.length; i++) {
-	// 		ul.append(this.parseFolder(folders[i]));
-	// 	}
-	// 	return ul;
-	// }
-
-	// // Takes a folder object and turns it into a <li>
-	// static parseFolder(folder: any) { 
-	// 	let li: any = $("<li class='folder_li'>");
-	// 	let div: any = $("<div>");
-	// 	li.append(div);
-	// 	div.append(`<span data-folders-tree-id="${folder.id}" class="folder_name">
-	// 		<i class="fa folder" aria-hidden="true"></i> <i class="fa fa-folder-o" aria-hidden="true"></i> 
-	// 		${folder.name}</span>`);
-	// 	if(folder.children) 
-	// 		div.append(this.parseFolders(folder.children));
-	// 	return li;
-	// }
-
 		// Takes a folders array and turns it into a <ul>
 	static parseFolders(folders: any) { 
 		let ul: any = $(`<ul class="folder_content">`);

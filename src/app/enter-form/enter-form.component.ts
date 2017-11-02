@@ -26,11 +26,11 @@ export class EnterFormComponent implements OnInit {
 	enterAppPage(): void {
 		event.preventDefault();
 		let pass: any = $("#user_password").val();
-		$.getJSON("../../assets/pass.json", function(result: any) {
+		$.getJSON("https://galanix.github.io/notes-manager/assets/pass.json", function(result: any) {
 			if ( $("#user_name").val() === result.name && 
 				Md5.hashStr(pass) === result.password ) {
 				EnterFormService.set_cookie( "access", "granted", 2018, 2, 5, );
-			window.location.replace("http://localhost:4200/application");
+			window.location.replace("https://galanix.github.io/notes-manager/application");
 		}
 	});
 	}

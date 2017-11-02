@@ -29,7 +29,7 @@ export class WorkSpaceComponent implements OnInit {
 		private tagService: TagService,
 		private noteService: NoteService
 		) {  
-		this.ckeditorContent = `<p>Greetings from CKEditor...</p>`; 
+		this.ckeditorContent = ``; 
 	}
 
 	ngOnInit() {

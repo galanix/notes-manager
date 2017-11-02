@@ -5,4 +5,5 @@ export class Note {
 	text: any;
 	date: any;
 	tags: any;
+	changesCounter: number;
 }
