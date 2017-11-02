@@ -19,7 +19,7 @@ declare var CKEDITOR:any;
 })
 export class WorkSpaceComponent implements OnInit {
 	
-	private ckeditorContent: string;
+	 ckeditorContent: string;
 	editor: any;
 	private isReadOnly: boolean;
 
