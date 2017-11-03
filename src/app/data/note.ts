@@ -4,6 +4,8 @@ export class Note {
 	title: string;
 	text: any;
 	date: any;
-	tags: any;
 	changesCounter: number;
+	lastChange: any;
+	tags: any;
+	
 }

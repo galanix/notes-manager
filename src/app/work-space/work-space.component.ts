@@ -19,7 +19,7 @@ declare var CKEDITOR:any;
 })
 export class WorkSpaceComponent implements OnInit {
 	
-	 ckeditorContent: string;
+	ckeditorContent: string;
 	editor: any;
 	private isReadOnly: boolean;
 
@@ -150,6 +150,12 @@ showNote(): void {
 	let editor: any = $("#application .note_editor");
 	if ( $target.hasClass("note") && $(".edit").css("display") != "none" ) {
 		let noteID: number = $target.attr("data-note-id");
+		let noteObj: any = GeneralService.find(GeneralService.data.notes, noteID);
+
+		$(".creation_date").html(`Creation date: ${noteObj.date}`);
+		$(".note_changes").html(`Changes: ${noteObj.changesCounter}`);
+		$(".last_change").html(`Last change: ${noteObj.lastChange}`);
+
 		textArea.attr("data-textarea-id", noteID);
 		editor.attr("data-editor-id", noteID);
 		NoteService.renderNoteFields();
@@ -158,6 +164,12 @@ showNote(): void {
 	}
 	if ( $target.parent().hasClass("note") && $(".edit").css("display") != "none" ) {
 		let noteID: number = $target.parent().attr("data-note-id");
+		let noteObj: any = GeneralService.find(GeneralService.data.notes, noteID);
+		
+		$(".creation_date").html(`Creation date: ${noteObj.date}`);
+		$(".note_changes").html(`Changes: ${noteObj.changesCounter}`);
+		$(".last_change").html(`Last change: ${noteObj.lastChange}`);
+
 		textArea.attr("data-textarea-id", noteID);
 		editor.attr("data-editor-id", noteID);
 		NoteService.renderNoteFields();

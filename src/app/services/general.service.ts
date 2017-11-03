@@ -248,10 +248,11 @@ export class GeneralService {
 		}
 		newNote.title = noteTitle;
 		newNote.text = noteText;
-		newNote.date = new Date();
-		newNote.tags = [];
+		newNote.date = new Date().toLocaleString("ua");
 		newNote.changesCounter = 0;
-
+		newNote.lastChange = new Date().toLocaleString("ua");
+		newNote.tags = [];
+		
 		GeneralService.data.notes.push(newNote);
 		localStorage.setItem("structure", JSON.stringify(GeneralService.data));
 		localStorage.setItem("idNoteCounter", this.idNoteCounter);

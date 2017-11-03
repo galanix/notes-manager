@@ -66,6 +66,11 @@ export class NoteService {
 			noteTitle.html(latestNote.title);
 			let latestNoteFolder = GeneralService.find(GeneralService.data.folders, latestNote.folder);
 			notesFolder.html(`<i class="fa fa-folder-o" aria-hidden="true"></i> ${latestNoteFolder.name}`);
+
+			$(".creation_date").html(`Creation date: ${latestNote.date}`);
+			$(".note_changes").html(`Changes: ${latestNote.changesCounter}`);
+			$(".last_change").html(`Last change: ${latestNote.lastChange}`);
+
 			textArea.html(latestNote.text);
 			textArea.attr("data-textarea-id", latestNote.id);
 			editor.attr("data-editor-id", latestNote.id);

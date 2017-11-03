@@ -8,8 +8,6 @@ import {
 } from './index';
 
 declare var $: any;
-// import * as $ from 'jquery';
-
 
 @Component({
 	selector: 'app-header',
@@ -20,7 +18,6 @@ declare var $: any;
 export class HeaderComponent implements OnInit {
 	noteHTMLonEdit: any;
 	noteHTMLonSave: any;
-	noteChanges: number;
 
 	constructor(
 		private generalService: GeneralService,
@@ -95,7 +92,6 @@ export class HeaderComponent implements OnInit {
 
 	// Save text 
 	saveNote = (): void => {
-
 		let textArea: any = $("#textarea_editor");
 		let textContent: any = $(".cke_wysiwyg_frame").contents().find('body');
 		for (let i = 0; i < GeneralService.data.notes.length; i++) {
@@ -105,11 +101,13 @@ export class HeaderComponent implements OnInit {
 				textArea.hide().html(GeneralService.data.notes[i].text).show();
 			}
 			this.noteHTMLonSave = $(".cke_editable").html();
-			console.log(this.noteHTMLonSave);
-			if ( this.noteHTMLonSave != this.noteHTMLonEdit )
+			if ( this.noteHTMLonSave != this.noteHTMLonEdit ) {
 				GeneralService.data.notes[i].changesCounter++;
-			console.log(GeneralService.data.notes[i].changesCounter);
+				GeneralService.data.notes[i].lastChange = new Date().toLocaleString("ua");
+			}
 			localStorage.setItem("structure", JSON.stringify(GeneralService.data));
+			$(".note_changes").html(`Changes: ${GeneralService.data.notes[i].changesCounter}`);
+			$(".last_change").html(`Last change: ${GeneralService.data.notes[i].lastChange}`);
 		}
 		NoteService.returnEdit();
 	}
