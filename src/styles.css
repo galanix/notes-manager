@@ -298,12 +298,12 @@ body #popup_note_tag {
 	padding-bottom: 20px;
 }
 
-	.folders ul span i, 
-	.tags ul span i {
-		color: #0CC481;
-	}
+.folders ul span i, 
+.tags ul span i {
+	color: #0CC481;
+}
 
-	.folder_name, .tag_name {
+.folder_name, .tag_name {
 /*	display: -webkit-flex;
 	display: -moz-flex;
 	display: -ms-flex;
@@ -341,22 +341,22 @@ body #popup_note_tag {
 /*************************** jQuery Sortable ********************************/
 
 body.dragging, body.dragging * {
-  cursor: move !important;
+	cursor: move !important;
 }
 
 .dragged {
-  position: absolute;
-  opacity: 0.5;
-  z-index: 2000;
+	position: absolute;
+	opacity: 0.5;
+	z-index: 2000;
 }
 
 ol.example li.placeholder {
-  position: relative;
-  /** More li styles **/
+	position: relative;
+	/** More li styles **/
 }
 ol.example li.placeholder:before {
-  position: absolute;
-  /** Define arrowhead **/
+	position: absolute;
+	/** Define arrowhead **/
 }
 
 /*************************** jQuery Sortable end ********************************/
@@ -375,9 +375,51 @@ ol.example li.placeholder:before {
 }
 
 #note .note_title {
+	display: inline-block;
+	cursor: pointer;
 	font-size: 18px;
 	font-weight: 600;
 	padding: 5px 5px 5px 15px;
+}
+
+#note .note_title_edit { 
+	display: none;
+	position: relative;
+	padding-left: 10px;
+	padding-top: 10px;
+}
+
+#note .note_title_edit input {
+	border: 1px solid #CEC3C3;
+	margin-right: 10px;
+	padding: 8px 15px 8px 0;
+	text-indent: 15px;
+	
+}
+
+#note .note_title_popup {
+	display: none;
+	position: absolute;
+	left: 18px;
+	top: 50px;
+	width: 160px;
+	background-color: #555;
+	border-radius: 6px;
+	color: #fff;
+	padding: 8px 4px;
+	text-align: center;
+	z-index: 1;
+}
+
+#note .note_title_popup:after {
+	content: "";
+	position: absolute;
+	bottom: 100%;
+	left: 50%;
+	margin-left: -5px;
+	border-width: 5px;
+	border-style: solid;
+	border-color: transparent transparent #555 transparent;
 }
 
 .note_info {

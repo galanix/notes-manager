@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 
 import { 
 	EnterFormService, GeneralService,
@@ -7,7 +7,6 @@ import {
 } from './index';
 
 declare var $: any;
-// import * as $ from 'jquery';
 
 declare var CKEDITOR:any;
 
@@ -18,10 +17,9 @@ declare var CKEDITOR:any;
 	providers: [NoteService]
 })
 export class WorkSpaceComponent implements OnInit {
-	
+
 	ckeditorContent: string;
 	editor: any;
-	private isReadOnly: boolean;
 
 	constructor(
 		private generalService: GeneralService,
@@ -40,6 +38,18 @@ export class WorkSpaceComponent implements OnInit {
 		GeneralService.sortableFolders();
 		FolderService.delRootNoteWrappersFolders();
 	}
+
+	// // Shows text input to edit note title
+	// editNoteTitle(): void {
+	// 	if ( $("header .edit").css("display").toLowerCase() == "none" ) { 
+	// 		let inputContainer = $("#note .note_title_input");
+	// 		let title = $("#note .note_title");
+			
+	// 		inputContainer.children("input").attr("value", title.text());
+	// 		title.hide(300);
+	// 		inputContainer.show(300);
+	// 	}
+	// }
 
 	// Toggle folders to open and close in tree format
 	toggleFolders(): void {
@@ -165,7 +175,7 @@ showNote(): void {
 	if ( $target.parent().hasClass("note") && $(".edit").css("display") != "none" ) {
 		let noteID: number = $target.parent().attr("data-note-id");
 		let noteObj: any = GeneralService.find(GeneralService.data.notes, noteID);
-		
+
 		$(".creation_date").html(`Creation date: ${noteObj.date}`);
 		$(".note_changes").html(`Changes: ${noteObj.changesCounter}`);
 		$(".last_change").html(`Last change: ${noteObj.lastChange}`);

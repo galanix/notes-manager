@@ -1,5 +1,4 @@
-import { Injectable } from '@angular/core';
-// import { Subject } from 'rxjs/Subject';
+import { Injectable, Input, Output } from '@angular/core';
 
 import { GeneralService } from './general.service';
 import { TagService } from './tag.service';

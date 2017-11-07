@@ -75,18 +75,21 @@ export class HeaderComponent implements OnInit {
 		});
 	}
 
-	// Hide edit button and show save and delete buttons. Remove readonly from textarea
+	// Hide edit button and show save and delete buttons.
 	enableEdit = (): void  => {
 		if ( NoteService.findLatestNote() ) { 
 			$(".edit").css("display", "none");
 			$(".delete_note").css("display", "inline-block");
 			$(".save_note").css("display", "inline-block");
 
+			$(".note_title").hide();
+			$(".note_title_edit").children("input").attr("value", $(".note_title").text());
+			$(".note_title_edit").show();
+
 			$("#textarea_editor").hide();
 			$(".note_editor").show();
 			NoteService.renderNoteSize(6);
 			this.noteHTMLonEdit = $(".cke_editable").html();
-			console.log(this.noteHTMLonEdit);
 		}
 	}
 
@@ -94,23 +97,37 @@ export class HeaderComponent implements OnInit {
 	saveNote = (): void => {
 		let textArea: any = $("#textarea_editor");
 		let textContent: any = $(".cke_wysiwyg_frame").contents().find('body');
+		let input = $(".note_title_edit input");
 		for (let i = 0; i < GeneralService.data.notes.length; i++) {
-			if ( GeneralService.data.notes[i].id == $(".note_editor").attr("data-editor-id") ) {
+			if ( GeneralService.data.notes[i].id == $(".note_editor").attr("data-editor-id") && input.val().length >= 1 ) {
 				GeneralService.data.notes[i].text = textContent.html();
+				GeneralService.data.notes[i].title = input.val();
+				$(".note_title").text(input.val());
 				localStorage.setItem("structure", JSON.stringify(GeneralService.data));
-				textArea.hide().html(GeneralService.data.notes[i].text).show();
+				
 			}
 			this.noteHTMLonSave = $(".cke_editable").html();
 			if ( this.noteHTMLonSave != this.noteHTMLonEdit ) {
 				GeneralService.data.notes[i].changesCounter++;
 				GeneralService.data.notes[i].lastChange = new Date().toLocaleString("ua");
 			}
-			localStorage.setItem("structure", JSON.stringify(GeneralService.data));
-			$(".note_changes").html(`Changes: ${GeneralService.data.notes[i].changesCounter}`);
-			$(".last_change").html(`Last change: ${GeneralService.data.notes[i].lastChange}`);
+			if ( input.val().length >= 1 ) { 
+				localStorage.setItem("structure", JSON.stringify(GeneralService.data));
+				$(".note_title_edit").hide();
+				$(".note_title").show();
+				$(".note_changes").html(`Changes: ${GeneralService.data.notes[i].changesCounter}`);
+				$(".last_change").html(`Last change: ${GeneralService.data.notes[i].lastChange}`);
+				textArea.hide().html(GeneralService.data.notes[i].text).show();
+				NoteService.returnEdit();
+			} else {
+				$("#note .note_title_popup").slideDown(300);
+				setTimeout( () => {
+					$("#note .note_title_popup").slideUp(300)
+				}, 2600 );
+				}
+			}
 		}
-		NoteService.returnEdit();
-	}
+	
 
 	deleteNote(): void {
 		let workTextarea: any = $("#textarea_editor");
