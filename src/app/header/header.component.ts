@@ -120,12 +120,10 @@ export class HeaderComponent implements OnInit {
 				textArea.hide().html(GeneralService.data.notes[i].text).show();
 				NoteService.returnEdit();
 			} else {
-				$("#note .note_title_popup").slideDown(300);
-				setTimeout( () => {
-					$("#note .note_title_popup").slideUp(300)
-				}, 2600 );
+				$("#note .note_title_popup").slideDown(300).delay(2600).slideUp(300);
 				}
 			}
+			NoteService.renderNotes(GeneralService.data.notes);
 		}
 	
 

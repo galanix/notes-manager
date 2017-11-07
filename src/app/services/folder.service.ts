@@ -103,7 +103,7 @@ export class FolderService {
 	static delRootNoteWrappersFolders(): void {
 		let root = $(`span[data-folders-tree-id="root"]`);
 		root.siblings("ul").children(".notes_wrapper ").remove();
-		root.parent().parent("li").siblings(".notes_wrapper").remove();
+		root.parent().siblings(".notes_wrapper").remove();
 	}
 
 	// Render folders tree  with open or close folders

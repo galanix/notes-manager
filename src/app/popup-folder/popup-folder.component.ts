@@ -33,6 +33,7 @@ export class PopupFolderComponent implements OnInit {
 			FolderService.folderWrapper();
 		}
 		FolderService.resetOnCloseWrapper();
+		FolderService.delRootNoteWrappersFolders();
 	}
 
 	// Delete folder and render data in select and sidebar. Ask to delte or move notes to another folder

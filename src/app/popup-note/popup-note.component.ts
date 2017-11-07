@@ -46,7 +46,7 @@ export class PopupNoteComponent implements OnInit {
 			NoteService.renderNotes(GeneralService.data.notes);
 			FolderService.renderFoldersDisplay(GeneralService.data.folders);
 		}
-
+		FolderService.delRootNoteWrappersFolders();
 		let latestNote: any = NoteService.findLatestNote();
 		textArea.attr("data-textarea-id", latestNote.id);
 		NoteService.noteWrapper();
@@ -54,5 +54,7 @@ export class PopupNoteComponent implements OnInit {
 
 		$("#popup_note").fadeOut(500);
 		(<HTMLFormElement>$("#popup_note form")[0]).reset();
+		
 	}
+
 }

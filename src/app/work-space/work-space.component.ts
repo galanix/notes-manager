@@ -39,17 +39,6 @@ export class WorkSpaceComponent implements OnInit {
 		FolderService.delRootNoteWrappersFolders();
 	}
 
-	// // Shows text input to edit note title
-	// editNoteTitle(): void {
-	// 	if ( $("header .edit").css("display").toLowerCase() == "none" ) { 
-	// 		let inputContainer = $("#note .note_title_input");
-	// 		let title = $("#note .note_title");
-			
-	// 		inputContainer.children("input").attr("value", title.text());
-	// 		title.hide(300);
-	// 		inputContainer.show(300);
-	// 	}
-	// }
 
 	// Toggle folders to open and close in tree format
 	toggleFolders(): void {
