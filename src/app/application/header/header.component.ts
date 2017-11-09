@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-// import { WorkSpaceComponent } from '../work-space/work-space.component';
 
 import { 
 	EnterFormService, GeneralService,
@@ -28,7 +27,6 @@ export class HeaderComponent implements OnInit {
 
 	ngOnInit() {
 		this.renderLogoAndUserName();
-		$( "#logo" ).draggable();
 	}
 
 	// Open folder popup
@@ -150,7 +148,7 @@ export class HeaderComponent implements OnInit {
 	// Content page on click X delete coockieand redirect to form page
 	exitAppPage(): void {
 		EnterFormService.delete_cookie("access");
-		window.location.replace("http://localhost:4200/enter");
+		window.location.replace("https://galanix.github.io/notes-manager/enter");
 	}
 
 	// Change logo and user name

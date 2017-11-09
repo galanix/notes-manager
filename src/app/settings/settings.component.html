@@ -1,0 +1,8 @@
+<header>
+	<span (click)="content.showContent('markup')">Markup</span>
+	<span (click)="content.showContent('color')">Color scheme</span>
+	<span class="go_main_page" routerLink="/application">
+		<fa name="backward" aria-hidden="true"></fa>
+	</span>
+</header>
+<app-settings-work-space #content></app-settings-work-space>

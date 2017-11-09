@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 
 import { GeneralService } from './general.service';
+import { FolderService } from './folder.service';
 import { NoteService } from './note.service';
 
 declare var $: any;
@@ -143,9 +144,9 @@ export class TagService {
 		this.renderTagsDisplay(GeneralService.data.tags);
 		NoteService.renderNoteFields();
 		NoteService.renderNoteSize(-10);
-		GeneralService.dragNotesFolders();
-		GeneralService.dropNotesFolders();
-		GeneralService.sortableFolders();
+		NoteService.dragNotesFolders();
+		NoteService.dropNotesFolders();
+		FolderService.sortableFolders();
 	}
 
 }

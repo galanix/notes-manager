@@ -5,6 +5,7 @@ import { Tag } from '../data/tag';
 import { Note } from '../data/note';
 
 import { FolderService } from './folder.service'
+import { NoteService } from './note.service'
 
 declare var $: any;
 // import * as $ from 'jquery';
@@ -42,8 +43,6 @@ export class GeneralService {
 
 
 	static addSortableClass(): void {
-		// $(".folders").children(".folder_content").children().children().children("ul").addClass("sortable");
-		// $(".folders > .folder_content").addClass("sortable");
 		let sortableUl = $(".folders").find(".folder_content")[1];
 		let $sortableUl = $(sortableUl);
 		$sortableUl.addClass("sortable");
@@ -53,96 +52,6 @@ export class GeneralService {
 		$("#application .sidebar_wrapper").resizable({
 			handles: 'e, w',
 		});
-	}
-
-	// Make notes draggable and add styles to draggable note
-	static dragNotesFolders(): void {
-		$(".folders .note").draggable({
-			containment: $(".folders"),
-			helper:"clone",
-			start: function(event, ui) {
-				$(this).addClass("drag_el");
-			},
-			stop: function(event, ui) {
-				$(this).removeClass("drag_el");
-			}
-		});
-	}
-
-	// Remove dragged note from start place and add it to goal place
-	static dropNotesFolders(): void {
-		$(".notes_wrapper").droppable({
-			tolerance: "touch",
-			accept: ".folders .note",
-			// Add additional padding to make dropping notes easier
-			over: function( event, ui ) {
-				$(this).css("padding-bottom", (index) => {
-					return index + 20;
-				});
-			},
-			// Remove additional padding on out
-			out: function( event, ui ) {
-				$(this).css("padding-bottom", (index) => {
-					return index;
-				});
-			},
-			// Remove additional padding on drop
-			drop:function( event, ui ) {
-				ui.draggable.detach().appendTo($(this));
-				$(this).css("padding-bottom", (index) => {
-					return index;
-				});
-
-				let draggedNote = GeneralService.find(GeneralService.data.notes, ui.draggable.attr("data-note-id"));
-				let newFolderId = $(this).parent("ul").siblings(".folder_name").attr("data-folders-tree-id");
-
-				draggedNote.folder = newFolderId;
-				localStorage.setItem("structure", JSON.stringify(GeneralService.data));
-			},
-			activate: function( event, ui ) {
-				let target = $(event.target);
-				let spanFolder = target.parent().siblings("span");
-				let findedObj: any = GeneralService.find(GeneralService.data.folders, spanFolder.attr("data-folders-tree-id"));
-				// If folder has no children or notes makes it possible to add notes to it
-				if ( $(this).length <= 1 && $(this).parent().children().length <= 1 ) {
-					findedObj.display = "block";
-					localStorage.setItem("structure", JSON.stringify(GeneralService.data));
-					spanFolder.children(".folder").removeClass("fa-angle-right").addClass("fa-angle-down");
-				}
-			}
-		});
-	}
-
-	static sortableFolders(): void {
-		$(".sortable").sortable({
-			handle: ".folder_name",
-			onDrop: function ($item, container, _super) {
-				container.el.removeClass("active");
-				_super($item, container);
-				let draggedFolderId: number = $item.children("span").attr("data-folders-tree-id");
-				let draggedFolderObj: any = GeneralService.find(GeneralService.data.folders, draggedFolderId);
-				let draggedFolderArr: any = GeneralService.findParent(GeneralService.data.folders, draggedFolderId);
-				let indexDraggedFolder: number = draggedFolderArr.indexOf(draggedFolderObj);
-				
-				let newFolderParent: any = $item.parent().siblings("span");
-				let targetFolder: any = GeneralService.find(GeneralService.data.folders, newFolderParent.attr("data-folders-tree-id"));
-				let splicedFolderObj: any = draggedFolderArr.splice(indexDraggedFolder, 1);
-				
-				let nextFolderId: any = $item.next().children("span").attr("data-folders-tree-id");
-				let nextFolderObj: any = GeneralService.find(GeneralService.data.folders, nextFolderId);
-				let indexNextFolder: any = targetFolder.children.indexOf(nextFolderObj);
-
-				if ( nextFolderId != -1 )
-					targetFolder.children.splice(indexNextFolder, 0, splicedFolderObj[0]);
-				else
-					targetFolder.children.push(splicedFolderObj[0]);
-
-				localStorage.setItem("structure", JSON.stringify(GeneralService.data));
-				$("#folder_select option").remove();
-				FolderService.renderFolderSelect(GeneralService.data.folders, 0);
-			}
-		});
-
 	}
 
 	// Find and return nested object 

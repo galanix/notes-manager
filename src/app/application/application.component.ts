@@ -7,7 +7,6 @@ import {
 } from './index';
 
 declare var $: any;
-// import * as $ from 'jquery';
 
 @Component({
 	selector: 'app-application',

@@ -1,6 +1,7 @@
 import { Injectable, Input, Output } from '@angular/core';
 
 import { GeneralService } from './general.service';
+import { FolderService } from './folder.service';
 import { TagService } from './tag.service';
 
 declare var $: any;
@@ -133,6 +134,65 @@ export class NoteService {
 		}
 	}
 
+	// Make notes draggable and add styles to draggable note
+	static dragNotesFolders(): void {
+		$(".folders .note").draggable({
+			containment: $(".folders"),
+			helper:"clone",
+			start: function(event, ui) {
+				$(this).addClass("drag_el");
+			},
+			stop: function(event, ui) {
+				$(this).removeClass("drag_el");
+			}
+		});
+	}
+
+	// Remove dragged note from start place and add it to goal place
+	static dropNotesFolders(): void {
+		$(".notes_wrapper").droppable({
+			tolerance: "touch",
+			accept: ".folders .note",
+			// Add additional padding to make dropping notes easier
+			over: function( event, ui ) {
+				$(this).css("padding-bottom", (index) => {
+					return index + 20;
+				});
+			},
+			// Remove additional padding on out
+			out: function( event, ui ) {
+				$(this).css("padding-bottom", (index) => {
+					return index;
+				});
+			},
+			// Remove additional padding on drop
+			drop:function( event, ui ) {
+				ui.draggable.detach().appendTo($(this));
+				$(this).css("padding-bottom", (index) => {
+					return index;
+				});
+
+				let draggedNote = GeneralService.find(GeneralService.data.notes, ui.draggable.attr("data-note-id"));
+				let newFolderId = $(this).parent("ul").siblings(".folder_name").attr("data-folders-tree-id");
+
+				draggedNote.folder = newFolderId;
+				localStorage.setItem("structure", JSON.stringify(GeneralService.data));
+				NoteService.renderNoteFields();
+			},
+			activate: function( event, ui ) {
+				let target = $(event.target);
+				let spanFolder = target.parent().siblings("span");
+				let findedObj: any = GeneralService.find(GeneralService.data.folders, spanFolder.attr("data-folders-tree-id"));
+				// If folder has no children or notes makes it possible to add notes to it
+				if ( $(this).length <= 1 && $(this).parent().children().length <= 1 ) {
+					findedObj.display = "block";
+					localStorage.setItem("structure", JSON.stringify(GeneralService.data));
+					spanFolder.children(".folder").removeClass("fa-angle-right").addClass("fa-angle-down");
+				}
+			}
+		});
+	}
+
 	// Check if folder or subfolders has notes
 	static checkNotesInFolders(obj: any) {
 		obj.notRenderInSelect = true;
@@ -233,9 +293,9 @@ export class NoteService {
 		TagService.checkNoteForAddTag();
 		TagService.renderTags();
 		this.renderNoteSize(-10);
-		GeneralService.dragNotesFolders();
-		GeneralService.dropNotesFolders();
-		GeneralService.sortableFolders();
+		NoteService.dragNotesFolders();
+		NoteService.dropNotesFolders();
+		FolderService.sortableFolders();
 	}
 
 	// Wrapper for click on save or delete button

@@ -77,7 +77,7 @@ export class FolderService {
 		$("#folder_select").find(`option[data-folders-select-id="default"]`).remove();
 	}
 
-		// Takes a folders array and turns it into a <ul>
+	// Takes a folders array and turns it into a <ul>
 	static parseFolders(folders: any) { 
 		let ul: any = $(`<ul class="folder_content">`);
 		if ( !(ul.parent().hasClass("folders")) )
@@ -153,6 +153,38 @@ export class FolderService {
 			}
 		}
 
+		static sortableFolders(): void {
+			$(".sortable").sortable({
+				handle: ".folder_name",
+				onDrop: function ($item, container, _super) {
+					container.el.removeClass("active");
+					_super($item, container);
+					let draggedFolderId: number = $item.children("span").attr("data-folders-tree-id");
+					let draggedFolderObj: any = GeneralService.find(GeneralService.data.folders, draggedFolderId);
+					let draggedFolderArr: any = GeneralService.findParent(GeneralService.data.folders, draggedFolderId);
+					let indexDraggedFolder: number = draggedFolderArr.indexOf(draggedFolderObj);
+
+					let newFolderParent: any = $item.parent().siblings("span");
+					let targetFolder: any = GeneralService.find(GeneralService.data.folders, newFolderParent.attr("data-folders-tree-id"));
+					let splicedFolderObj: any = draggedFolderArr.splice(indexDraggedFolder, 1);
+
+					let nextFolderId: any = $item.next().children("span").attr("data-folders-tree-id");
+					let nextFolderObj: any = GeneralService.find(GeneralService.data.folders, nextFolderId);
+					let indexNextFolder: any = targetFolder.children.indexOf(nextFolderObj);
+
+					if ( nextFolderId != -1 )
+						targetFolder.children.splice(indexNextFolder, 0, splicedFolderObj[0]);
+					else
+						targetFolder.children.push(splicedFolderObj[0]);
+
+					localStorage.setItem("structure", JSON.stringify(GeneralService.data));
+					$("#folder_select option").remove();
+					FolderService.renderFolderSelect(GeneralService.data.folders, 0);
+				}
+			});
+		}
+
+
 		// Wrapper for folder functions call
 		static folderWrapper() {
 			$(".folders_tree").find("option").not(".select_root").remove();
@@ -168,9 +200,9 @@ export class FolderService {
 
 		// Wrapper for reset actions on popup close
 		static resetOnCloseWrapper() {
-			GeneralService.dragNotesFolders();
-			GeneralService.dropNotesFolders();
-			GeneralService.sortableFolders();
+			NoteService.dragNotesFolders();
+			NoteService.dropNotesFolders();
+			FolderService.sortableFolders();
 			$("#popup_folder").fadeOut(500);
 			$("#popup_folder #folder_name").val(null);
 			$("#popup_folder .popup_delete_notes_wrapper").hide();

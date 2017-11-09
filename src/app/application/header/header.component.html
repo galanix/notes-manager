@@ -7,6 +7,8 @@
 			<span class="edit" (click)="enableEdit()"><fa name="pencil" aria-hidden="true"></fa></span>
 			<span class="save_note" (click)="saveNote()"><fa name="floppy-o" aria-hidden="true"></fa></span>
 			<span class="delete_note" (click)="deleteNote()"><fa name="trash-o" aria-hidden="true"></fa></span>
-			<div class="header_right"><span class="settings"><fa name="cogs" aria-hidden="true"></fa></span>
-			<span class="close" (click)="exitAppPage()"><fa name="times" aria-hidden="true"></fa></span></div>
+			<div class="header_right">
+				<span class="settings_link" routerLink="/settings"><fa name="cogs" aria-hidden="true"></fa></span>
+				<span class="close" (click)="exitAppPage()"><fa name="times" aria-hidden="true"></fa></span>
+			</div>
 		</header>

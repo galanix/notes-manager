@@ -1,15 +1,13 @@
 import { Injectable } from '@angular/core';
-import { RouterModule, Routes } from '@angular/router';
 
 declare var $: any;
-// import * as $ from 'jquery';
 
 @Injectable()
 export class EnterFormService {
 
 	constructor() { }
 
-// ************************************ COOKIES FUNCTION **********************************************
+	// ************************************ COOKIES FUNCTION **********************************************
 	static set_cookie = ( name: string, value: string, exp_y: number, 
 		exp_m: number, exp_d: number, path?: string, domain?: string, secure?: boolean ) => {
 		var cookie_string: string = name + "=" + encodeURI( value );
@@ -27,11 +25,7 @@ export class EnterFormService {
 	}
 
 	static delete_cookie = ( cookie_name: string ) => {
-		var current_date = new Date;
-		var cookie_year: number = current_date.getFullYear ( );
-		var cookie_month: number = current_date.getMonth ( );
-		var cookie_day: number = current_date.getDate ( ) - 1;  // Даём кукам дату вчерашним днём, поэтому они удаляются
-		EnterFormService.set_cookie ( cookie_name, "", cookie_year, cookie_month, cookie_day, "/" );
+		document.cookie = cookie_name + '=;expires=Thu, 01 Jan 1970 00:00:01 GMT;';
 	}
 
 	static get_cookie ( cookie_name: string ) {
@@ -45,16 +39,20 @@ export class EnterFormService {
 
 	// Check if we have access=granted coockie
 	static checkAccess = () => {
-
-		if (  EnterFormService.get_cookie("access")  ) {
-			if ( window.location.href == "https://galanix.github.io/notes-manager/enter")   {
-				window.location.href = "https://galanix.github.io/notes-manager/application";
+		console.log("window.location.href: ", window.location.href);
+		if ( EnterFormService.get_cookie("access") ) {
+			// if ( window.location.href == "https://galanix.github.io/notes-manager/enter" ) { 
+			if ( window.location.href == "http://localhost:4200/enter" ) { 
+				// window.location.href = "https://galanix.github.io/notes-manager/application";
+				window.location.href = "http://localhost:4200/application";
 			}
 		} 
 		else if ( EnterFormService.get_cookie("access") === null ) {
-			if ( window.location.href == "https://galanix.github.io/notes-manager/application" ) {
-				window.location.href = "https://galanix.github.io/notes-manager/enter";	
-			}
+			// if ( window.location.href != "https://galanix.github.io/notes-manager/enter"  ) { 
+			if ( window.location.href != "http://localhost:4200/enter"  ) { 
+			// window.location.href = "https://galanix.github.io/notes-manager/enter";
+			window.location.href = "http://localhost:4200/enter";
+			}	
 		} 
 	}
 }

@@ -1,0 +1,33 @@
+header {
+	position: relative;
+	background-color: #0CC481;
+	padding: 10px;
+	-webkit-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	-o-user-select: none;
+	user-select: none;
+}
+
+header span {
+	display: inline-block;
+	color: #fff;
+	cursor: pointer;
+	font-size: 22px;
+	letter-spacing: 1px;
+	margin-right: 10px;
+	padding: 8px;
+
+	-webkit-transition: opacity 0.2s ease-in-out;
+	-o-transition: opacity 0.2s ease-in-out;
+	transition: opacity 0.2s ease-in-out;
+}
+
+header span:hover { opacity: 0.8; }
+
+.go_main_page { float: right; }
+
+.go_main_page {
+	outline: none;
+	border: none;
+}

@@ -31,11 +31,12 @@ export class WorkSpaceComponent implements OnInit {
 	}
 
 	ngOnInit() {
+		EnterFormService.checkAccess();
 		GeneralService.addSortableClass();
 		GeneralService.resizeSidebar();
-		GeneralService.dragNotesFolders();
-		GeneralService.dropNotesFolders();
-		GeneralService.sortableFolders();
+		NoteService.dragNotesFolders();
+		NoteService.dropNotesFolders();
+		FolderService.sortableFolders();
 		FolderService.delRootNoteWrappersFolders();
 	}
 

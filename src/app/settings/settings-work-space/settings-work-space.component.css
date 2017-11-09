@@ -1,0 +1,46 @@
+.settings_content { 
+	display: none;
+	padding: 18px;
+}
+
+.form_choice {
+	display: inline-block;
+	margin-right: 15px;
+}
+
+.form_choice:last-of-type { margin-right: 0; }
+
+.cols {
+	cursor: pointer;
+}
+
+.cols td {
+	width: 25px;
+	height: 60px;
+	border: 5px solid #000;
+
+	-webkit-transition: border-color 0.2s ease-in-out;
+	-o-transition: border-color 0.2s ease-in-out;
+	transition: border-color 0.2s ease-in-out;
+}
+
+.form_choice input[type="radio"] {
+	width: 0;
+	height: 0;
+	opacity: 0;
+}
+
+.form_choice input[type="radio"]:checked + label .cols td{ border-color: #0CC481; }
+
+.markup_btn {
+	display: block;
+	background-color: #0CC481;
+	border: none;
+	color: #fff;
+	cursor: pointer;
+	font-size: 16px;
+	letter-spacing: 1px;
+	margin-top: 20px;
+	padding: 7px 10px;
+}
+

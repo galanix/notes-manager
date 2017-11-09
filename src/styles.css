@@ -304,11 +304,6 @@ body #popup_note_tag {
 }
 
 .folder_name, .tag_name {
-/*	display: -webkit-flex;
-	display: -moz-flex;
-	display: -ms-flex;
-	display: -o-flex;
-	display: flex;*/
 	display: table;
 	cursor: pointer;
 	margin-bottom: 3px;
@@ -505,12 +500,6 @@ ol.example li.placeholder:before {
 
 .note_editor { display: none; }
 
-/*.folder_content { padding-bottom: 10px; padding-top: 10px; }*/
-
-/*.folder_li { display: table-cell; }*/
-
-/*.sortable { height: 300px; width: 400px;}*/
-
 .placeholder {
 	outline: 1px dashed #0CC481;
 	width: 100px;	
@@ -519,8 +508,6 @@ ol.example li.placeholder:before {
 
 .ui-resizable-e, .ui-resizable-w { width: 15px; }
 
-/*#cke_1_top { display: none; }
-#cke_editor1 { display: block; }*/
 
 /************************* NOTE end *********************************************/
 
