@@ -39,7 +39,6 @@ export class EnterFormService {
 
 	// Check if we have access=granted coockie
 	static checkAccess = () => {
-		console.log("window.location.href: ", window.location.href);
 		if ( EnterFormService.get_cookie("access") ) {
 			// if ( window.location.href == "https://galanix.github.io/notes-manager/enter" ) { 
 			if ( window.location.href == "http://localhost:4200/enter" ) { 

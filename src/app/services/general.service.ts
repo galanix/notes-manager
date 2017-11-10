@@ -8,7 +8,6 @@ import { FolderService } from './folder.service'
 import { NoteService } from './note.service'
 
 declare var $: any;
-// import * as $ from 'jquery';
 
 @Injectable()
 export class GeneralService {
@@ -41,6 +40,8 @@ export class GeneralService {
 	static idNoteCounter: any = (localStorage.getItem("idNoteCounter")) 
 	? localStorage.getItem("idNoteCounter") : 0;
 
+	markup_3cols: any = (localStorage.getItem("markup_3cols"))
+	? localStorage.getItem("markup_3cols") : false;
 
 	static addSortableClass(): void {
 		let sortableUl = $(".folders").find(".folder_content")[1];
@@ -168,6 +169,16 @@ export class GeneralService {
 		localStorage.setItem("noteDate", noteDate);
 		this.idNoteCounter++;
 	}
+
+	  // Check markup flag and set 2 or 3 columns markup
+  checkMarkup():void {
+  	let markup_3cols: any = localStorage.getItem("markup_3cols");
+  	if ( markup_3cols == "true" ) {
+  		this.markup_3cols = true;
+  	} else if ( markup_3cols == "false" ) {
+  		this.markup_3cols = false;
+  	}
+  }
 
 }
 

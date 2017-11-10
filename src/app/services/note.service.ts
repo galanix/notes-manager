@@ -115,83 +115,110 @@ export class NoteService {
 	// Render notes in sidebar tree
 	static renderNotes(folders: any) {
 		$("#sidebar").find(".note").remove();
+		let notesUl: any = $("<ul>");
 		for (let i = 0; i < folders.length; i++) {
 			let item: any = folders[i];
 			let id: any = item.id;
 			let folderID: any = item.folder;
-			let foldersSpan: any = $(`.folders span[data-folders-tree-id="${folderID}"]`);
-			let folderUl: any = foldersSpan.next("ul").children(".notes_wrapper");
-			folderUl.append(`<span data-note-id="${id}" class="note"><i class="fa fa-sticky-note-o" aria-hidden="true"></i>
-				${item.title}</span>`);
+			let foldersLi: any = $(`.folders span[data-folders-tree-id="${folderID}"]`);
+			let folderUl: any = foldersLi.next("ul").find(".notes_container");
+			folderUl.append(`<li data-note-id="${id}" class="note"><i class="fa fa-sticky-note-o" aria-hidden="true"></i>
+				${item.title}</li>`);
 
 			let noteTags: any = item.tags;
 			for (let j = 0; j < noteTags.length; j++) {
-				let tagSpan: any = $(`.tags span[data-tags-tree-id="${noteTags[j]}"]`);
-				let tagUl: any = tagSpan.next("ul");
-				tagUl.append(`<span data-note-id="${id}" class="note"><i class="fa fa-sticky-note-o" aria-hidden="true"></i>
-					${item.title}</span>`);
+				let tagLi: any = $(`.tags span[data-tags-tree-id="${noteTags[j]}"]`);
+				let tagUl: any = tagLi.next("ul");
+				tagUl.append(`<li data-note-id="${id}" class="note"><i class="fa fa-sticky-note-o" aria-hidden="true"></i>
+					${item.title}</li>`);
 			}
 		}
 	}
 
-	// Make notes draggable and add styles to draggable note
-	static dragNotesFolders(): void {
-		$(".folders .note").draggable({
-			containment: $(".folders"),
-			helper:"clone",
-			start: function(event, ui) {
-				$(this).addClass("drag_el");
+	// Render notes in additional column
+	renderNotesInColumn(notes: any) {
+
+	}
+
+// Notes can change folder and order in folder
+	sortableNotes(): void {
+		$(".notes_container").sortable({
+			group: "notes_container",
+			handle: ".note",
+			itemSelector: ".note",
+			onDragStart: function ($item, container, _super, event) {
+				$(".notes_wrapper ul").css("padding-bottom", 5);
+
 			},
-			stop: function(event, ui) {
-				$(this).removeClass("drag_el");
+			onDrop: function ($item, container, _super, event) {
+				$(".notes_wrapper ul").css("padding-bottom", 0);
+				let noteObj: any = GeneralService.find(GeneralService.data.notes, $item.attr("data-note-id"));
+				let newFolder: any = $item.parent().parent().parent().siblings("span");
+				noteObj.folder = newFolder.attr("data-folders-tree-id");
+				localStorage.setItem("structure", JSON.stringify(GeneralService.data)); 
+
 			}
 		});
 	}
 
-	// Remove dragged note from start place and add it to goal place
-	static dropNotesFolders(): void {
-		$(".notes_wrapper").droppable({
-			tolerance: "touch",
-			accept: ".folders .note",
-			// Add additional padding to make dropping notes easier
-			over: function( event, ui ) {
-				$(this).css("padding-bottom", (index) => {
-					return index + 20;
-				});
-			},
-			// Remove additional padding on out
-			out: function( event, ui ) {
-				$(this).css("padding-bottom", (index) => {
-					return index;
-				});
-			},
-			// Remove additional padding on drop
-			drop:function( event, ui ) {
-				ui.draggable.detach().appendTo($(this));
-				$(this).css("padding-bottom", (index) => {
-					return index;
-				});
+	// // Make notes draggable and add styles to draggable note
+	// static dragNotesFolders(): void {
+	// 	$(".folders .note").draggable({
+	// 		containment: $(".folders"),
+	// 		helper:"clone",
+	// 		start: function(event, ui) {
+	// 			$(this).addClass("drag_el");
+	// 		},
+	// 		stop: function(event, ui) {
+	// 			$(this).removeClass("drag_el");
+	// 		}
+	// 	});
+	// }
 
-				let draggedNote = GeneralService.find(GeneralService.data.notes, ui.draggable.attr("data-note-id"));
-				let newFolderId = $(this).parent("ul").siblings(".folder_name").attr("data-folders-tree-id");
+	// // Remove dragged note from start place and add it to goal place
+	// static dropNotesFolders(): void {
+	// 	$(".notes_wrapper").droppable({
+	// 		tolerance: "touch",
+	// 		accept: ".folders .note",
+	// 		// Add additional padding to make dropping notes easier
+	// 		over: function( event, ui ) {
+	// 			$(this).css("padding-bottom", (index) => {
+	// 				return index + 20;
+	// 			});
+	// 		},
+	// 		// Remove additional padding on out
+	// 		out: function( event, ui ) {
+	// 			$(this).css("padding-bottom", (index) => {
+	// 				return index;
+	// 			});
+	// 		},
+	// 		// Remove additional padding on drop
+	// 		drop:function( event, ui ) {
+	// 			ui.draggable.detach().appendTo($(this));
+	// 			$(this).css("padding-bottom", (index) => {
+	// 				return index;
+	// 			});
 
-				draggedNote.folder = newFolderId;
-				localStorage.setItem("structure", JSON.stringify(GeneralService.data));
-				NoteService.renderNoteFields();
-			},
-			activate: function( event, ui ) {
-				let target = $(event.target);
-				let spanFolder = target.parent().siblings("span");
-				let findedObj: any = GeneralService.find(GeneralService.data.folders, spanFolder.attr("data-folders-tree-id"));
-				// If folder has no children or notes makes it possible to add notes to it
-				if ( $(this).length <= 1 && $(this).parent().children().length <= 1 ) {
-					findedObj.display = "block";
-					localStorage.setItem("structure", JSON.stringify(GeneralService.data));
-					spanFolder.children(".folder").removeClass("fa-angle-right").addClass("fa-angle-down");
-				}
-			}
-		});
-	}
+	// 			let draggedNote = GeneralService.find(GeneralService.data.notes, ui.draggable.attr("data-note-id"));
+	// 			let newFolderId = $(this).parent("ul").siblings(".folder_name").attr("data-folders-tree-id");
+
+	// 			draggedNote.folder = newFolderId;
+	// 			localStorage.setItem("structure", JSON.stringify(GeneralService.data));
+	// 			NoteService.renderNoteFields();
+	// 		},
+	// 		activate: function( event, ui ) {
+	// 			let target = $(event.target);
+	// 			let spanFolder = target.parent().siblings("span");
+	// 			let findedObj: any = GeneralService.find(GeneralService.data.folders, spanFolder.attr("data-folders-tree-id"));
+	// 			// If folder has no children or notes makes it possible to add notes to it
+	// 			if ( $(this).length <= 1 && $(this).parent().children().length <= 1 ) {
+	// 				findedObj.display = "block";
+	// 				localStorage.setItem("structure", JSON.stringify(GeneralService.data));
+	// 				spanFolder.children(".folder").removeClass("fa-angle-right").addClass("fa-angle-down");
+	// 			}
+	// 		}
+	// 	});
+	// }
 
 	// Check if folder or subfolders has notes
 	static checkNotesInFolders(obj: any) {
@@ -293,8 +320,8 @@ export class NoteService {
 		TagService.checkNoteForAddTag();
 		TagService.renderTags();
 		this.renderNoteSize(-10);
-		NoteService.dragNotesFolders();
-		NoteService.dropNotesFolders();
+		// NoteService.dragNotesFolders();
+		// NoteService.dropNotesFolders();
 		FolderService.sortableFolders();
 	}
 

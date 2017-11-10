@@ -1,0 +1,12 @@
+.notes_info {
+	width: 300px;
+	height: 1000px;
+	background-color: #CEF0D8;
+	border-right: 2px solid lightgray;
+}
+
+.notes_info h2 {
+	padding-top: 10px;
+	text-align: center;
+}
+

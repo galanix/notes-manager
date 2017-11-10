@@ -15,7 +15,9 @@ declare var $: any;
 })
 export class ApplicationComponent implements OnInit {
 
-	constructor() { }
+	constructor(
+		private generalService: GeneralService
+		) { }
 
 	// Starting call of functions
 	ngOnInit() {
@@ -31,6 +33,7 @@ export class ApplicationComponent implements OnInit {
 			TagService.paddingCheck();
 			TagService.renderTags();
 		}, 1000);
+		this.generalService.checkMarkup();
 		FolderService.renderFolderSelect(GeneralService.data.folders, 0);
 		TagService.renderTagSelect(GeneralService.data.tags, 0);
 		GeneralService.idFolderCounter++;

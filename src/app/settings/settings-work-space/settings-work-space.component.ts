@@ -1,5 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 
+import { 
+	GeneralService
+ } from './index';
 
 declare var $: any;
 
@@ -10,11 +13,14 @@ declare var $: any;
 })
 export class SettingsWorkSpaceComponent implements OnInit {
 
-  constructor() { }
+  constructor(
+  	private generalService:GeneralService
+  	) { }
 
   ngOnInit() {
   }
 
+// Show tab content in settings page
   showContent(tab: string): void {
   	let tabsContent = $(".settings_content");
   	for (let i = 0; i < tabsContent.length; i++) {
@@ -23,4 +29,19 @@ export class SettingsWorkSpaceComponent implements OnInit {
     $(`.${tab}`).show();
   }
 
+// Set application page columns or 3 columns markup
+  setMarkup():void {
+  	let cols_2 = $("#cols_2:checked");
+  	let cols_3 = $("#cols_3:checked");
+  	if ( cols_3.length > 0 ) {
+  		this.generalService.markup_3cols = true;
+  		localStorage.setItem("markup_3cols", "true");
+  	} else if ( cols_2.length > 0 ) {
+  		this.generalService.markup_3cols = false;
+  		localStorage.setItem("markup_3cols", "false");
+  	}
+  }
+
+
+  
 }

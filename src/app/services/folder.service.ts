@@ -81,7 +81,7 @@ export class FolderService {
 	static parseFolders(folders: any) { 
 		let ul: any = $(`<ul class="folder_content">`);
 		if ( !(ul.parent().hasClass("folders")) )
-			ul.append(`<div class="notes_wrapper">`);
+			ul.append(`<div class="notes_wrapper"><ul class="notes_container">`);
 		for(var i = 0; i < folders.length; i++) {
 			ul.append(this.parseFolder(folders[i]));
 		}
@@ -200,8 +200,8 @@ export class FolderService {
 
 		// Wrapper for reset actions on popup close
 		static resetOnCloseWrapper() {
-			NoteService.dragNotesFolders();
-			NoteService.dropNotesFolders();
+			// NoteService.dragNotesFolders();
+			// NoteService.dropNotesFolders();
 			FolderService.sortableFolders();
 			$("#popup_folder").fadeOut(500);
 			$("#popup_folder #folder_name").val(null);

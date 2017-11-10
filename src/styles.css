@@ -265,6 +265,10 @@ body #popup_note_tag {
 	overflow: hidden;
 }
 
+ .notes_wrapper ul {
+	padding: 0;
+}
+
 /************************* SIDEBAR ***************************************/
 
 .sidebar_wrapper {
@@ -298,8 +302,8 @@ body #popup_note_tag {
 	padding-bottom: 20px;
 }
 
-.folders ul span i, 
-.tags ul span i {
+.folders ul  i, 
+.tags ul  i {
 	color: #0CC481;
 }
 
