@@ -46,6 +46,7 @@ export class PopupNoteComponent implements OnInit {
 			NoteService.renderNotes(GeneralService.data.notes);
 			FolderService.renderFoldersDisplay(GeneralService.data.folders);
 		}
+		
 		FolderService.delRootNoteWrappersFolders();
 		let latestNote: any = NoteService.findLatestNote();
 		textArea.attr("data-textarea-id", latestNote.id);

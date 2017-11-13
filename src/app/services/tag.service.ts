@@ -144,8 +144,8 @@ export class TagService {
 		this.renderTagsDisplay(GeneralService.data.tags);
 		NoteService.renderNoteFields();
 		NoteService.renderNoteSize(-10);
-		// NoteService.dragNotesFolders();
-		// NoteService.dropNotesFolders();
+		NoteService.dragNotesFolders();
+		NoteService.dropNotesFolders();
 		FolderService.sortableFolders();
 	}
 

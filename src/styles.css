@@ -265,7 +265,7 @@ body #popup_note_tag {
 	overflow: hidden;
 }
 
- .notes_wrapper ul {
+.notes_wrapper ul {
 	padding: 0;
 }
 
@@ -362,11 +362,55 @@ ol.example li.placeholder:before {
 
 /************************* SIDEBAR end ***************************************/
 
+/************************* 3d column  ****************************************/
+
+.notes_info {
+	max-width: 300px;
+	width: 100%;
+/*	height: 100vh;*/
+	background-color: #FAFCFF;
+	border-right: 2px solid lightgray;
+	overflow: auto;
+	padding: 10px 0;
+}
+
+.notes_info h2 {
+	font-size: 18px;
+	font-weight: 600;
+	padding-bottom: 20px;
+	text-align: center;
+}
+
+.column_note h3 {
+	font-size: 18px;
+	padding-bottom: 10px;
+}
+
+.column_note span {
+	display: inline-block;
+	color: #C3C3C3;
+	font-size: 14px;
+	padding-bottom: 10px;
+}
+
+.column_note div {
+	font-size: 13px;
+	line-height: 1.4;
+}
+
+.notes_info .column_note {
+	border-bottom: 2px solid lightgray;
+	padding: 10px 10px 10px;
+}
+
+/************************* 3d column end ****************************************/
+
 /************************* NOTE *********************************************/
 #note {
-	width: 100%;
+	flex: 1 1;
+/*	width: 100%;
 	height: 100%;
-	overflow: hidden;
+	overflow: auto;*/
 }
 
 #note p {
@@ -491,13 +535,11 @@ ol.example li.placeholder:before {
 	box-sizing: border-box;
 	font-size: 13px;
 	line-height: 1.6;
-	word-wrap: break-word;
+	overflow: hidden;
 	resize: none;
 	padding: 10px;
-	-webkit-appearance: none;
-	-moz-appearance: none;
-	appearance: none;
 	pointer-events: none;
+	word-wrap: break-word;
 }
 
 #note #textarea_editor:focus { outline: none; }
@@ -511,7 +553,6 @@ ol.example li.placeholder:before {
 }
 
 .ui-resizable-e, .ui-resizable-w { width: 15px; }
-
 
 /************************* NOTE end *********************************************/
 

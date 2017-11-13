@@ -58,8 +58,9 @@ export class ApplicationComponent implements OnInit {
 		NoteService.renderNoteSize(-10);
 		// Set sidebar heigth to window.outerHeight() on resize
 		$(window).resize(function() {
-			$("#sidebar").css("height", $(window).outerHeight() - $("header").outerHeight());
+			$("#sidebar").css("height", $(window).height() - $("header").outerHeight());
 			NoteService.renderNoteSize(-15);
+			GeneralService.resizeColumnHeight();
 		});
 	}
 

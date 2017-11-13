@@ -6,9 +6,10 @@ import {
 	NoteService
 } from './index';
 
-declare var $: any;
+import * as moment from 'moment';
 
-declare var CKEDITOR:any;
+declare let $: any;
+declare let CKEDITOR:any;
 
 @Component({
 	selector: 'app-work-space',
@@ -34,13 +35,16 @@ export class WorkSpaceComponent implements OnInit {
 		EnterFormService.checkAccess();
 		GeneralService.addSortableClass();
 		GeneralService.resizeSidebar();
-		// NoteService.dragNotesFolders();
-		// NoteService.dropNotesFolders();
+
 		FolderService.sortableFolders();
 		FolderService.delRootNoteWrappersFolders();
-		this.noteService.sortableNotes();
+		NoteService.dragNotesFolders();
+		NoteService.dropNotesFolders();
+		setTimeout( () => {
+			this.noteService.renderLastNotesInColumn();
+			GeneralService.resize3dColumn()
+		}, 1000);
 	}
-
 
 	// Toggle folders to open and close in tree format
 	toggleFolders(): void {
@@ -153,7 +157,7 @@ showNote(): void {
 		let noteID: number = $target.attr("data-note-id");
 		let noteObj: any = GeneralService.find(GeneralService.data.notes, noteID);
 
-		$(".creation_date").html(`Creation date: ${noteObj.date}`);
+		$(".creation_date").html(`Creation date: ${moment(noteObj.date).format("DD.MM.YYYY, HH:mm:ss")}`);
 		$(".note_changes").html(`Changes: ${noteObj.changesCounter}`);
 		$(".last_change").html(`Last change: ${noteObj.lastChange}`);
 
@@ -167,7 +171,7 @@ showNote(): void {
 		let noteID: number = $target.parent().attr("data-note-id");
 		let noteObj: any = GeneralService.find(GeneralService.data.notes, noteID);
 
-		$(".creation_date").html(`Creation date: ${noteObj.date}`);
+		$(".creation_date").html(`Creation date: ${moment(noteObj.date).format("DD.MM.YYYY, HH:mm:ss")}`);
 		$(".note_changes").html(`Changes: ${noteObj.changesCounter}`);
 		$(".last_change").html(`Last change: ${noteObj.lastChange}`);
 

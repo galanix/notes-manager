@@ -196,17 +196,19 @@ export class FolderService {
 			this.renderFoldersDisplay(GeneralService.data.folders);
 			NoteService.renderNoteFields();
 			NoteService.renderNoteSize(-10);
+
 		}
 
 		// Wrapper for reset actions on popup close
 		static resetOnCloseWrapper() {
-			// NoteService.dragNotesFolders();
-			// NoteService.dropNotesFolders();
 			FolderService.sortableFolders();
+			NoteService.dragNotesFolders();
+			NoteService.dropNotesFolders();
 			$("#popup_folder").fadeOut(500);
 			$("#popup_folder #folder_name").val(null);
 			$("#popup_folder .popup_delete_notes_wrapper").hide();
 			$("#popup_folder .main_form option:not(:selected)").prop("disabled", false);
+
 		}
 
 	}
