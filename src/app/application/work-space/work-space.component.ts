@@ -184,6 +184,54 @@ showNote(): void {
 	TagService.paddingCheck();
 }
 
+
+
+// Render folder notes in additional column
+renderFolderNotesInColumn(): void {
+	let target: any = event.target;
+	let $target: any = $(target);
+	let notes: any = [];
+
+	if ( $target.attr("data-folders-tree-id") != "root" 
+		&& $target.parent(".folder_name").attr("data-folders-tree-id") != "root" ) { 
+		if ( $target.hasClass("folder_name") ) { 
+			let folder: any = GeneralService.find(GeneralService.data.folders, $target.attr("data-folders-tree-id"));
+			$(".notes_info h2").text(`Notes in folder ${folder.name}:`);
+			GeneralService.addNotesInFolder(folder, notes);
+			NoteService.renderNotesInColumn(notes);
+		}
+		else if ( $target.parent(".folder_name") && $target.hasClass("fa") ) {
+			let folder: any = GeneralService.find(GeneralService.data.folders, $target.parent(".folder_name").attr("data-folders-tree-id"));
+			$(".notes_info h2").text(`Notes in folder ${folder.name}:`);
+			GeneralService.addNotesInFolder(folder, notes);
+			NoteService.renderNotesInColumn(notes);
+		}
+	}
+}
+
+// Render tag notes in additional column
+renderTagNotesInColumn(): void {
+	let target: any = event.target;
+	let $target: any = $(target);
+	let notes: any = [];
+
+	if ( $target.attr("data-tags-tree-id") != "root" 
+		&& $target.parent(".tag_name").attr("data-tags-tree-id") != "root" ) { 
+		if ( $target.hasClass("tag_name") ) {
+			let tag: any = GeneralService.find(GeneralService.data.tags, $target.attr("data-tags-tree-id"));
+			$(".notes_info h2").text(`Notes with tag ${tag.name}:`);
+			GeneralService.addNotesWithTag(tag, notes);
+			NoteService.renderNotesInColumn(notes);
+		} 
+		else if ( $target.parent(".tag_name") && $target.hasClass("fa") ) {
+			let tag: any = GeneralService.find(GeneralService.data.tags, $target.parent(".tag_name").attr("data-tags-tree-id"));
+			$(".notes_info h2").text(`Notes with tag ${tag.name}:`);
+			GeneralService.addNotesWithTag(tag, notes);
+			NoteService.renderNotesInColumn(notes);
+		}
+	}
+}
+
 // Open add tag popup
 addTag(): void {
 	$("#popup_note_tag").fadeIn(500);

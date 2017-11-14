@@ -1,8 +1,8 @@
 <section id="application">
 	<div class="sidebar_wrapper">
 		<div id="sidebar" (click)="showNote()">
-			<div class="folders" (dblclick)="toggleFolders()"></div>
-			<div class="tags" (dblclick)="toggleTags()"></div>
+			<div class="folders" (dblclick)="toggleFolders()" (click)="renderFolderNotesInColumn()"></div>
+			<div class="tags" (dblclick)="toggleTags()" (click)="renderTagNotesInColumn()"></div>
 		</div>
 	</div>
 	<div class="notes_info" *ngIf="generalService.markup_3cols">

@@ -195,7 +195,38 @@ export class GeneralService {
 		}
 	}
 
+	// Find all notes in folder and display in 3d column
+	static addNotesInFolder(folder: any, notes: any): void {
+		let dataNotes: any = GeneralService.data.notes;
+		for ( let note of dataNotes ) {
+			if ( note.folder == folder.id ) {
+				notes.push(note);
+			}
+		}
+		if ( folder.children ) { 
+			for ( let childFolder of folder.children ) {
+				this.addNotesInFolder(childFolder, notes);
+			}
+		}
+	}
+
+	// Find all notes in tag and display in 3d column
+	static addNotesWithTag(targetTag: any, notes: any): void {
+		let dataNotes: any = GeneralService.data.notes;
+		for ( let note of dataNotes ) {
+			for ( let tag of note.tags ) {
+				if ( tag == targetTag.id ) 
+					notes.push(note);
+			}
+		}
+		if ( targetTag.children ) {
+			for ( let childTag of targetTag.children ) {
+				this.addNotesInFolder(childTag, notes);
+			}
+		}
+	}
+
 }
 
-// ********************************* Deprecated ****************************************
+	// ********************************* Deprecated ****************************************
 

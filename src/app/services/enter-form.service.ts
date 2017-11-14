@@ -41,17 +41,34 @@ export class EnterFormService {
 	static checkAccess = () => {
 		if ( EnterFormService.get_cookie("access") ) {
 			// if ( window.location.href == "https://galanix.github.io/notes-manager/enter" ) { 
-			if ( window.location.href == "http://localhost:4200/enter" ) { 
-				// window.location.href = "https://galanix.github.io/notes-manager/application";
-				window.location.href = "http://localhost:4200/application";
+				if ( window.location.href == "http://localhost:4200/enter" ) { 
+					// window.location.href = "https://galanix.github.io/notes-manager/application";
+					window.location.href = "http://localhost:4200/application";
+				}
+			} 
+			else if ( EnterFormService.get_cookie("access") === null ) {
+				// if ( window.location.href != "https://galanix.github.io/notes-manager/enter"  ) { 
+					if ( window.location.href != "http://localhost:4200/enter"  ) { 
+						// window.location.href = "https://galanix.github.io/notes-manager/enter";
+						window.location.href = "http://localhost:4200/enter";
+					}	
+				} 
 			}
-		} 
-		else if ( EnterFormService.get_cookie("access") === null ) {
-			// if ( window.location.href != "https://galanix.github.io/notes-manager/enter"  ) { 
-			if ( window.location.href != "http://localhost:4200/enter"  ) { 
-			// window.location.href = "https://galanix.github.io/notes-manager/enter";
-			window.location.href = "http://localhost:4200/enter";
-			}	
-		} 
-	}
+
+			static validateField(data: any, input: any, inavlid: any, empty: any): void {
+				if ( input.val() != data.name 
+					&& input.val() != "" ) {
+					inavlid.show();
+				input.css("border-color", "tomato");
+			} else if ( input.val() == "" ) {
+				empty.show();
+				input.css("border-color", "tomato");
+			} else if ( input.val() == data.name ) {
+				input.css("border-color", "#0CC481");
+				inavlid.hide();
+				empty.hide();
+			}
+
+		}
+
 }

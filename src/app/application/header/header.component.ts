@@ -148,7 +148,7 @@ export class HeaderComponent implements OnInit {
 	// Content page on click X delete coockieand redirect to form page
 	exitAppPage(): void {
 		EnterFormService.delete_cookie("access");
-		window.location.replace("https://galanix.github.io/notes-manager/enter");
+		window.location.replace("http://localhost:4200/enter");
 	}
 
 	// Change logo and user name

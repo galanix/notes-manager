@@ -4,9 +4,14 @@
 			<form action="#">
 					<label for="user_name"> Name:</label>
 					<input class="form-control" type="text" id="user_name" placeholder="Your Name">
+					<div class="error name_empty">Name field cannot be empty</div>
+					<div class="error invalid_name">Invalid name</div>
+					
 					<label for="user_password"> Password:</label>
 					<input class="form-control" type="text" id="user_password" 
 					placeholder="Your Pass">
+					<div class="error password_empty">Name password cannot be empty</div>
+					<div class="error invalid_password">Invalid password</div>
 				<button class="enter_app_page" (click)="enterAppPage()">Enter</button>
 			</form>
 		</div>

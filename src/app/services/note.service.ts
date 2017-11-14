@@ -138,7 +138,8 @@ export class NoteService {
 	}
 
 	// Render last 10 notes in additional column
-	renderLastNotesInColumn() {
+	renderLastNotesInColumn(): void {
+		$(".column_notes .column_note").remove();
 		$(".notes_info h2").text("Recent notes:");
 		let sliced: any = GeneralService.data.notes.slice(-10);
 		for (let note of sliced) {
@@ -158,12 +159,24 @@ export class NoteService {
 		}
 	}
 
-		// Render foldet notes in additional column
-	renderFolderNotesInColumn(target: any) {
-		$(".notes_info h2").text(`Notes in folder "____":`);
-		let folder: any = GeneralService.find(GeneralService.data.folders, target.attr("data-folders-tree-id"));
-		
-
+	// Render notes in column by click on folder/tag
+	static renderNotesInColumn(notes: any): void {
+		$(".column_notes .column_note").remove();
+		for (let note of notes) {
+			let cleanText: string = note.text.replace(/<\/?[^>]+(>|$)/g, "");
+			let slicedText: string;
+			if ( cleanText.length > 200 )
+				slicedText  = cleanText.substring(0, 200) + "...";
+			else
+				slicedText  = cleanText.substring(0, 200);
+			$(".column_notes").append(`
+				<div class="column_note">
+				<h3>${note.title}</h3>
+				<span>${moment(note.date).format("DD.MM.YYYY, HH:mm:ss")}</span>
+				<div>${slicedText}</div>
+				</div>
+				`);
+		}
 	}
 
 	// Make notes draggable and add styles to draggable note
@@ -341,25 +354,25 @@ export class NoteService {
 
 }
 
-	// // Notes can change folder and order in folder
-	// static sortableNotes(): void {
-		// 	$(".notes_container").sortable({
-			// 		group: "notes_container",
-			// 		handle: ".note",
-			// 		itemSelector: ".note",
-			// 		placeholder: "<li class='placeholder'></li>",
-			// 		pullPlaceholder: true,
-			// 		onDragStart: function ($item, container, _super, event) {
-				// 			$(".notes_wrapper ul").css("padding-bottom", 5);
-				// 		},
-				// 		onDrop: function ($item, container, _super, event) {
-					// 			container.el.removeClass("active");
-					// 				_super($item, container);
-					// 			$(".notes_wrapper ul").css("padding-bottom", 0);
-					// 			let noteObj: any = GeneralService.find(GeneralService.data.notes, $item.attr("data-note-id"));
-					// 			let newFolder: any = $item.parent().parent().parent().siblings("span");
-					// 			noteObj.folder = newFolder.attr("data-folders-tree-id");
-					// 			localStorage.setItem("structure", JSON.stringify(GeneralService.data)); 
-					// 		}
-					// 	});
-					// }
+// // Notes can change folder and order in folder
+// static sortableNotes(): void {
+	// 	$(".notes_container").sortable({
+		// 		group: "notes_container",
+		// 		handle: ".note",
+		// 		itemSelector: ".note",
+		// 		placeholder: "<li class='placeholder'></li>",
+		// 		pullPlaceholder: true,
+		// 		onDragStart: function ($item, container, _super, event) {
+			// 			$(".notes_wrapper ul").css("padding-bottom", 5);
+			// 		},
+			// 		onDrop: function ($item, container, _super, event) {
+				// 			container.el.removeClass("active");
+				// 				_super($item, container);
+				// 			$(".notes_wrapper ul").css("padding-bottom", 0);
+				// 			let noteObj: any = GeneralService.find(GeneralService.data.notes, $item.attr("data-note-id"));
+				// 			let newFolder: any = $item.parent().parent().parent().siblings("span");
+				// 			noteObj.folder = newFolder.attr("data-folders-tree-id");
+				// 			localStorage.setItem("structure", JSON.stringify(GeneralService.data)); 
+				// 		}
+				// 	});
+				// }
