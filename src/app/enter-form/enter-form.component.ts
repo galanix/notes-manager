@@ -45,7 +45,10 @@ export class EnterFormComponent implements OnInit {
 			$(".password_empty").hide();
 		}
 
-		EnterFormService.validateField(result, $("#user_name"), $(".invalid_name"), $(".name_empty"));
+		EnterFormService.validateField(result.name, $("#user_name"), {
+			empty: $(".name_empty"),
+			invalid: $(".invalid_name")
+		});
 	});
 	}
 

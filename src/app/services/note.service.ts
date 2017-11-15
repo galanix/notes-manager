@@ -338,6 +338,7 @@ export class NoteService {
 		TagService.checkNoteForAddTag();
 		TagService.renderTags();
 		this.renderNoteSize(-10);
+		GeneralService.addSortableClass();
 		FolderService.sortableFolders();
 		this.dragNotesFolders();
 		this.dropNotesFolders();

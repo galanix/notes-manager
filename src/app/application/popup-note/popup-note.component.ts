@@ -52,6 +52,7 @@ export class PopupNoteComponent implements OnInit {
 		textArea.attr("data-textarea-id", latestNote.id);
 		NoteService.noteWrapper();
 		NoteService.renderLatestNote();
+		this.noteService.renderLastNotesInColumn();
 
 		$("#popup_note").fadeOut(500);
 		(<HTMLFormElement>$("#popup_note form")[0]).reset();

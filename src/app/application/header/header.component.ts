@@ -141,6 +141,9 @@ export class HeaderComponent implements OnInit {
 			workTextarea.attr("data-textarea-id", latestNote.id);
 			NoteService.renderLatestNote();
 		}
+		this.noteService.renderLastNotesInColumn();
+		$(".note_title_edit").hide();
+		$(".note_title").show();
 		NoteService.renderLatestNote();
 		NoteService.returnEdit();
 	}

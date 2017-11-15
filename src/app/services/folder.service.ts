@@ -179,6 +179,7 @@ export class FolderService {
 
 					localStorage.setItem("structure", JSON.stringify(GeneralService.data));
 					$("#folder_select option").remove();
+					$("#folder_select_note option").remove();
 					FolderService.renderFolderSelect(GeneralService.data.folders, 0);
 				}
 			});

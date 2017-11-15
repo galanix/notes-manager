@@ -11,7 +11,7 @@ export class EnterFormService {
 	static set_cookie = ( name: string, value: string, exp_y: number, 
 		exp_m: number, exp_d: number, path?: string, domain?: string, secure?: boolean ) => {
 		var cookie_string: string = name + "=" + encodeURI( value );
-		if ( exp_y ){
+		if ( exp_y ) {
 			var expires = new Date ( exp_y, exp_m, exp_d );
 			cookie_string += "; expires=" + expires.toUTCString();
 		}
@@ -55,18 +55,18 @@ export class EnterFormService {
 				} 
 			}
 
-			static validateField(data: any, input: any, inavlid: any, empty: any): void {
-				if ( input.val() != data.name 
+			static validateField(dataProperty: any, input: any, errors: any): void {
+				if ( input.val() != dataProperty 
 					&& input.val() != "" ) {
-					inavlid.show();
+					errors.invalid.show();
 				input.css("border-color", "tomato");
 			} else if ( input.val() == "" ) {
-				empty.show();
+				errors.empty.show();
 				input.css("border-color", "tomato");
-			} else if ( input.val() == data.name ) {
+			} else if ( input.val() == dataProperty ) {
 				input.css("border-color", "#0CC481");
-				inavlid.hide();
-				empty.hide();
+				errors.invalid.hide();
+				errors.empty.hide();
 			}
 
 		}

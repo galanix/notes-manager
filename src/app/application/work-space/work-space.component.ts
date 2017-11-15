@@ -200,7 +200,7 @@ renderFolderNotesInColumn(): void {
 			GeneralService.addNotesInFolder(folder, notes);
 			NoteService.renderNotesInColumn(notes);
 		}
-		else if ( $target.parent(".folder_name") && $target.hasClass("fa") ) {
+		else if ( $target.parent(".folder_name") && $target.hasClass("fa") && (!$target.hasClass("fa fa-sticky-note-o")) ) {
 			let folder: any = GeneralService.find(GeneralService.data.folders, $target.parent(".folder_name").attr("data-folders-tree-id"));
 			$(".notes_info h2").text(`Notes in folder ${folder.name}:`);
 			GeneralService.addNotesInFolder(folder, notes);
@@ -223,7 +223,7 @@ renderTagNotesInColumn(): void {
 			GeneralService.addNotesWithTag(tag, notes);
 			NoteService.renderNotesInColumn(notes);
 		} 
-		else if ( $target.parent(".tag_name") && $target.hasClass("fa") ) {
+		else if ( $target.parent(".tag_name") && $target.hasClass("fa") && (!$target.hasClass("fa fa-sticky-note-o") )) {
 			let tag: any = GeneralService.find(GeneralService.data.tags, $target.parent(".tag_name").attr("data-tags-tree-id"));
 			$(".notes_info h2").text(`Notes with tag ${tag.name}:`);
 			GeneralService.addNotesWithTag(tag, notes);
