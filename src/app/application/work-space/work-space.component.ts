@@ -35,7 +35,6 @@ export class WorkSpaceComponent implements OnInit {
 		EnterFormService.checkAccess();
 		GeneralService.addSortableClass();
 		GeneralService.resizeSidebar();
-
 		FolderService.sortableFolders();
 		FolderService.delRootNoteWrappersFolders();
 		NoteService.dragNotesFolders();
