@@ -65,7 +65,7 @@ export class PopupTagComponent implements OnInit {
 		TagService.tagWrapper(); 
 		TagService.checkNoteForAddTag();
 		TagService.renderTags();
-		NoteService.renderNoteSize(-10);
+		NoteService.renderNoteSize();
 
 		(<HTMLFormElement>$("#popup_tag form")[0]).reset();
 	}

@@ -5,9 +5,11 @@
 			<div class="tags" (dblclick)="toggleTags()" (click)="renderTagNotesInColumn()"></div>
 		</div>
 	</div>
-	<div class="notes_info" *ngIf="generalService.markup_3cols">
-		<h2></h2>
-		<div class="column_notes"></div>
+	<div class="notes_info_container">
+		<div class="notes_info">
+			<h2></h2>
+			<div class="column_notes"></div>
+		</div>
 	</div>
 	<div id="note">
 		<p class="note_title"></p>

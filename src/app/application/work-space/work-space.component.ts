@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, AfterContentChecked } from '@angular/core';
 
 import { 
 	EnterFormService, GeneralService,
@@ -17,7 +17,7 @@ declare let CKEDITOR:any;
 	styleUrls: ['./work-space.component.css'],
 	providers: [NoteService]
 })
-export class WorkSpaceComponent implements OnInit {
+export class WorkSpaceComponent implements OnInit, AfterContentChecked {
 
 	ckeditorContent: string;
 	editor: any;
@@ -31,18 +31,22 @@ export class WorkSpaceComponent implements OnInit {
 		this.ckeditorContent = ``; 
 	}
 
-	ngOnInit() {
-		EnterFormService.checkAccess();
+	startCall = (): void => {
 		GeneralService.addSortableClass();
 		GeneralService.resizeSidebar();
 		FolderService.sortableFolders();
 		FolderService.delRootNoteWrappersFolders();
 		NoteService.dragNotesFolders();
 		NoteService.dropNotesFolders();
-		setTimeout( () => {
-			this.noteService.renderLastNotesInColumn();
-			GeneralService.resize3dColumn()
-		}, 1000);
+		
+	}
+
+	ngOnInit() {
+		EnterFormService.checkAccess(this.startCall);
+	}
+
+	ngAfterContentChecked() {
+		this.checkMarkup();
 	}
 
 	// Toggle folders to open and close in tree format
@@ -55,7 +59,7 @@ export class WorkSpaceComponent implements OnInit {
 			|| childUl.children(".notes_wrapper").children().length) ) {
 			let $childUl: any = $(childUl);
 		childUl.toggle();
-		NoteService.renderNoteSize(-10);
+		NoteService.renderNoteSize();
 		let findedObj: any = GeneralService.find(GeneralService.data.folders, $target.attr("data-folders-tree-id"));
 		let span = $(`.folder_name[data-folders-tree-id="${findedObj.id}"]`);
 		// Change folder open or close icon and display property to render folders tree  with open or close folders
@@ -75,7 +79,7 @@ export class WorkSpaceComponent implements OnInit {
 	if( $target.hasClass("fa") && (parentUl.children().length > 1 
 		|| parentUl.children(".notes_wrapper").children().length) ) {
 		parentUl.toggle();
-	NoteService.renderNoteSize(-10);
+	NoteService.renderNoteSize();
 	let findedObj: any = GeneralService.find(GeneralService.data.folders, $target.parent().attr("data-folders-tree-id"));
 	let span: any = $(`.folder_name[data-folders-tree-id="${findedObj.id}"]`);
 	// Change folder open or close icon and display property to render folders tree  with open or close folders
@@ -105,7 +109,7 @@ toggleTags():void {
 	// Toggle tags to open and close by clicking on folder name
 	if ( $target.hasClass("tag_name") && childUl.children().length ) {
 		childUl.toggle();
-		NoteService.renderNoteSize(-10);
+		NoteService.renderNoteSize();
 		let findedObj: any = GeneralService.find(GeneralService.data.tags, $target.attr("data-tags-tree-id"));
 		let span: any = $(`.tag_name[data-tags-tree-id="${findedObj.id}"]`);
 		// Change folder open or close icon and display property to render tags tree  with open or close tags
@@ -124,7 +128,7 @@ toggleTags():void {
 	if( $target.hasClass("fa") && $target.parent().siblings("ul").children().length ) {
 		let parentUl: any = $target.parent().siblings("ul");
 		parentUl.toggle();
-		NoteService.renderNoteSize(-10);
+		NoteService.renderNoteSize();
 		let findedObj: any = GeneralService.find(GeneralService.data.tags, $target.parent().attr("data-tags-tree-id"));
 		let span: any = $(`.tag_name[data-tags-tree-id="${findedObj.id}"]`);
 		// Change folder open or close icon and display property to render tags tree  with open or close tags
@@ -249,6 +253,20 @@ addTag(): void {
 		$("#popup_note_tag").fadeOut(500);
 		(<HTMLFormElement>$("#popup_note_tag form")[0]).reset();
 	});
+}
+
+// Check markup flag and set 2 or 3 columns markup
+checkMarkup():void {
+	let markup_3cols: any = localStorage.getItem("markup_3cols");
+	if ( markup_3cols == "true" ) {
+		$(".notes_info_container").show();
+		this.noteService.renderLastNotesInColumn();
+		GeneralService.resize3dColumn();
+		GeneralService.setColumnHeight();
+	} 
+	else if ( markup_3cols == "false" ) {
+		$(".notes_info_container").hide();
+	}
 }
 
 }

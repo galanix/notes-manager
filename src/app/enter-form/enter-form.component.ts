@@ -16,9 +16,6 @@ export class EnterFormComponent implements OnInit {
 
 	ngOnInit() {
 		EnterFormService.checkAccess();
-		setTimeout(function() {
-			$("html").css("visibility", "visible");
-		}, 500);
 	}
 
 	// Form page on click Enter adds coockie and redirect to content page

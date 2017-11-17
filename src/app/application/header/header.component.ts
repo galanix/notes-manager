@@ -86,7 +86,7 @@ export class HeaderComponent implements OnInit {
 
 			$("#textarea_editor").hide();
 			$(".note_editor").show();
-			NoteService.renderNoteSize(6);
+			NoteService.renderNoteSize();
 			this.noteHTMLonEdit = $(".cke_editable").html();
 		}
 	}

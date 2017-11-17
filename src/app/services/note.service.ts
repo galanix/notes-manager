@@ -15,18 +15,18 @@ export class NoteService {
 	constructor() { }
 
 	// Set textarea(note) height equal to sidebar height
-	static renderNoteSize(filler: number) {
-		let sidebarHeight: number = $("#sidebar").outerHeight();
-		let noteTitleHeight: number = $("#note .note_title").outerHeight();
+	static renderNoteSize() {
+		let totaleight: number = $(window).outerHeight() - $("header").outerHeight();
+		let noteTitleHeight: number = $("#note .note_title_edit").outerHeight();
 		let noteInfo: number = $("#note .note_info").outerHeight();
 		let editorTop: number = $("#note .cke_top").outerHeight();
 		let editorBottom: number = $("#note .cke_bottom").outerHeight();
-		let sumEditor: number = noteTitleHeight + noteInfo + editorBottom + editorTop + filler;
+		let sumEditor: number = noteTitleHeight + noteInfo + editorBottom + editorTop;
 		let sumTextarea: number = noteTitleHeight + noteInfo;
-		let resEditor: number = sidebarHeight - sumEditor;
-		let resTextarea: number = sidebarHeight - sumTextarea;
+		let resEditor: number = totaleight - sumEditor;
+		let resTextarea: number = totaleight - sumTextarea;
 		$("#note #textarea_editor").css("height", resTextarea);
-		$("#note .cke_contents").css("height", resEditor);
+		$("#note #cke_1_contents").css("height", resEditor);
 	}
 
 	// Math max to array
@@ -337,7 +337,7 @@ export class NoteService {
 		this.renderNoteFields();
 		TagService.checkNoteForAddTag();
 		TagService.renderTags();
-		this.renderNoteSize(-10);
+		this.renderNoteSize();
 		GeneralService.addSortableClass();
 		FolderService.sortableFolders();
 		this.dragNotesFolders();

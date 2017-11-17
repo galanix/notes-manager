@@ -1,7 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 
 import { 
-	SettingsWorkSpaceComponent
+	SettingsWorkSpaceComponent,
+
+	EnterFormService
  } from './index';
 
 declare var $: any;
@@ -16,7 +18,7 @@ export class SettingsComponent implements OnInit {
   constructor() { }
 
   ngOnInit() {
-  	setTimeout(function() { $("html").css("visibility", "visible"); }, 500);
+  	EnterFormService.checkAccess();
   }
 
 }

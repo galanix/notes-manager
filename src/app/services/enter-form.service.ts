@@ -38,20 +38,29 @@ export class EnterFormService {
 	// ****************************** COOKIES FUNCTION end **********************************************
 
 	// Check if we have access=granted coockie
-	static checkAccess = () => {
+	static checkAccess = (callback = (): void => null )  => {
 		if ( EnterFormService.get_cookie("access") ) {
 			// if ( window.location.href == "https://galanix.github.io/notes-manager/enter" ) { 
 				if ( window.location.href == "http://localhost:4200/enter" ) { 
 					// window.location.href = "https://galanix.github.io/notes-manager/application";
 					window.location.href = "http://localhost:4200/application";
 				}
-			} 
+				// if ( window.location.href == "https://galanix.github.io/notes-manager/application" ) { 
+				if ( window.location.href == "http://localhost:4200/application" )
+					$("html").css("visibility", "visible");
+			}
 			else if ( EnterFormService.get_cookie("access") === null ) {
 				// if ( window.location.href != "https://galanix.github.io/notes-manager/enter"  ) { 
 					if ( window.location.href != "http://localhost:4200/enter"  ) { 
 						// window.location.href = "https://galanix.github.io/notes-manager/enter";
 						window.location.href = "http://localhost:4200/enter";
-					}	
+					}
+					// if ( window.location.href == "https://galanix.github.io/notes-manager/enter" ) { 
+					if ( window.location.href == "http://localhost:4200/enter" )
+					$("html").css("visibility", "visible");
+				}
+				if (typeof callback === "function") {
+					callback();
 				} 
 			}
 
@@ -71,4 +80,4 @@ export class EnterFormService {
 
 		}
 
-}
+	}

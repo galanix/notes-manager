@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, AfterContentChecked } from '@angular/core';
 
 import { 
 	EnterFormService, GeneralService,
@@ -13,27 +13,19 @@ declare var $: any;
 	templateUrl: './application.component.html',
 	styleUrls: ['./application.component.css']
 })
-export class ApplicationComponent implements OnInit {
+export class ApplicationComponent implements OnInit, AfterContentChecked {
 
 	constructor(
-		private generalService: GeneralService
+		private generalService: GeneralService,
+		private noteService: NoteService
 		) { }
 
 	// Starting call of functions
-	ngOnInit() {
-		// localStorage.clear();
-		EnterFormService.checkAccess();
-		setTimeout(function() {
-			$("html").css("visibility", "visible");
-		}, 1000);
-		setTimeout(function() {
-			NoteService.renderNoteSize(6);
-			NoteService.renderLatestNote();
-			TagService.checkNoteForAddTag();
-			TagService.paddingCheck();
-			TagService.renderTags();
-		}, 1000);
-		this.generalService.checkMarkup();
+	startCall = (): void => {
+		NoteService.renderLatestNote();
+		TagService.checkNoteForAddTag();
+		TagService.paddingCheck();
+		TagService.renderTags();
 		FolderService.renderFolderSelect(GeneralService.data.folders, 0);
 		TagService.renderTagSelect(GeneralService.data.tags, 0);
 		GeneralService.idFolderCounter++;
@@ -49,18 +41,26 @@ export class ApplicationComponent implements OnInit {
 		this.generalEvents();
 	}
 
+	ngOnInit() {
+		// localStorage.clear();
+		EnterFormService.checkAccess(this.startCall);
+	}
+
+	ngAfterContentChecked() {
+		// Set sidebar heigth to window.outerHeight()
+		$("#sidebar").css("height", $(window).height() - $("header").outerHeight());
+	}
+
 	generalEvents(): void {
 		// Set latest note id to textarea attr data-textarea-id
 		if ( $("#application textarea").attr("data-textarea-id") ) 
 			$("#application textarea").attr("data-textarea-id", NoteService.findLatestNote().id);
-		// Set sidebar heigth to window.outerHeight()
-		$("#sidebar").css("height", $(window).outerHeight() - $("header").outerHeight());
-		NoteService.renderNoteSize(-10);
+		NoteService.renderNoteSize();
 		// Set sidebar heigth to window.outerHeight() on resize
 		$(window).resize(function() {
 			$("#sidebar").css("height", $(window).height() - $("header").outerHeight());
-			NoteService.renderNoteSize(-15);
-			GeneralService.resizeColumnHeight();
+			NoteService.renderNoteSize();
+			GeneralService.setColumnHeight();
 		});
 	}
 

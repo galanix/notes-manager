@@ -196,7 +196,7 @@ export class FolderService {
 			NoteService.renderNotes(GeneralService.data.notes);
 			this.renderFoldersDisplay(GeneralService.data.folders);
 			NoteService.renderNoteFields();
-			NoteService.renderNoteSize(-10);
+			NoteService.renderNoteSize();
 
 		}
 

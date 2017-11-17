@@ -51,22 +51,20 @@ export class GeneralService {
 	
 	static resizeSidebar(): void {
 		$("#application .sidebar_wrapper").resizable({
-			handles: 'e, w',
-			minWidth: 140
+			handles: 'e',
+			minWidth: 150
 		});
 	}
 
-	static resizeColumnHeight(): void {
-		let dif: number = $( window ).height() - $("header").outerHeight();
+	static setColumnHeight(): void {
+		let dif: number = $(window).height() - $("header").outerHeight();
 		$("#application .notes_info").css("height", dif);
 	}
 
 	static resize3dColumn(): void {
-		$("#application .notes_info").resizable({
+		$("#application .notes_info_container").resizable({
 			handles: 'e',
 		});
-
-		GeneralService.resizeColumnHeight();
 	}
 
 	// Find and return nested object 
@@ -172,7 +170,6 @@ export class GeneralService {
 		}
 		newNote.title = noteTitle;
 		newNote.text = noteText;
-		// newNote.date = new Date().toLocaleString("ua");
 		newNote.date = new Date();
 		newNote.changesCounter = 0;
 		newNote.lastChange = new Date().toLocaleString("ua");
@@ -185,15 +182,18 @@ export class GeneralService {
 		this.idNoteCounter++;
 	}
 
-	// Check markup flag and set 2 or 3 columns markup
-	checkMarkup():void {
-		let markup_3cols: any = localStorage.getItem("markup_3cols");
-		if ( markup_3cols == "true" ) {
-			this.markup_3cols = true;
-		} else if ( markup_3cols == "false" ) {
-			this.markup_3cols = false;
-		}
-	}
+	// // Check markup flag and set 2 or 3 columns markup
+	// checkMarkup():void {
+	// 	let markup_3cols: any = localStorage.getItem("markup_3cols");
+	// 	if ( markup_3cols == "true" ) {
+	// 		$(".notes_info").show();
+	// 					this.noteService.renderLastNotesInColumn();
+	// 		GeneralService.resize3dColumn();
+	// 	} else if ( markup_3cols == "false" ) {
+	// 		this.markup_3cols = false;
+	// 		$(".notes_info").hide();
+	// 	}
+	// }
 
 	// Find all notes in folder and display in 3d column
 	static addNotesInFolder(folder: any, notes: any): void {
