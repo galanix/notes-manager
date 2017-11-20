@@ -28,6 +28,7 @@ export class EnterFormComponent implements OnInit {
 				Md5.hashStr(pass) === result.password ) {
 				EnterFormService.set_cookie( "access", "granted", 2018, 2, 5, );
 			window.location.replace("http://localhost:4200/application");
+			// window.location.replace("http://localhost:4200/application");
 		}  
 
 		if ( Md5.hashStr(pass) != result.password && pass != "" ) {
