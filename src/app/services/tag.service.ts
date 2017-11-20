@@ -4,14 +4,39 @@ import { GeneralService } from './general.service';
 import { FolderService } from './folder.service';
 import { NoteService } from './note.service';
 
-declare var $: any;
-// import * as $ from 'jquery';
+import { Data } from '../data/data';
+import { Tag } from '../data/tag';
 
+declare var $: any;
 
 @Injectable()
 export class TagService {
 
 	constructor() { }
+
+		// Add new tag to localStorage and iterate idTagCounter
+	 updateTagsData() {
+		let tagName: any;
+		if ( $("#popup_tag").css("display").toLowerCase() == "block" )
+			tagName =  $("#tag_name").val();
+		if ( $("#popup_note_tag").css("display").toLowerCase() == "block" )
+			tagName =  $("#tag_note_name").val();
+		let findedObj: any;
+
+		let newTag: any = new Tag();
+
+		newTag.id = Data.idTagCounter;
+		newTag.name = tagName;
+		newTag.display = "block";
+		newTag.children = [];
+
+		findedObj =	GeneralService.find(Data.structure.tags, $(".tags_tree option:selected").attr("data-tags-select-id"));
+		findedObj.children.push(newTag);
+
+		localStorage.setItem("structure", JSON.stringify(Data.structure));
+		localStorage.setItem("idTagCounter", Data.idTagCounter);
+		Data.idTagCounter++;
+	}
 
 	// Render tag select list 
 	static renderTagSelect(arr: any, counter: number): any {
@@ -106,7 +131,7 @@ export class TagService {
 	static checkSelectedTags() {
 		let textArea: any = $("#application #textarea_editor");
 		let spanTags: any = $(".tag_list .tag_list_tag");
-		let note: any = GeneralService.find(GeneralService.data.notes, textArea.attr("data-textarea-id"));
+		let note: any = GeneralService.find(Data.structure.notes, textArea.attr("data-textarea-id"));
 
 		for (let i = 0; i < spanTags.length; i++) {
 			for (let j = 0; j < note.tags.length; j++) {
@@ -118,11 +143,11 @@ export class TagService {
 
 	// Render tags(spans) in note_info
 	static renderTags() {
-		let note: any = GeneralService.find(GeneralService.data.notes, $("#application #textarea_editor").attr("data-textarea-id"));
+		let note: any = GeneralService.find(Data.structure.notes, $("#application #textarea_editor").attr("data-textarea-id"));
 		$(".notes_tags").find("span").remove();
 		if ( note ) { 
 			for (let i = 0; i < note.tags.length; i++) {
-				let tag: any = GeneralService.find(GeneralService.data.tags, note.tags[i]);
+				let tag: any = GeneralService.find(Data.structure.tags, note.tags[i]);
 				if ( tag ) {
 					$(".notes_tags").append(`<span class="tag_list_tag">${tag.name}</span>`);
 				}
@@ -139,9 +164,9 @@ export class TagService {
 	// Wrapper for tag functions call
 	 static tagWrapper() {
 		$(".tags").find("*").remove();
-		$(".tags").append(this.parseTags(GeneralService.data.tags));
-		NoteService.renderNotes(GeneralService.data.notes);
-		this.renderTagsDisplay(GeneralService.data.tags);
+		$(".tags").append(this.parseTags(Data.structure.tags));
+		NoteService.renderNotes(Data.structure.notes);
+		this.renderTagsDisplay(Data.structure.tags);
 		NoteService.renderNoteFields();
 		NoteService.renderNoteSize();
 		NoteService.dragNotesFolders();

@@ -2,7 +2,7 @@
 			<form action="#" class="main_form">
 				<label for="folder_name">Folder Name:</label>
 				<input type="text" id="folder_name">
-				<span class="popup_close"><i class="fa fa-times" aria-hidden="true"></i></span>
+				<span class="popup_close" (click)="resetOnCloseWrapper()"><i class="fa fa-times" aria-hidden="true"></i></span>
 				<label for="folder_select">Folder Parent:</label>
 				<select id="folder_select" class="folders_tree"></select>
 				<button class="create_folder" (click)="createFolder()">Create</button>

@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 
-import { 
+import {
+  Data, 
 	GeneralService
  } from './index';
 
@@ -34,10 +35,10 @@ export class SettingsWorkSpaceComponent implements OnInit {
   	let cols_2 = $("#cols_2:checked");
   	let cols_3 = $("#cols_3:checked");
   	if ( cols_3.length > 0 ) {
-  		this.generalService.markup_3cols = true;
+  		Data.structure.markup_3cols = true;
   		localStorage.setItem("markup_3cols", "true");
   	} else if ( cols_2.length > 0 ) {
-  		this.generalService.markup_3cols = false;
+  		Data.structure.markup_3cols = false;
   		localStorage.setItem("markup_3cols", "false");
   	}
   }

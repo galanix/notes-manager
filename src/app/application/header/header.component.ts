@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 
-import { 
+import {
+	Data,
+
 	EnterFormService, GeneralService,
 	FolderService, TagService,
 	NoteService
@@ -27,19 +29,12 @@ export class HeaderComponent implements OnInit {
 
 	ngOnInit() {
 		this.renderLogoAndUserName();
+		GeneralService.showHints();
 	}
 
 	// Open folder popup
 	openFolderPopup():void {
 		$("#popup_folder").fadeIn(500);
-		$(document).keydown(function(e: any) {
-			if (e.keyCode == 27) {
-				FolderService.resetOnCloseWrapper();
-			}
-		});
-		$(".popup_close").on("click", function() {
-			FolderService.resetOnCloseWrapper();
-		});
 	}
 
 	// Open tag popup
@@ -96,45 +91,45 @@ export class HeaderComponent implements OnInit {
 		let textArea: any = $("#textarea_editor");
 		let textContent: any = $(".cke_wysiwyg_frame").contents().find('body');
 		let input = $(".note_title_edit input");
-		for (let i = 0; i < GeneralService.data.notes.length; i++) {
-			if ( GeneralService.data.notes[i].id == $(".note_editor").attr("data-editor-id") && input.val().length >= 1 ) {
-				GeneralService.data.notes[i].text = textContent.html();
-				GeneralService.data.notes[i].title = input.val();
+		for (let i = 0; i < Data.structure.notes.length; i++) {
+			if ( Data.structure.notes[i].id == $(".note_editor").attr("data-editor-id") && input.val().length >= 1 ) {
+				Data.structure.notes[i].text = textContent.html();
+				Data.structure.notes[i].title = input.val();
 				$(".note_title").text(input.val());
-				localStorage.setItem("structure", JSON.stringify(GeneralService.data));
+				localStorage.setItem("structure", JSON.stringify(Data.structure));
 				
 			}
 			this.noteHTMLonSave = $(".cke_editable").html();
 			if ( this.noteHTMLonSave != this.noteHTMLonEdit ) {
-				GeneralService.data.notes[i].changesCounter++;
-				GeneralService.data.notes[i].lastChange = new Date().toLocaleString("ua");
+				Data.structure.notes[i].changesCounter++;
+				Data.structure.notes[i].lastChange = new Date().toLocaleString("ua");
 			}
 			if ( input.val().length >= 1 ) { 
-				localStorage.setItem("structure", JSON.stringify(GeneralService.data));
+				localStorage.setItem("structure", JSON.stringify(Data.structure));
 				$(".note_title_edit").hide();
 				$(".note_title").show();
-				$(".note_changes").html(`Changes: ${GeneralService.data.notes[i].changesCounter}`);
-				$(".last_change").html(`Last change: ${GeneralService.data.notes[i].lastChange}`);
-				textArea.hide().html(GeneralService.data.notes[i].text).show();
+				$(".note_changes").html(`Changes: ${Data.structure.notes[i].changesCounter}`);
+				$(".last_change").html(`Last change: ${Data.structure.notes[i].lastChange}`);
+				textArea.hide().html(Data.structure.notes[i].text).show();
 				NoteService.returnEdit();
 			} else {
 				$("#note .note_title_popup").slideDown(300).delay(2600).slideUp(300);
 			}
 		}
-		NoteService.renderNotes(GeneralService.data.notes);
+		NoteService.renderNotes(Data.structure.notes);
 	}
 	
 
 	deleteNote(): void {
 		let workTextarea: any = $("#textarea_editor");
-		for (let i = 0; i < GeneralService.data.notes.length; i++) {
-			if ( GeneralService.data.notes[i].id == workTextarea.attr("data-textarea-id") ) {
-				let index: number = GeneralService.data.notes.indexOf(GeneralService.data.notes[i]);
-				GeneralService.data.notes.splice(index, 1);
-				localStorage.setItem("structure", JSON.stringify(GeneralService.data));
+		for (let i = 0; i < Data.structure.notes.length; i++) {
+			if ( Data.structure.notes[i].id == workTextarea.attr("data-textarea-id") ) {
+				let index: number = Data.structure.notes.indexOf(Data.structure.notes[i]);
+				Data.structure.notes.splice(index, 1);
+				localStorage.setItem("structure", JSON.stringify(Data.structure));
 			}
-			NoteService.renderNotes(GeneralService.data.notes);
-			FolderService.renderFoldersDisplay(GeneralService.data.folders);
+			NoteService.renderNotes(Data.structure.notes);
+			FolderService.renderFoldersDisplay(Data.structure.folders);
 		}
 		let latestNote: any = NoteService.findLatestNote();
 		if ( latestNote ) { 
@@ -153,12 +148,6 @@ export class HeaderComponent implements OnInit {
 		EnterFormService.delete_cookie("access");
 		window.location.replace("http://localhost:4200/enter");
 	}
-
-	// Show hint while mouse cursor over button
-	showHint(): void {
-			// let $target: any = $(event.target);
-			// $target.find(".button_hint").delay(2000).show(100).delay(3000).hide(100);
-		}
 
 		// Show hint while mouse cursor over button
 		showHints(): void {
@@ -183,12 +172,6 @@ export class HeaderComponent implements OnInit {
 				$target.find(".button_hint").slideUp('slow');
 			}
 
-		}
-
-		// Hide hint when mouse cursor leave button
-		hideHint(): void {
-			// let $target: any = $(event.target);
-			// $target.find(".button_hint").hide();
 		}
 
 		// Change logo and user name

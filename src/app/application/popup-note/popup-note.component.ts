@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 
-import { 
+import {
+Data,
+ 
 	GeneralService, FolderService,
 	TagService, NoteService,
 
@@ -32,31 +34,42 @@ export class PopupNoteComponent implements OnInit {
 		let selectedOptionId: any = $("#popup_note select option:selected").attr("data-folders-select-id");
 		let textArea: any = $("#application #editor");
 		if ( $("#note_name").val() && selectedOptionId != "root" ) {
-			GeneralService.updateNotesData();
+			this.noteService.updateNotesData();
 			$(".folders").find("*").remove();
-			$(".folders").append(FolderService.parseFolders(GeneralService.data.folders));
-			NoteService.renderNotes(GeneralService.data.notes);
-			FolderService.renderFoldersDisplay(GeneralService.data.folders);
+			$(".folders").append(FolderService.parseFolders(Data.structure.folders));
+			NoteService.renderNotes(Data.structure.notes);
+			FolderService.renderFoldersDisplay(Data.structure.folders);
 		}
 
 		if ( selectedOptionId == "root" ) {
-			GeneralService.updateNotesData();
+			this.noteService.updateNotesData();
 			$(".folders").find("*").remove();
-			$(".folders").append(FolderService.parseFolders(GeneralService.data.folders));
-			NoteService.renderNotes(GeneralService.data.notes);
-			FolderService.renderFoldersDisplay(GeneralService.data.folders);
+			$(".folders").append(FolderService.parseFolders(Data.structure.folders));
+			NoteService.renderNotes(Data.structure.notes);
+			FolderService.renderFoldersDisplay(Data.structure.folders);
 		}
 		
 		FolderService.delRootNoteWrappersFolders();
 		let latestNote: any = NoteService.findLatestNote();
 		textArea.attr("data-textarea-id", latestNote.id);
-		NoteService.noteWrapper();
+		this.noteWrapper();
 		NoteService.renderLatestNote();
 		this.noteService.renderLastNotesInColumn();
 
 		$("#popup_note").fadeOut(500);
 		(<HTMLFormElement>$("#popup_note form")[0]).reset();
-		
+	}
+
+		// Wrapper for note functions call
+	 noteWrapper() { 
+		NoteService.renderNoteFields();
+		TagService.checkNoteForAddTag();
+		TagService.renderTags();
+		NoteService.renderNoteSize();
+		GeneralService.addSortableClass();
+		FolderService.sortableFolders();
+		NoteService.dragNotesFolders();
+		NoteService.dropNotesFolders();
 	}
 
 }

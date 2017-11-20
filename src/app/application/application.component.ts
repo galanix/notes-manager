@@ -1,6 +1,8 @@
 import { Component, OnInit, AfterContentChecked } from '@angular/core';
 
-import { 
+import {
+	Data,
+
 	EnterFormService, GeneralService,
 	FolderService, TagService, 
 	NoteService
@@ -13,7 +15,8 @@ declare var $: any;
 	templateUrl: './application.component.html',
 	styleUrls: ['./application.component.css']
 })
-export class ApplicationComponent implements OnInit, AfterContentChecked {
+export class ApplicationComponent implements 
+OnInit, AfterContentChecked {
 
 	constructor(
 		private generalService: GeneralService,
@@ -26,16 +29,16 @@ export class ApplicationComponent implements OnInit, AfterContentChecked {
 		TagService.checkNoteForAddTag();
 		TagService.paddingCheck();
 		TagService.renderTags();
-		FolderService.renderFolderSelect(GeneralService.data.folders, 0);
-		TagService.renderTagSelect(GeneralService.data.tags, 0);
-		GeneralService.idFolderCounter++;
-		GeneralService.idTagCounter++;
-		GeneralService.idNoteCounter++;
-		$(".folders").append(FolderService.parseFolders(GeneralService.data.folders));
-		$(".tags").append(TagService.parseTags(GeneralService.data.tags));
-		NoteService.renderNotes(GeneralService.data.notes);
-		FolderService.renderFoldersDisplay(GeneralService.data.folders);
-		TagService.renderTagsDisplay(GeneralService.data.tags);
+		FolderService.renderFolderSelect(Data.structure.folders, 0);
+		TagService.renderTagSelect(Data.structure.tags, 0);
+		Data.idFolderCounter++;
+		Data.idTagCounter++;
+		Data.idNoteCounter++;
+		$(".folders").append(FolderService.parseFolders(Data.structure.folders));
+		$(".tags").append(TagService.parseTags(Data.structure.tags));
+		NoteService.renderNotes(Data.structure.notes);
+		FolderService.renderFoldersDisplay(Data.structure.folders);
+		TagService.renderTagsDisplay(Data.structure.tags);
 		NoteService.renderNoteFields();
 
 		this.generalEvents();

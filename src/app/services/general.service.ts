@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 
+import { Data } from '../data/data';
 import { Folder } from '../data/folder';
 import { Tag } from '../data/tag';
 import { Note } from '../data/note';
@@ -14,230 +15,156 @@ export class GeneralService {
 
 	constructor() { }
 
-	static data: any = (localStorage.getItem("structure")) 
-	? JSON.parse(localStorage.getItem("structure")) : {
-		"folders": [{
-			"id": "root",
-			"name": "Folders",
-			"display": "block",
-			"children": []
-		}],
-		"notes": [],
-		"tags": [{
-			"id": "root",
-			"name": "Tags",
-			"display": "block",
-			"children": []
-		}]
-	}
+	// static data: any = (localStorage.getItem("structure")) 
+	// ? JSON.parse(localStorage.getItem("structure")) : {
+		// 	"folders": [{
+			// 		"id": "root",
+			// 		"name": "Folders",
+			// 		"display": "block",
+			// 		"children": []
+			// 	}],
+			// 	"notes": [],
+			// 	"tags": [{
+				// 		"id": "root",
+				// 		"name": "Tags",
+				// 		"display": "block",
+				// 		"children": []
+				// 	}]
+				// }
 
-	static idFolderCounter: any = (localStorage.getItem("idFolderCounter")) 
-	? localStorage.getItem("idFolderCounter") : 0;
+				// static idFolderCounter: any = (localStorage.getItem("idFolderCounter")) 
+				// ? localStorage.getItem("idFolderCounter") : 0;
 
-	static idTagCounter: any = (localStorage.getItem("idTagCounter")) 
-	? localStorage.getItem("idTagCounter") : 0;
+				// static idTagCounter: any = (localStorage.getItem("idTagCounter")) 
+				// ? localStorage.getItem("idTagCounter") : 0;
 
-	static idNoteCounter: any = (localStorage.getItem("idNoteCounter")) 
-	? localStorage.getItem("idNoteCounter") : 0;
+				// static idNoteCounter: any = (localStorage.getItem("idNoteCounter")) 
+				// ? localStorage.getItem("idNoteCounter") : 0;
 
-	markup_3cols: any = (localStorage.getItem("markup_3cols"))
-	? localStorage.getItem("markup_3cols") : false;
+				// markup_3cols: any = (localStorage.getItem("markup_3cols"))
+				// ? localStorage.getItem("markup_3cols") : false;
 
-	static addSortableClass(): void {
-		let sortableUl = $(".folders").find(".folder_content")[1];
-		let $sortableUl = $(sortableUl);
-		$sortableUl.addClass("sortable");
-	}
-	
-	static resizeSidebar(): void {
-		$("#application .sidebar_wrapper").resizable({
-			handles: 'e',
-			minWidth: 150
-		});
-	}
-
-	static setColumnHeight(): void {
-		let dif: number = $(window).height() - $("header").outerHeight();
-		$("#application .notes_info").css("height", dif);
-	}
-
-	static resize3dColumn(): void {
-		$("#application .notes_info_container").resizable({
-			handles: 'e',
-		});
-	}
-
-	// Find and return nested object 
-	static find(source: any, id: any): any {
-		for (let key in source) {
-			let item: any = source[key];
-			if (item.id == id)
-				return item;
-			// Item not returned yet. Search its children by recursive call.
-			if (item.children) {
-				let subresult: any = this.find(item.children, id);
-				// If the item was found in the subchildren, return it.
-				if (subresult)
-					return subresult;
-			}
-		}
-		// Nothing found yet? return null.
-		return null;
-	}
-
-	// Find and return nested obj parent(arr)
-	static findParent(arr: any, id: any): any {
-		for (let i = 0; i < arr.length; i++) {
-			let item: any = arr[i];
-			let children: any = item.children;
-
-
-			for (let j = 0; j < children.length; j++) {
-				let child: any = item.children[j];
-				let childID: any = child.id;
-
-				if (childID == id) return children;
-
-				if (item.children) {
-					let subresult: any = this.findParent(item.children, id);
-					if (subresult) 
-						return subresult;
+				static addSortableClass(): void {
+					let sortableUl = $(".folders").find(".folder_content")[1];
+					let $sortableUl = $(sortableUl);
+					$sortableUl.addClass("sortable");
 				}
+
+				static resizeSidebar(): void {
+					$("#application .sidebar_wrapper").resizable({
+						handles: 'e',
+						minWidth: 150
+					});
+				}
+
+				static setColumnHeight(): void {
+					let dif: number = $(window).height() - $("header").outerHeight();
+					$("#application .notes_info").css("height", dif);
+				}
+
+				static resize3dColumn(): void {
+					$("#application .notes_info_container").resizable({
+						handles: 'e',
+					});
+				}
+
+				// Find and return nested object 
+				static find(source: any, id: any): any {
+					for (let key in source) {
+						let item: any = source[key];
+						if (item.id == id)
+							return item;
+						// Item not returned yet. Search its children by recursive call.
+						if (item.children) {
+							let subresult: any = this.find(item.children, id);
+							// If the item was found in the subchildren, return it.
+							if (subresult)
+								return subresult;
+						}
+					}
+					// Nothing found yet? return null.
+					return null;
+				}
+
+				// Find and return nested obj parent(arr)
+				static findParent(arr: any, id: any): any {
+					for (let i = 0; i < arr.length; i++) {
+						let item: any = arr[i];
+						let children: any = item.children;
+
+
+						for (let j = 0; j < children.length; j++) {
+							let child: any = item.children[j];
+							let childID: any = child.id;
+
+							if (childID == id) return children;
+
+							if (item.children) {
+								let subresult: any = this.findParent(item.children, id);
+								if (subresult) 
+									return subresult;
+							}
+						}
+					}
+					return null;
+				}
+
+				// Find all notes in folder and display in 3d column
+				static addNotesInFolder(folder: any, notes: any): void {
+					let dataNotes: any = Data.structure.notes;
+					for ( let note of dataNotes ) {
+						if ( note.folder == folder.id ) {
+							notes.push(note);
+						}
+					}
+					if ( folder.children ) { 
+						for ( let childFolder of folder.children ) {
+							this.addNotesInFolder(childFolder, notes);
+						}
+					}
+				}
+
+				// Find all notes in tag and display in 3d column
+				static addNotesWithTag(targetTag: any, notes: any): void {
+					let dataNotes: any = Data.structure.notes;
+					for ( let note of dataNotes ) {
+						for ( let tag of note.tags ) {
+							if ( tag == targetTag.id ) 
+								notes.push(note);
+						}
+					}
+					if ( targetTag.children ) {
+						for ( let childTag of targetTag.children ) {
+							this.addNotesInFolder(childTag, notes);
+						}
+					}
+				}
+				// Show user hints for buttons in header while mouse is over button for 1,5s
+				static showHints(): void {
+					$(".button_hint").hide();
+					let timeoutId;
+					let $target: any;
+					$(".btn").hover(function(event) {
+						$target = $(event.target); 
+						if (!timeoutId) {
+							timeoutId = window.setTimeout(function() {
+								timeoutId = null;
+								$target.find(".button_hint").slideDown();
+							}, 1500);
+						}
+					},
+					function () {
+						if (timeoutId) {
+							window.clearTimeout(timeoutId);
+							timeoutId = null;
+						}
+						else {
+							$target.find(".button_hint").slideUp();
+						}
+					});
+				}
+
 			}
-		}
-		return null;
-	}
 
-	// Add new folder to localStorage and iterate idFolderCounter
-	static updateFoldersData() {
-		let folderName: any =  $("#folder_name").val();
-		let findedObj: any;
-		let newFolder: Folder = new Folder();
-
-		newFolder.id = this.idFolderCounter;
-		newFolder.name = folderName;
-		newFolder.display = "block";
-		newFolder.children = [];
-
-		findedObj =	GeneralService.find(GeneralService.data.folders, $(".folders_tree option:selected").attr("data-folders-select-id"));
-		findedObj.children.push(newFolder);
-
-		localStorage.setItem("structure", JSON.stringify(GeneralService.data));
-		localStorage.setItem("idFolderCounter", this.idFolderCounter);
-		this.idFolderCounter++;
-	}
-
-	// Add new tag to localStorage and iterate idTagCounter
-	static updateTagsData() {
-		let tagName: any;
-		if ( $("#popup_tag").css("display").toLowerCase() == "block" )
-			tagName =  $("#tag_name").val();
-		if ( $("#popup_note_tag").css("display").toLowerCase() == "block" )
-			tagName =  $("#tag_note_name").val();
-		let findedObj: any;
-
-		let newTag: any = new Tag();
-
-		newTag.id = this.idTagCounter;
-		newTag.name = tagName;
-		newTag.display = "block";
-		newTag.children = [];
-
-		findedObj =	GeneralService.find(GeneralService.data.tags, $(".tags_tree option:selected").attr("data-tags-select-id"));
-		findedObj.children.push(newTag);
-
-		localStorage.setItem("structure", JSON.stringify(GeneralService.data));
-		localStorage.setItem("idTagCounter", this.idTagCounter);
-		this.idTagCounter++;
-	}
-
-	// Add new note to localStorage and iterate idNoteCounter
-	static updateNotesData() {
-		let noteTitle: any = $("#note_name").val();
-		let noteText: any = $("#popup_note textarea").val();
-		let folderID: any =	$("#popup_note select option:selected").attr("data-folders-select-id");
-		let noteDate: any = new Date();
-
-		let newNote = new Note();
-
-		newNote.id = this.idNoteCounter;
-		if ( folderID != "root" )
-			newNote.folder = folderID;
-		if ( folderID == "root" ) {
-			if( GeneralService.find(GeneralService.data.folders, "default") == null )
-				FolderService.defaultFolder()
-			newNote.folder = "default";
-		}
-		newNote.title = noteTitle;
-		newNote.text = noteText;
-		newNote.date = new Date();
-		newNote.changesCounter = 0;
-		newNote.lastChange = new Date().toLocaleString("ua");
-		newNote.tags = [];
-		
-		GeneralService.data.notes.push(newNote);
-		localStorage.setItem("structure", JSON.stringify(GeneralService.data));
-		localStorage.setItem("idNoteCounter", this.idNoteCounter);
-		localStorage.setItem("noteDate", noteDate);
-		this.idNoteCounter++;
-	}
-
-	// Find all notes in folder and display in 3d column
-	static addNotesInFolder(folder: any, notes: any): void {
-		let dataNotes: any = GeneralService.data.notes;
-		for ( let note of dataNotes ) {
-			if ( note.folder == folder.id ) {
-				notes.push(note);
-			}
-		}
-		if ( folder.children ) { 
-			for ( let childFolder of folder.children ) {
-				this.addNotesInFolder(childFolder, notes);
-			}
-		}
-	}
-
-	// Find all notes in tag and display in 3d column
-	static addNotesWithTag(targetTag: any, notes: any): void {
-		let dataNotes: any = GeneralService.data.notes;
-		for ( let note of dataNotes ) {
-			for ( let tag of note.tags ) {
-				if ( tag == targetTag.id ) 
-					notes.push(note);
-			}
-		}
-		if ( targetTag.children ) {
-			for ( let childTag of targetTag.children ) {
-				this.addNotesInFolder(childTag, notes);
-			}
-		}
-	}
-	// Show user hints for buttons in header while mouse is over button for 1,5s
-	static showHints(): void {
-		$(".button_hint").hide();
-		let timeoutId;
-		let $target: any;
-		$(".btn").hover(function(event) {
-			$target = $(event.target); 
-			if (!timeoutId) {
-				timeoutId = window.setTimeout(function() {
-					timeoutId = null;
-					$target.find(".button_hint").slideDown();
-				}, 1500);
-			}
-		},
-		function () {
-			if (timeoutId) {
-				window.clearTimeout(timeoutId);
-				timeoutId = null;
-			}
-			else {
-				$target.find(".button_hint").slideUp();
-			}
-		});
-	}
-
-}
-
-// ********************************* Deprecated ****************************************
+			// ********************************* Deprecated ****************************************
 

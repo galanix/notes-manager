@@ -4,3 +4,4 @@ export * from '../../services/tag.service';
 export * from '../../services/note.service';
 
 export * from '../../data/note';
+export * from '../../data/data';

@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 
-import { 
+import {
+	Data,
+	 
 	GeneralService, FolderService,
 	TagService, NoteService
 } from './index';
@@ -28,9 +30,9 @@ export class PopupTagComponent implements OnInit {
 	// Create tag render data in tags select and sidebar
 	createTag(): void {
 		if ( $("#tag_name").val() ) {
-			GeneralService.updateTagsData();
+			this.tagService.updateTagsData();
 			$("#popup_tag .tags_tree").find("*").remove();
-			TagService.renderTagSelect(GeneralService.data.tags, 0);
+			TagService.renderTagSelect(Data.structure.tags, 0);
 			TagService.tagWrapper(); 
 		}
 		$("#popup_tag").fadeOut(500);
@@ -41,9 +43,9 @@ export class PopupTagComponent implements OnInit {
 	deleteTag(): void {
 		let selectedOptionId: any = $("#popup_tag select option:selected").attr("data-tags-select-id");
 		let textArea: any = $("#application #textarea_editor");
-		let note: any = GeneralService.find(GeneralService.data.notes, textArea.attr("data-textarea-id"));
+		let note: any = GeneralService.find(Data.structure.notes, textArea.attr("data-textarea-id"));
 		if ( $("#popup_tag select").val() && selectedOptionId != "root" ) {
-			let findedArr: any = GeneralService.findParent(GeneralService.data.tags, selectedOptionId);
+			let findedArr: any = GeneralService.findParent(Data.structure.tags, selectedOptionId);
 			for (let i = 0; i < findedArr.length; i++) {
 				if ( findedArr[i].id == selectedOptionId ) {
 					let index: number = findedArr.indexOf(findedArr[i]);
@@ -58,10 +60,10 @@ export class PopupTagComponent implements OnInit {
 				}
 			}
 		}
-		localStorage.setItem("structure", JSON.stringify(GeneralService.data));
+		localStorage.setItem("structure", JSON.stringify(Data.structure));
 
 		$("#popup_tag .tags_tree").find("option").not(".select_root").remove();
-		TagService.renderTagSelect(GeneralService.data.tags, 0);
+		TagService.renderTagSelect(Data.structure.tags, 0);
 		TagService.tagWrapper(); 
 		TagService.checkNoteForAddTag();
 		TagService.renderTags();

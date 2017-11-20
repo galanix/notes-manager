@@ -4,6 +4,9 @@ import { GeneralService } from './general.service';
 import { FolderService } from './folder.service';
 import { TagService } from './tag.service';
 
+import { Data } from '../data/data';
+import { Note } from '../data/note';
+ 
 import * as moment from 'moment';
 
 declare var $: any;
@@ -13,6 +16,37 @@ declare var $: any;
 export class NoteService {
 
 	constructor() { }
+
+		// Add new note to localStorage and iterate idNoteCounter
+	 updateNotesData() {
+		let noteTitle: any = $("#note_name").val();
+		let noteText: any = $("#popup_note textarea").val();
+		let folderID: any =	$("#popup_note select option:selected").attr("data-folders-select-id");
+		let noteDate: any = new Date();
+
+		let newNote = new Note();
+
+		newNote.id = Data.idNoteCounter;
+		if ( folderID != "root" )
+			newNote.folder = folderID;
+		if ( folderID == "root" ) {
+			if( GeneralService.find(Data.structure.folders, "default") == null )
+				FolderService.defaultFolder()
+			newNote.folder = "default";
+		}
+		newNote.title = noteTitle;
+		newNote.text = noteText;
+		newNote.date = new Date();
+		newNote.changesCounter = 0;
+		newNote.lastChange = new Date().toLocaleString("ua");
+		newNote.tags = [];
+		
+		Data.structure.notes.push(newNote);
+		localStorage.setItem("structure", JSON.stringify(Data.structure));
+		localStorage.setItem("idNoteCounter", Data.idNoteCounter);
+		localStorage.setItem("noteDate", noteDate);
+		Data.idNoteCounter++;
+	}
 
 	// Set textarea(note) height equal to sidebar height
 	static renderNoteSize() {
@@ -38,14 +72,14 @@ export class NoteService {
 	static findLatestNote(): any {
 		let dataArr: any = [];
 		let maxNote: any;
-		for(let i = 0; i < GeneralService.data.notes.length; i++) {
-			let item: any = GeneralService.data.notes[i];
+		for(let i = 0; i < Data.structure.notes.length; i++) {
+			let item: any = Data.structure.notes[i];
 			let parseDate: any = Date.parse(item.date);
 			dataArr.push(parseDate);
 		}
 		let max: any = NoteService.getMaxOfArray(dataArr);
-		for(let i = 0; i < GeneralService.data.notes.length; i++) {
-			let item: any = GeneralService.data.notes[i];
+		for(let i = 0; i < Data.structure.notes.length; i++) {
+			let item: any = Data.structure.notes[i];
 			let parseDate: any = Date.parse(item.date);
 			if ( parseDate == max ) {
 				maxNote = item;
@@ -66,7 +100,7 @@ export class NoteService {
 
 		if (latestNote) {
 			noteTitle.html(latestNote.title);
-			let latestNoteFolder = GeneralService.find(GeneralService.data.folders, latestNote.folder);
+			let latestNoteFolder = GeneralService.find(Data.structure.folders, latestNote.folder);
 			notesFolder.html(`<i class="fa fa-folder-o" aria-hidden="true"></i> ${latestNoteFolder.name}`);
 
 			$(".creation_date").html(`Creation date: ${moment(latestNote.date).format("DD.MM.YYYY, HH:mm:ss")}`);
@@ -95,17 +129,17 @@ export class NoteService {
 		let editor: any = $("#application .note_editor");
 		let editorContent: any = $(".cke_wysiwyg_frame").contents().find('body');
 
-		for (let i = 0; i < GeneralService.data.notes.length; i++) {
-			let item: any = GeneralService.data.notes[i];
+		for (let i = 0; i < Data.structure.notes.length; i++) {
+			let item: any = Data.structure.notes[i];
 			if ( item.id == editor.attr("data-editor-id") ) {
 				noteTitle.html(item.title);
 				editorContent.html(item.text);
 				textArea.html(item.text);
-				let folder = GeneralService.find(GeneralService.data.folders, item.folder);
+				let folder = GeneralService.find(Data.structure.folders, item.folder);
 				notesFolder.html(`<i class="fa fa-folder-o" aria-hidden="true"></i> ${folder.name}`);
 			}
 		}
-		if ( GeneralService.data.notes.length <= 0 ) {
+		if ( Data.structure.notes.length <= 0 ) {
 			noteTitle.html(null);
 			notesFolder.html(null);
 			noteTags.html(null);
@@ -141,7 +175,7 @@ export class NoteService {
 	renderLastNotesInColumn(): void {
 		$(".column_notes .column_note").remove();
 		$(".notes_info h2").text("Recent notes:");
-		let sliced: any = GeneralService.data.notes.slice(-10);
+		let sliced: any = Data.structure.notes.slice(-10);
 		for (let note of sliced) {
 			let cleanText: string = note.text.replace(/<\/?[^>]+(>|$)/g, "");
 			let slicedText: string;
@@ -217,21 +251,21 @@ export class NoteService {
 					return index;
 				});
 
-				let draggedNote = GeneralService.find(GeneralService.data.notes, ui.draggable.attr("data-note-id"));
+				let draggedNote = GeneralService.find(Data.structure.notes, ui.draggable.attr("data-note-id"));
 				let newFolderId = $(this).parent("ul").siblings(".folder_name").attr("data-folders-tree-id");
 
 				draggedNote.folder = newFolderId;
-				localStorage.setItem("structure", JSON.stringify(GeneralService.data));
+				localStorage.setItem("structure", JSON.stringify(Data.structure));
 				NoteService.renderNoteFields();
 			},
 			activate: function( event, ui ) {
 				let target = $(event.target);
 				let spanFolder = target.parent().siblings("span");
-				let findedObj: any = GeneralService.find(GeneralService.data.folders, spanFolder.attr("data-folders-tree-id"));
+				let findedObj: any = GeneralService.find(Data.structure.folders, spanFolder.attr("data-folders-tree-id"));
 				// If folder has no children or notes makes it possible to add notes to it
 				if ( $(this).length <= 1 && $(this).parent().children().length <= 1 ) {
 					findedObj.display = "block";
-					localStorage.setItem("structure", JSON.stringify(GeneralService.data));
+					localStorage.setItem("structure", JSON.stringify(Data.structure));
 					spanFolder.children(".folder").removeClass("fa-angle-right").addClass("fa-angle-down");
 				}
 			}
@@ -241,9 +275,9 @@ export class NoteService {
 	// Check if folder or subfolders has notes
 	static checkNotesInFolders(obj: any) {
 		obj.notRenderInSelect = true;
-		localStorage.setItem("structure", JSON.stringify(GeneralService.data));
-		for (let i = 0; i < GeneralService.data.notes.length; i++) {
-			if ( GeneralService.data.notes[i].folder == obj.id ) {
+		localStorage.setItem("structure", JSON.stringify(Data.structure));
+		for (let i = 0; i < Data.structure.notes.length; i++) {
+			if ( Data.structure.notes[i].folder == obj.id ) {
 				if ( $("#popup_folder .popup_delete_notes_wrapper").css("display").toLowerCase() == "none" )
 					$("#popup_folder .popup_delete_notes_wrapper").show();
 			}
@@ -253,9 +287,9 @@ export class NoteService {
 				for(let key in arr) {
 					let item = arr[key];
 					item.notRenderInSelect = true;
-					localStorage.setItem("structure", JSON.stringify(GeneralService.data));
-					for (let i = 0; i < GeneralService.data.notes.length; i++) {
-						if ( GeneralService.data.notes[i].folder == item.id ) {
+					localStorage.setItem("structure", JSON.stringify(Data.structure));
+					for (let i = 0; i < Data.structure.notes.length; i++) {
+						if ( Data.structure.notes[i].folder == item.id ) {
 							if ( $("#popup_folder .popup_delete_notes_wrapper").css("display").toLowerCase() == "none" )
 								$("#popup_folder .popup_delete_notes_wrapper").show();
 						}
@@ -278,20 +312,20 @@ export class NoteService {
 
 	// Move notes to another folder
 	static moveNoteInFolder = (oldFolder: any, newFolder: any) => { 
-		for (let i = 0; i < GeneralService.data.notes.length; i++) {
-			if ( GeneralService.data.notes[i].folder == oldFolder.id ) {
-				GeneralService.data.notes[i].folder = newFolder.id;
-				localStorage.setItem("structure", JSON.stringify(GeneralService.data));
+		for (let i = 0; i < Data.structure.notes.length; i++) {
+			if ( Data.structure.notes[i].folder == oldFolder.id ) {
+				Data.structure.notes[i].folder = newFolder.id;
+				localStorage.setItem("structure", JSON.stringify(Data.structure));
 			}
 		}
 		if ( oldFolder.children ) { 
 			let moveNoteInFolderAgain = (oldFolder: any, newFolder: any) => {
 				for(let key in oldFolder) {
 					let item = oldFolder[key];
-					for (let i = 0; i < GeneralService.data.notes.length; i++) {
-						if ( GeneralService.data.notes[i].folder == item.id ) {
-							GeneralService.data.notes[i].folder = newFolder.id;
-							localStorage.setItem("structure", JSON.stringify(GeneralService.data));
+					for (let i = 0; i < Data.structure.notes.length; i++) {
+						if ( Data.structure.notes[i].folder == item.id ) {
+							Data.structure.notes[i].folder = newFolder.id;
+							localStorage.setItem("structure", JSON.stringify(Data.structure));
 						}
 					}
 					if (item.children)
@@ -304,24 +338,24 @@ export class NoteService {
 
 	// Delete notes in folder and subfolders
 	static deleteNotesInFolder = (obj: any) => {
-		for (let i = 0; i < GeneralService.data.notes.length; i++) {
-			if ( GeneralService.data.notes[i].folder == obj.id ) {
-				let index: number = GeneralService.data.notes.indexOf(GeneralService.data.notes[i]);
-				GeneralService.data.notes.splice(index, 1);
+		for (let i = 0; i < Data.structure.notes.length; i++) {
+			if ( Data.structure.notes[i].folder == obj.id ) {
+				let index: number = Data.structure.notes.indexOf(Data.structure.notes[i]);
+				Data.structure.notes.splice(index, 1);
 				i--;
-				localStorage.setItem("structure", JSON.stringify(GeneralService.data));
+				localStorage.setItem("structure", JSON.stringify(Data.structure));
 			}
 		}
 		if (obj.children) { 
 			let deleteNotesInFolderAgain = (arr: any) => {
 				for (let key in arr) {
 					let item = arr[key];
-					for (let i = 0; i < GeneralService.data.notes.length; i++) {
-						if ( GeneralService.data.notes[i].folder == item.id ) {
-							let index: number = GeneralService.data.notes.indexOf(GeneralService.data.notes[i]);
-							GeneralService.data.notes.splice(index, 1);
+					for (let i = 0; i < Data.structure.notes.length; i++) {
+						if ( Data.structure.notes[i].folder == item.id ) {
+							let index: number = Data.structure.notes.indexOf(Data.structure.notes[i]);
+							Data.structure.notes.splice(index, 1);
 							i--;
-							localStorage.setItem("structure", JSON.stringify(GeneralService.data));
+							localStorage.setItem("structure", JSON.stringify(Data.structure));
 						}
 					}
 					if (item.children)
@@ -332,17 +366,17 @@ export class NoteService {
 		}
 	}
 
-	// Wrapper for note functions call
-	static noteWrapper() { 
-		this.renderNoteFields();
-		TagService.checkNoteForAddTag();
-		TagService.renderTags();
-		this.renderNoteSize();
-		GeneralService.addSortableClass();
-		FolderService.sortableFolders();
-		this.dragNotesFolders();
-		this.dropNotesFolders();
-	}
+	// // Wrapper for note functions call
+	// static noteWrapper() { 
+	// 	this.renderNoteFields();
+	// 	TagService.checkNoteForAddTag();
+	// 	TagService.renderTags();
+	// 	this.renderNoteSize();
+	// 	GeneralService.addSortableClass();
+	// 	FolderService.sortableFolders();
+	// 	this.dragNotesFolders();
+	// 	this.dropNotesFolders();
+	// }
 
 	// Wrapper for click on save or delete button
 	static returnEdit() {

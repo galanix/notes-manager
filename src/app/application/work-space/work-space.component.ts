@@ -1,6 +1,9 @@
-import { Component, OnInit, Input, AfterContentChecked } from '@angular/core';
+import { Component, OnInit, Input, 
+	AfterContentChecked } from '@angular/core';
 
-import { 
+import {
+	Data,
+	
 	EnterFormService, GeneralService,
 	FolderService, TagService, 
 	NoteService
@@ -17,7 +20,8 @@ declare let CKEDITOR:any;
 	styleUrls: ['./work-space.component.css'],
 	providers: [NoteService]
 })
-export class WorkSpaceComponent implements OnInit, AfterContentChecked {
+export class WorkSpaceComponent implements 
+OnInit, AfterContentChecked {
 
 	ckeditorContent: string;
 	editor: any;
@@ -38,8 +42,6 @@ export class WorkSpaceComponent implements OnInit, AfterContentChecked {
 		FolderService.delRootNoteWrappersFolders();
 		NoteService.dragNotesFolders();
 		NoteService.dropNotesFolders();
-		GeneralService.showHints();
-		
 	}
 
 	ngOnInit() {
@@ -61,16 +63,16 @@ export class WorkSpaceComponent implements OnInit, AfterContentChecked {
 			let $childUl: any = $(childUl);
 		childUl.toggle();
 		NoteService.renderNoteSize();
-		let findedObj: any = GeneralService.find(GeneralService.data.folders, $target.attr("data-folders-tree-id"));
+		let findedObj: any = GeneralService.find(Data.structure.folders, $target.attr("data-folders-tree-id"));
 		let span = $(`.folder_name[data-folders-tree-id="${findedObj.id}"]`);
 		// Change folder open or close icon and display property to render folders tree  with open or close folders
 		if ( findedObj.display === "block" && span.next("ul").children().length ) {
 			findedObj.display = "none";
-			localStorage.setItem("structure", JSON.stringify(GeneralService.data));
+			localStorage.setItem("structure", JSON.stringify(Data.structure));
 			$target.children(".folder").removeClass("fa-angle-down").addClass("fa-angle-right");
 		} else {
 			findedObj.display = "block";
-			localStorage.setItem("structure", JSON.stringify(GeneralService.data));
+			localStorage.setItem("structure", JSON.stringify(Data.structure));
 			$target.children(".folder").removeClass("fa-angle-right").addClass("fa-angle-down");
 		}
 	}
@@ -81,19 +83,19 @@ export class WorkSpaceComponent implements OnInit, AfterContentChecked {
 		|| parentUl.children(".notes_wrapper").children().length) ) {
 		parentUl.toggle();
 	NoteService.renderNoteSize();
-	let findedObj: any = GeneralService.find(GeneralService.data.folders, $target.parent().attr("data-folders-tree-id"));
+	let findedObj: any = GeneralService.find(Data.structure.folders, $target.parent().attr("data-folders-tree-id"));
 	let span: any = $(`.folder_name[data-folders-tree-id="${findedObj.id}"]`);
 	// Change folder open or close icon and display property to render folders tree  with open or close folders
 	if (findedObj.display === "block" && span.next("ul").children().length) {
 		findedObj.display = "none";
-		localStorage.setItem("structure", JSON.stringify(GeneralService.data));
+		localStorage.setItem("structure", JSON.stringify(Data.structure));
 		if ( $target.hasClass("fa-folder-o") ) 
 			$target.siblings().removeClass("fa-angle-down").addClass("fa-angle-right");
 		else 
 			$target.removeClass("fa-angle-down").addClass("fa-angle-right");
 	} else {
 		findedObj.display = "block";
-		localStorage.setItem("structure", JSON.stringify(GeneralService.data));
+		localStorage.setItem("structure", JSON.stringify(Data.structure));
 		if ( $target.hasClass("fa-folder-o") ) 
 			$target.siblings().removeClass("fa-angle-right").addClass("fa-angle-down");
 		else
@@ -111,16 +113,16 @@ toggleTags():void {
 	if ( $target.hasClass("tag_name") && childUl.children().length ) {
 		childUl.toggle();
 		NoteService.renderNoteSize();
-		let findedObj: any = GeneralService.find(GeneralService.data.tags, $target.attr("data-tags-tree-id"));
+		let findedObj: any = GeneralService.find(Data.structure.tags, $target.attr("data-tags-tree-id"));
 		let span: any = $(`.tag_name[data-tags-tree-id="${findedObj.id}"]`);
 		// Change folder open or close icon and display property to render tags tree  with open or close tags
 		if (findedObj.display === "block" && span.next("ul").children().length) {
 			findedObj.display = "none";
-			localStorage.setItem("structure", JSON.stringify(GeneralService.data));
+			localStorage.setItem("structure", JSON.stringify(Data.structure));
 			$target.children(".tag").removeClass("fa-angle-down").addClass("fa-angle-right");
 		} else {
 			findedObj.display = "block";
-			localStorage.setItem("structure", JSON.stringify(GeneralService.data));
+			localStorage.setItem("structure", JSON.stringify(Data.structure));
 			$target.children(".tag").removeClass("fa-angle-right").addClass("fa-angle-down");
 		}
 	}
@@ -130,19 +132,19 @@ toggleTags():void {
 		let parentUl: any = $target.parent().siblings("ul");
 		parentUl.toggle();
 		NoteService.renderNoteSize();
-		let findedObj: any = GeneralService.find(GeneralService.data.tags, $target.parent().attr("data-tags-tree-id"));
+		let findedObj: any = GeneralService.find(Data.structure.tags, $target.parent().attr("data-tags-tree-id"));
 		let span: any = $(`.tag_name[data-tags-tree-id="${findedObj.id}"]`);
 		// Change folder open or close icon and display property to render tags tree  with open or close tags
 		if (findedObj.display === "block" && span.next("ul").children().length) {
 			findedObj.display = "none";
-			localStorage.setItem("structure", JSON.stringify(GeneralService.data));
+			localStorage.setItem("structure", JSON.stringify(Data.structure));
 			if ( $target.hasClass("fa-tag") ) 
 				$target.siblings().removeClass("fa-angle-down").addClass("fa-angle-right");
 			else 
 				$target.removeClass("fa-angle-down").addClass("fa-angle-right");
 		} else {
 			findedObj.display = "block";
-			localStorage.setItem("structure", JSON.stringify(GeneralService.data));
+			localStorage.setItem("structure", JSON.stringify(Data.structure));
 			if ( $target.hasClass("fa-tag") ) 
 				$target.siblings().removeClass("fa-angle-right").addClass("fa-angle-down");
 			else
@@ -159,7 +161,7 @@ showNote(): void {
 	let editor: any = $("#application .note_editor");
 	if ( $target.hasClass("note") && $(".edit").css("display") != "none" ) {
 		let noteID: number = $target.attr("data-note-id");
-		let noteObj: any = GeneralService.find(GeneralService.data.notes, noteID);
+		let noteObj: any = GeneralService.find(Data.structure.notes, noteID);
 
 		$(".creation_date").html(`Creation date: ${moment(noteObj.date).format("DD.MM.YYYY, HH:mm:ss")}`);
 		$(".note_changes").html(`Changes: ${noteObj.changesCounter}`);
@@ -173,7 +175,7 @@ showNote(): void {
 	}
 	if ( $target.parent().hasClass("note") && $(".edit").css("display") != "none" ) {
 		let noteID: number = $target.parent().attr("data-note-id");
-		let noteObj: any = GeneralService.find(GeneralService.data.notes, noteID);
+		let noteObj: any = GeneralService.find(Data.structure.notes, noteID);
 
 		$(".creation_date").html(`Creation date: ${moment(noteObj.date).format("DD.MM.YYYY, HH:mm:ss")}`);
 		$(".note_changes").html(`Changes: ${noteObj.changesCounter}`);
@@ -199,13 +201,13 @@ renderFolderNotesInColumn(): void {
 	if ( $target.attr("data-folders-tree-id") != "root" 
 		&& $target.parent(".folder_name").attr("data-folders-tree-id") != "root" ) { 
 		if ( $target.hasClass("folder_name") ) { 
-			let folder: any = GeneralService.find(GeneralService.data.folders, $target.attr("data-folders-tree-id"));
+			let folder: any = GeneralService.find(Data.structure.folders, $target.attr("data-folders-tree-id"));
 			$(".notes_info h2").text(`Notes in folder ${folder.name}:`);
 			GeneralService.addNotesInFolder(folder, notes);
 			NoteService.renderNotesInColumn(notes);
 		}
 		else if ( $target.parent(".folder_name") && $target.hasClass("fa") && (!$target.hasClass("fa fa-sticky-note-o")) ) {
-			let folder: any = GeneralService.find(GeneralService.data.folders, $target.parent(".folder_name").attr("data-folders-tree-id"));
+			let folder: any = GeneralService.find(Data.structure.folders, $target.parent(".folder_name").attr("data-folders-tree-id"));
 			$(".notes_info h2").text(`Notes in folder ${folder.name}:`);
 			GeneralService.addNotesInFolder(folder, notes);
 			NoteService.renderNotesInColumn(notes);
@@ -222,13 +224,13 @@ renderTagNotesInColumn(): void {
 	if ( $target.attr("data-tags-tree-id") != "root" 
 		&& $target.parent(".tag_name").attr("data-tags-tree-id") != "root" ) { 
 		if ( $target.hasClass("tag_name") ) {
-			let tag: any = GeneralService.find(GeneralService.data.tags, $target.attr("data-tags-tree-id"));
+			let tag: any = GeneralService.find(Data.structure.tags, $target.attr("data-tags-tree-id"));
 			$(".notes_info h2").text(`Notes with tag ${tag.name}:`);
 			GeneralService.addNotesWithTag(tag, notes);
 			NoteService.renderNotesInColumn(notes);
 		} 
 		else if ( $target.parent(".tag_name") && $target.hasClass("fa") && (!$target.hasClass("fa fa-sticky-note-o") )) {
-			let tag: any = GeneralService.find(GeneralService.data.tags, $target.parent(".tag_name").attr("data-tags-tree-id"));
+			let tag: any = GeneralService.find(Data.structure.tags, $target.parent(".tag_name").attr("data-tags-tree-id"));
 			$(".notes_info h2").text(`Notes with tag ${tag.name}:`);
 			GeneralService.addNotesWithTag(tag, notes);
 			NoteService.renderNotesInColumn(notes);
@@ -240,7 +242,7 @@ renderTagNotesInColumn(): void {
 addTag(): void {
 	$("#popup_note_tag").fadeIn(500);
 	$("#popup_note_tag .tag_list").find("*").remove();
-	TagService.renderNoteTagsDisplay(GeneralService.data.tags);
+	TagService.renderNoteTagsDisplay(Data.structure.tags);
 	TagService.checkSelectedTags();
 
 	$(document).keydown(function(e: any) {
@@ -269,5 +271,6 @@ checkMarkup():void {
 		$(".notes_info_container").hide();
 	}
 }
+
 
 }

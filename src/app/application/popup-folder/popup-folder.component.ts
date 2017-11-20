@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 
-import { 
+import {
+	Data, 
+
 	GeneralService, FolderService,
 	TagService, NoteService
 } from './index';
@@ -23,16 +25,16 @@ export class PopupFolderComponent implements OnInit {
 		) { }
 
 	ngOnInit() {
-
+		this.closeOnEsc();
 	}
 
 	// Create folder render data in folder select and sidebar
 	createFolder(): void {
 		if ( $("#folder_name").val() ) {
-			GeneralService.updateFoldersData();
-			FolderService.folderWrapper();
+			this.folderService.updateFoldersData();
+			this.folderWrapper();
 		}
-		FolderService.resetOnCloseWrapper();
+		this.resetOnCloseWrapper();
 		FolderService.delRootNoteWrappersFolders();
 	}
 
@@ -41,22 +43,22 @@ export class PopupFolderComponent implements OnInit {
 		let selectedOptionId: any = $("#popup_folder #folder_select option:selected").attr("data-folders-select-id");
 		if ( $("#popup_folder #folder_select").val() && selectedOptionId != "root" ) {
 			$("#popup_folder .main_form option:not(:selected)").prop("disabled", true);
-			let findedFolder: any = GeneralService.find(GeneralService.data.folders, selectedOptionId);
+			let findedFolder: any = GeneralService.find(Data.structure.folders, selectedOptionId);
 			// checkNotesInFolders if find notes SHOW popup_delete_notes_wrapper content
 			NoteService.checkNotesInFolders(findedFolder);
 			if ( $("#popup_folder .popup_delete_notes_wrapper").css("display").toLowerCase() == "none" ) {
 				FolderService.deleteFolders();
-				FolderService.folderWrapper();
+				this.folderWrapper();
 			}
 		}
 	}
 
 	deleteNotesYes(): void {
 		let selectedOptionId: any = $("#popup_folder #folder_select option:selected").attr("data-folders-select-id");
-		let findedFolder: any = GeneralService.find(GeneralService.data.folders, selectedOptionId);
+		let findedFolder: any = GeneralService.find(Data.structure.folders, selectedOptionId);
 		NoteService.deleteNotesInFolder(findedFolder);
 		FolderService.deleteFolders();
-		FolderService.folderWrapper();
+		this.folderWrapper();
 		NoteService.renderLatestNote();
 		NoteService.renderNoteFields();
 		TagService.checkNoteForAddTag();
@@ -65,7 +67,7 @@ export class PopupFolderComponent implements OnInit {
 
 	deleteNotesNo(): void {
 		$("#add_note_select").find("option").remove();
-		FolderService.renderNotDeletedFolderSelect(GeneralService.data.folders, 0);
+		FolderService.renderNotDeletedFolderSelect(Data.structure.folders, 0);
 
 		$("#popup_folder .main_form").hide();
 		$("#popup_folder .select_folder").show();
@@ -76,17 +78,51 @@ export class PopupFolderComponent implements OnInit {
 		if (  notDeletedFolderSelect != "root" ) {
 			let selectFolderSelected: any = 
 			$("#popup_folder #add_note_select option:selected").attr("data-folders-select-id");
-			let newFolder = GeneralService.find(GeneralService.data.folders, selectFolderSelected);
+			let newFolder = GeneralService.find(Data.structure.folders, selectFolderSelected);
 			let selectedOptionId: any = $("#popup_folder #folder_select option:selected").attr("data-folders-select-id");
-			let findedFolder: any = GeneralService.find(GeneralService.data.folders, selectedOptionId);
+			let findedFolder: any = GeneralService.find(Data.structure.folders, selectedOptionId);
 			NoteService.moveNoteInFolder(findedFolder, newFolder);	
 			FolderService.deleteFolders();
-			FolderService.folderWrapper();
+			this.folderWrapper();
 			NoteService.moveNoteWrapper();
 			$("#popup_folder .popup_delete_notes_wrapper").hide();
 			$("#popup_folder .main_form").show();
 			$("#popup_folder .select_folder").hide();
 		}
+	}
+
+	// Wrapper for reset actions on popup close
+	 resetOnCloseWrapper() {
+		FolderService.sortableFolders();
+		NoteService.dragNotesFolders();
+		NoteService.dropNotesFolders();
+		
+		$("#popup_folder").fadeOut(500);
+		$("#popup_folder #folder_name").val(null);
+		$("#popup_folder .popup_delete_notes_wrapper").hide();
+		$("#popup_folder .main_form option:not(:selected)").prop("disabled", false);
+	}
+
+		// Wrapper for folder functions call
+	 folderWrapper() {
+		$(".folders_tree").find("option").not(".select_root").remove();
+		FolderService.renderFolderSelect(Data.structure.folders, 0);
+		$(".folders").find("*").remove();
+		$(".folders").append(FolderService.parseFolders(Data.structure.folders));
+		GeneralService.addSortableClass();
+		NoteService.renderNotes(Data.structure.notes);
+		FolderService.renderFoldersDisplay(Data.structure.folders);
+		NoteService.renderNoteFields();
+		NoteService.renderNoteSize();
+	}
+
+	// Close window on esc
+	closeOnEsc(): void {
+		$(document).keydown( (e: any) => {
+			if (e.keyCode == 27) {
+				this.resetOnCloseWrapper();
+			}
+		});
 	}
 
 }
