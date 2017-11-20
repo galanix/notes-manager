@@ -182,19 +182,6 @@ export class GeneralService {
 		this.idNoteCounter++;
 	}
 
-	// // Check markup flag and set 2 or 3 columns markup
-	// checkMarkup():void {
-	// 	let markup_3cols: any = localStorage.getItem("markup_3cols");
-	// 	if ( markup_3cols == "true" ) {
-	// 		$(".notes_info").show();
-	// 					this.noteService.renderLastNotesInColumn();
-	// 		GeneralService.resize3dColumn();
-	// 	} else if ( markup_3cols == "false" ) {
-	// 		this.markup_3cols = false;
-	// 		$(".notes_info").hide();
-	// 	}
-	// }
-
 	// Find all notes in folder and display in 3d column
 	static addNotesInFolder(folder: any, notes: any): void {
 		let dataNotes: any = GeneralService.data.notes;
@@ -225,8 +212,32 @@ export class GeneralService {
 			}
 		}
 	}
+	// Show user hints for buttons in header while mouse is over button for 1,5s
+	static showHints(): void {
+		$(".button_hint").hide();
+		let timeoutId;
+		let $target: any;
+		$(".btn").hover(function(event) {
+			$target = $(event.target); 
+			if (!timeoutId) {
+				timeoutId = window.setTimeout(function() {
+					timeoutId = null;
+					$target.find(".button_hint").slideDown();
+				}, 1500);
+			}
+		},
+		function () {
+			if (timeoutId) {
+				window.clearTimeout(timeoutId);
+				timeoutId = null;
+			}
+			else {
+				$target.find(".button_hint").slideUp();
+			}
+		});
+	}
 
 }
 
-	// ********************************* Deprecated ****************************************
+// ********************************* Deprecated ****************************************
 

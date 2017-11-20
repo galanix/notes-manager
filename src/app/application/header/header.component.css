@@ -38,8 +38,9 @@ header #logo {
 	user-select: all;
 }
 
-header span {
+header .btn {
 	display: inline-block;
+	position: relative;
 	color: #fff;
 	cursor: pointer;
 	font-size: 22px;
@@ -47,13 +48,13 @@ header span {
 	padding: 8px;
 }
 
-header span fa {
+header .btn  fa {
 	-webkit-transition: opacity 0.2s ease-in-out;
 	-o-transition: opacity 0.2s ease-in-out;
 	transition: opacity 0.2s ease-in-out;
 }
 
-header span:hover fa { opacity: 0.8; }
+header .btn :hover fa { opacity: 0.8; }
 
 header .header_right {
 	float: right;
@@ -65,4 +66,35 @@ header .save_note { display: none; }
 .settings_link {
 	border: none;
 	outline: none;
+}
+
+.button_hint {
+	display: none;
+	position: absolute;
+	left: -120%;
+	top: 100%;
+	width: 100px;
+	background-color: rgba(0,0,0,.7);
+	color: #fff;
+	font-size: 14px;
+	padding: 8px 5px;
+	text-align: center;
+	border-radius: 6px;
+	z-index: 1;
+}
+
+.header_right .btn:first-child .button_hint { left: -110%; }
+
+.btn:last-of-type .button_hint { left: -175%; }
+.btn:last-of-type .button_hint::after { left: 63%; }
+
+.button_hint::after {
+	content: "";
+	position: absolute;
+	top: -10px;
+	left: 50%;
+	/*	margin-left: -5px;*/
+	border-width: 5px;
+	border-style: solid;
+	border-color:  transparent transparent rgba(0,0,0,.5) transparent;
 }

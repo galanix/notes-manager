@@ -119,10 +119,10 @@ export class HeaderComponent implements OnInit {
 				NoteService.returnEdit();
 			} else {
 				$("#note .note_title_popup").slideDown(300).delay(2600).slideUp(300);
-				}
 			}
-			NoteService.renderNotes(GeneralService.data.notes);
 		}
+		NoteService.renderNotes(GeneralService.data.notes);
+	}
 	
 
 	deleteNote(): void {
@@ -154,12 +154,49 @@ export class HeaderComponent implements OnInit {
 		window.location.replace("http://localhost:4200/enter");
 	}
 
-	// Change logo and user name
-	renderLogoAndUserName(): void {
-		$.getJSON("https://galanix.github.io/notes-manager/assets/pass.json", function(result: any) {
-			let firstLetter = result.name.slice(0, 1).toUpperCase();
-			$("#logo").html(firstLetter);
-			$("#name").html(result.name);
-		});
+	// Show hint while mouse cursor over button
+	showHint(): void {
+			// let $target: any = $(event.target);
+			// $target.find(".button_hint").delay(2000).show(100).delay(3000).hide(100);
+		}
+
+		// Show hint while mouse cursor over button
+		showHints(): void {
+			let $target: any = $(event.target);
+			$(".button_hint").hide();
+			let timeoutId;
+			if ( $target ) {
+			console.log("timeoutId:", timeoutId); 
+				if (!timeoutId) {
+					timeoutId = window.setTimeout(function() {
+						console.log("timeoutId2:", timeoutId); 
+						timeoutId = null;
+						$target.find(".button_hint").slideDown('slow');
+					}, 1500);
+				}
+			}
+			if (timeoutId) {
+				window.clearTimeout(timeoutId);
+				timeoutId = null;
+			}
+			else {
+				$target.find(".button_hint").slideUp('slow');
+			}
+
+		}
+
+		// Hide hint when mouse cursor leave button
+		hideHint(): void {
+			// let $target: any = $(event.target);
+			// $target.find(".button_hint").hide();
+		}
+
+		// Change logo and user name
+		renderLogoAndUserName(): void {
+			$.getJSON("https://galanix.github.io/notes-manager/assets/pass.json", function(result: any) {
+				let firstLetter = result.name.slice(0, 1).toUpperCase();
+				$("#logo").html(firstLetter);
+				$("#name").html(result.name);
+			});
+		}
 	}
-}

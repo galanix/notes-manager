@@ -38,6 +38,7 @@ export class WorkSpaceComponent implements OnInit, AfterContentChecked {
 		FolderService.delRootNoteWrappersFolders();
 		NoteService.dragNotesFolders();
 		NoteService.dropNotesFolders();
+		GeneralService.showHints();
 		
 	}
 
