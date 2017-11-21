@@ -177,6 +177,7 @@ export class HeaderComponent implements OnInit {
 		// Change logo and user name
 		renderLogoAndUserName(): void {
 			$.getJSON("https://galanix.github.io/notes-manager/assets/pass.json", function(result: any) {
+				// $.getJSON("http://localhost:4200/assets/pass.json", function(result: any) {
 				let firstLetter = result.name.slice(0, 1).toUpperCase();
 				$("#logo").html(firstLetter);
 				$("#name").html(result.name);
