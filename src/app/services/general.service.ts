@@ -82,6 +82,16 @@ export class GeneralService {
 		return null;
 	}
 
+// Remove hash from url without reloding page
+	static removeHash (): void { 
+    var scrollV, scrollH, loc = window.location;
+    if ("pushState" in history)
+        history.pushState("", document.title, loc.pathname + loc.search);
+    else {
+        loc.hash = "";
+    }
+}
+
 	// Find all notes in folder and display in 3d column
 	static addNotesInFolder(folder: any, notes: any): void {
 		let dataNotes: any = Data.structure.notes;

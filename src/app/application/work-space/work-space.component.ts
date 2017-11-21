@@ -1,109 +1,109 @@
 import { Component, OnInit, Input, 
 	AfterContentChecked } from '@angular/core';
 
-import {
-	Data,
-	
-	EnterFormService, GeneralService,
-	FolderService, TagService, 
-	NoteService
-} from './index';
+	import {
+		Data,
 
-import * as moment from 'moment';
+		EnterFormService, GeneralService,
+		FolderService, TagService, 
+		NoteService
+	} from './index';
 
-declare let $: any;
-declare let CKEDITOR:any;
+	import * as moment from 'moment';
 
-@Component({
-	selector: 'app-work-space',
-	templateUrl: './work-space.component.html',
-	styleUrls: ['./work-space.component.css'],
-	providers: [NoteService]
-})
-export class WorkSpaceComponent implements 
-OnInit, AfterContentChecked {
+	declare let $: any;
+	declare let CKEDITOR:any;
 
-	ckeditorContent: string;
-	editor: any;
+	@Component({
+		selector: 'app-work-space',
+		templateUrl: './work-space.component.html',
+		styleUrls: ['./work-space.component.css'],
+		providers: [NoteService]
+	})
+	export class WorkSpaceComponent implements 
+	OnInit, AfterContentChecked {
 
-	constructor(
-		private generalService: GeneralService,
-		private folderService: FolderService,
-		private tagService: TagService,
-		private noteService: NoteService
-		) {  
-		this.ckeditorContent = ``; 
-	}
+		ckeditorContent: string;
+		editor: any;
 
-	startCall = (): void => {
-		GeneralService.addSortableClass();
-		GeneralService.resizeSidebar();
-		FolderService.sortableFolders();
-		FolderService.delRootNoteWrappersFolders();
-		NoteService.dragNotesFolders();
-		NoteService.dropNotesFolders();
-		GeneralService.resize3dColumn();
-		this.noteService.renderLastNotesInColumn();
-	}
+		constructor(
+			private generalService: GeneralService,
+			private folderService: FolderService,
+			private tagService: TagService,
+			private noteService: NoteService
+			) {  
+			this.ckeditorContent = ``; 
+		}
 
-	ngOnInit() {
-		EnterFormService.checkAccess(this.startCall);
-	}
+		startCall = (): void => {
+			GeneralService.addSortableClass();
+			GeneralService.resizeSidebar();
+			FolderService.sortableFolders();
+			FolderService.delRootNoteWrappersFolders();
+			NoteService.dragNotesFolders();
+			NoteService.dropNotesFolders();
+			GeneralService.resize3dColumn();
+			this.noteService.renderLastNotesInColumn();
+		}
 
-	ngAfterContentChecked() {
-		this.checkMarkup();
-	}
+		ngOnInit() {
+			EnterFormService.checkAccess(this.startCall);
+		}
 
-	// Toggle folders to open and close in tree format
-	toggleFolders(): void {
-		let target: any = event.target;
-		let $target: any = $(target);
-		let childUl: any = $target.siblings("ul");
-		// Toggle folders to open and close by clicking on folder name
-		if ( $target.hasClass("folder_name") && (childUl.children().length > 1 
-			|| childUl.children(".notes_wrapper").children().length) ) {
-			let $childUl: any = $(childUl);
-		childUl.toggle();
+		ngAfterContentChecked() {
+			this.checkMarkup();
+		}
+
+		// Toggle folders to open and close in tree format
+		toggleFolders(): void {
+			let target: any = event.target;
+			let $target: any = $(target);
+			let childUl: any = $target.siblings("ul");
+			// Toggle folders to open and close by clicking on folder name
+			if ( $target.hasClass("folder_name") && (childUl.children().length > 1 
+				|| childUl.children(".notes_wrapper").children().length) ) {
+				let $childUl: any = $(childUl);
+			childUl.toggle();
+			NoteService.renderNoteSize();
+			let findedObj: any = GeneralService.find(Data.structure.folders, $target.attr("data-folders-tree-id"));
+			let span = $(`.folder_name[data-folders-tree-id="${findedObj.id}"]`);
+			// Change folder open or close icon and display property to render folders tree  with open or close folders
+			if ( findedObj.display === "block" && span.next("ul").children().length ) {
+				findedObj.display = "none";
+				localStorage.setItem("structure", JSON.stringify(Data.structure));
+				$target.children(".folder").removeClass("fa-angle-down").addClass("fa-angle-right");
+			} else {
+				findedObj.display = "block";
+				localStorage.setItem("structure", JSON.stringify(Data.structure));
+				$target.children(".folder").removeClass("fa-angle-right").addClass("fa-angle-down");
+			}
+		}
+		// Toggle folders to open and close by clicking on folder icons(arrow, fodler)
+		let parentUl: any = $target.parent().siblings("ul");
+		let $parentUl: any = $(parentUl);
+		if( $target.hasClass("fa") && (parentUl.children().length > 1 
+			|| parentUl.children(".notes_wrapper").children().length) ) {
+			parentUl.toggle();
 		NoteService.renderNoteSize();
-		let findedObj: any = GeneralService.find(Data.structure.folders, $target.attr("data-folders-tree-id"));
-		let span = $(`.folder_name[data-folders-tree-id="${findedObj.id}"]`);
+		let findedObj: any = GeneralService.find(Data.structure.folders, $target.parent().attr("data-folders-tree-id"));
+		let span: any = $(`.folder_name[data-folders-tree-id="${findedObj.id}"]`);
 		// Change folder open or close icon and display property to render folders tree  with open or close folders
-		if ( findedObj.display === "block" && span.next("ul").children().length ) {
+		if (findedObj.display === "block" && span.next("ul").children().length) {
 			findedObj.display = "none";
 			localStorage.setItem("structure", JSON.stringify(Data.structure));
-			$target.children(".folder").removeClass("fa-angle-down").addClass("fa-angle-right");
+			if ( $target.hasClass("fa-folder-o") ) 
+				$target.siblings().removeClass("fa-angle-down").addClass("fa-angle-right");
+			else 
+				$target.removeClass("fa-angle-down").addClass("fa-angle-right");
 		} else {
 			findedObj.display = "block";
 			localStorage.setItem("structure", JSON.stringify(Data.structure));
-			$target.children(".folder").removeClass("fa-angle-right").addClass("fa-angle-down");
+			if ( $target.hasClass("fa-folder-o") ) 
+				$target.siblings().removeClass("fa-angle-right").addClass("fa-angle-down");
+			else
+				$target.removeClass("fa-angle-right").addClass("fa-angle-down");
 		}
 	}
-	// Toggle folders to open and close by clicking on folder icons(arrow, fodler)
-	let parentUl: any = $target.parent().siblings("ul");
-	let $parentUl: any = $(parentUl);
-	if( $target.hasClass("fa") && (parentUl.children().length > 1 
-		|| parentUl.children(".notes_wrapper").children().length) ) {
-		parentUl.toggle();
-	NoteService.renderNoteSize();
-	let findedObj: any = GeneralService.find(Data.structure.folders, $target.parent().attr("data-folders-tree-id"));
-	let span: any = $(`.folder_name[data-folders-tree-id="${findedObj.id}"]`);
-	// Change folder open or close icon and display property to render folders tree  with open or close folders
-	if (findedObj.display === "block" && span.next("ul").children().length) {
-		findedObj.display = "none";
-		localStorage.setItem("structure", JSON.stringify(Data.structure));
-		if ( $target.hasClass("fa-folder-o") ) 
-			$target.siblings().removeClass("fa-angle-down").addClass("fa-angle-right");
-		else 
-			$target.removeClass("fa-angle-down").addClass("fa-angle-right");
-	} else {
-		findedObj.display = "block";
-		localStorage.setItem("structure", JSON.stringify(Data.structure));
-		if ( $target.hasClass("fa-folder-o") ) 
-			$target.siblings().removeClass("fa-angle-right").addClass("fa-angle-down");
-		else
-			$target.removeClass("fa-angle-right").addClass("fa-angle-down");
-	}
-}
 }
 
 // Toggle tags to open and close in tree format
@@ -192,6 +192,31 @@ showNote(): void {
 	TagService.paddingCheck();
 }
 
+
+
+// Show hint(user location) in address bar
+showUserLocation(): void {
+	let $target: any = $(event.target);
+	if ( $target.attr("data-folders-tree-id") != "root" && $target.hasClass("folder_name") || $target.parent().hasClass("folder_name") ) {
+		let span: any = $target.hasClass("folder_name") ? $target : $target.parent(".folder_name");
+		let folder: any = GeneralService.find(Data.structure.folders, span.attr("data-folders-tree-id"));
+		GeneralService.removeHash();
+		window.location.href += `#folder_id:${folder.id}`;
+	}
+  if ( $target.hasClass("note") || $target.parent().hasClass("note") ) {
+		let span: any = $target.hasClass("note") ? $target : $target.parent(".note");
+		let note: any = GeneralService.find(Data.structure.notes, span.attr("data-note-id"));
+		GeneralService.removeHash();
+		window.location.href += `#note_id:${note.id}`;
+	}
+	if ( $target.attr("data-tags-tree-id") != "root" && $target.hasClass("tag_name") || $target.parent().hasClass("tag_name") ) {
+		let span: any = $target.hasClass("tag_name") ? $target : $target.parent(".tag_name");
+		let tag: any = GeneralService.find(Data.structure.tags, span.attr("data-tags-tree-id"));
+		GeneralService.removeHash();
+		window.location.href += `#tag_id:${tag.id}`;
+	}
+} 
+
 // Render folder notes in additional column
 renderFolderNotesInColumn(): void {
 	let target: any = event.target;
@@ -203,14 +228,12 @@ renderFolderNotesInColumn(): void {
 			let folder: any = GeneralService.find(Data.structure.folders, $target.attr("data-folders-tree-id"));
 			$(".notes_info h2").text(`Notes in folder ${folder.name}:`);
 			GeneralService.addNotesInFolder(folder, notes);
-			console.log("notes:", notes);
 			NoteService.renderNotesInColumn(notes);
 		}
 		else if ( $target.parent(".folder_name") && $target.hasClass("fa") && (!$target.hasClass("fa fa-sticky-note-o")) ) {
 			let folder: any = GeneralService.find(Data.structure.folders, $target.parent(".folder_name").attr("data-folders-tree-id"));
 			$(".notes_info h2").text(`Notes in folder ${folder.name}:`);
 			GeneralService.addNotesInFolder(folder, notes);
-			console.log("notes:", notes);
 			NoteService.renderNotesInColumn(notes);
 		}
 	}
@@ -258,6 +281,7 @@ addTag(): void {
 		(<HTMLFormElement>$("#popup_note_tag form")[0]).reset();
 	});
 }
+
 
 // Check markup flag and set 2 or 3 columns markup
 checkMarkup():void {
