@@ -42,6 +42,8 @@ OnInit, AfterContentChecked {
 		FolderService.delRootNoteWrappersFolders();
 		NoteService.dragNotesFolders();
 		NoteService.dropNotesFolders();
+		GeneralService.resize3dColumn();
+		this.noteService.renderLastNotesInColumn();
 	}
 
 	ngOnInit() {
@@ -190,26 +192,25 @@ showNote(): void {
 	TagService.paddingCheck();
 }
 
-
-
 // Render folder notes in additional column
 renderFolderNotesInColumn(): void {
 	let target: any = event.target;
 	let $target: any = $(target);
 	let notes: any = [];
-
 	if ( $target.attr("data-folders-tree-id") != "root" 
 		&& $target.parent(".folder_name").attr("data-folders-tree-id") != "root" ) { 
-		if ( $target.hasClass("folder_name") ) { 
+		if ( $target.hasClass("folder_name") ) {
 			let folder: any = GeneralService.find(Data.structure.folders, $target.attr("data-folders-tree-id"));
 			$(".notes_info h2").text(`Notes in folder ${folder.name}:`);
 			GeneralService.addNotesInFolder(folder, notes);
+			console.log("notes:", notes);
 			NoteService.renderNotesInColumn(notes);
 		}
 		else if ( $target.parent(".folder_name") && $target.hasClass("fa") && (!$target.hasClass("fa fa-sticky-note-o")) ) {
 			let folder: any = GeneralService.find(Data.structure.folders, $target.parent(".folder_name").attr("data-folders-tree-id"));
 			$(".notes_info h2").text(`Notes in folder ${folder.name}:`);
 			GeneralService.addNotesInFolder(folder, notes);
+			console.log("notes:", notes);
 			NoteService.renderNotesInColumn(notes);
 		}
 	}
@@ -263,9 +264,8 @@ checkMarkup():void {
 	let markup_3cols: any = localStorage.getItem("markup_3cols");
 	if ( markup_3cols == "true" ) {
 		$(".notes_info_container").show();
-		this.noteService.renderLastNotesInColumn();
-		GeneralService.resize3dColumn();
 		GeneralService.setColumnHeight();
+		// GeneralService.resize3dColumn();
 	} 
 	else if ( markup_3cols == "false" ) {
 		$(".notes_info_container").hide();

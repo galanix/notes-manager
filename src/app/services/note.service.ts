@@ -203,11 +203,12 @@ export class NoteService {
 				slicedText  = cleanText.substring(0, 200) + "...";
 			else
 				slicedText  = cleanText.substring(0, 200);
+			console.log(1);
 			$(".column_notes").append(`
 				<div class="column_note">
-				<h3>${note.title}</h3>
-				<span>${moment(note.date).format("DD.MM.YYYY, HH:mm:ss")}</span>
-				<div>${slicedText}</div>
+					<h3>${note.title}</h3>
+						<span>${moment(note.date).format("DD.MM.YYYY, HH:mm:ss")}</span>
+					<div>${slicedText}</div>
 				</div>
 				`);
 		}
