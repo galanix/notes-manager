@@ -160,7 +160,6 @@ export class NoteService {
 			let folderUl: any = foldersLi.next("ul").find(".notes_container");
 			folderUl.append(`<li data-note-id="${id}" class="note"><i class="fa fa-sticky-note-o" aria-hidden="true"></i>
 				${item.title}</li>`);
-
 			let noteTags: any = item.tags;
 			for (let j = 0; j < noteTags.length; j++) {
 				let tagLi: any = $(`.tags span[data-tags-tree-id="${noteTags[j]}"]`);
@@ -366,17 +365,6 @@ export class NoteService {
 		}
 	}
 
-	// // Wrapper for note functions call
-	// static noteWrapper() { 
-	// 	this.renderNoteFields();
-	// 	TagService.checkNoteForAddTag();
-	// 	TagService.renderTags();
-	// 	this.renderNoteSize();
-	// 	GeneralService.addSortableClass();
-	// 	FolderService.sortableFolders();
-	// 	this.dragNotesFolders();
-	// 	this.dropNotesFolders();
-	// }
 
 	// Wrapper for click on save or delete button
 	static returnEdit() {
@@ -388,6 +376,18 @@ export class NoteService {
 	}
 
 }
+
+	// // Wrapper for note functions call
+	// static noteWrapper() { 
+	// 	this.renderNoteFields();
+	// 	TagService.checkNoteForAddTag();
+	// 	TagService.renderTags();
+	// 	this.renderNoteSize();
+	// 	GeneralService.addSortableClass();
+	// 	FolderService.sortableFolders();
+	// 	this.dragNotesFolders();
+	// 	this.dropNotesFolders();
+	// }
 
 // // Notes can change folder and order in folder
 // static sortableNotes(): void {

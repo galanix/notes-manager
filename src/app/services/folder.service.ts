@@ -173,6 +173,7 @@ export class FolderService {
 	static sortableFolders(): void {
 		$(".sortable").sortable({
 			handle: ".folder_name",
+			delay: 100,
 			onDrop: function ($item, container, _super) {
 				container.el.removeClass("active");
 				_super($item, container);

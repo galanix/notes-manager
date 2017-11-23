@@ -18,6 +18,7 @@ declare var $: any;
 export class ApplicationComponent implements 
 OnInit, AfterContentChecked {
 
+
 	constructor(
 		private generalService: GeneralService,
 		private noteService: NoteService

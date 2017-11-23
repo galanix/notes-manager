@@ -1,6 +1,9 @@
 import { Component, OnInit, Input, 
 	AfterContentChecked } from '@angular/core';
 
+	import 'rxjs/add/operator/pairwise';
+	import { Router } from '@angular/router';
+
 	import {
 		Data,
 
@@ -30,9 +33,14 @@ import { Component, OnInit, Input,
 			private generalService: GeneralService,
 			private folderService: FolderService,
 			private tagService: TagService,
-			private noteService: NoteService
+			private noteService: NoteService,
+
+			private router: Router
 			) {  
 			this.ckeditorContent = ``; 
+			this.router.events.subscribe(path => {
+				this.findInstanceWithUrlHint();
+			});
 		}
 
 		startCall = (): void => {
@@ -48,6 +56,7 @@ import { Component, OnInit, Input,
 
 		ngOnInit() {
 			EnterFormService.checkAccess(this.startCall);
+			this.findInstanceWithUrlHint();
 		}
 
 		ngAfterContentChecked() {
@@ -192,28 +201,61 @@ showNote(): void {
 	TagService.paddingCheck();
 }
 
-
-
 // Show hint(user location) in address bar
 showUserLocation(): void {
 	let $target: any = $(event.target);
-	if ( $target.attr("data-folders-tree-id") != "root" && $target.hasClass("folder_name") || $target.parent().hasClass("folder_name") ) {
+	if ( $target.parent().attr("data-folders-tree-id") != "root" && $target.attr("data-folders-tree-id") != "root" 
+		&& $target.hasClass("folder_name") || $target.parent().hasClass("folder_name") ) {
 		let span: any = $target.hasClass("folder_name") ? $target : $target.parent(".folder_name");
-		let folder: any = GeneralService.find(Data.structure.folders, span.attr("data-folders-tree-id"));
-		GeneralService.removeHash();
-		window.location.href += `#folder_id:${folder.id}`;
+	let folder: any = GeneralService.find(Data.structure.folders, span.attr("data-folders-tree-id"));
+	GeneralService.removeHash();
+	window.location.href += `#folder_id:${folder.id}`;
+}
+if ( $target.hasClass("note") || $target.parent().hasClass("note") ) {
+	let span: any = $target.hasClass("note") ? $target : $target.parent(".note");
+	let note: any = GeneralService.find(Data.structure.notes, span.attr("data-note-id"));
+	GeneralService.removeHash();
+	window.location.href += `#note_id:${note.id}`;
+}
+if ( $target.parent().attr("data-tags-tree-id") != "root" && $target.attr("data-tags-tree-id") != "root" 
+	&& $target.hasClass("tag_name") || $target.parent().hasClass("tag_name") ) {
+	let span: any = $target.hasClass("tag_name") ? $target : $target.parent(".tag_name");
+let tag: any = GeneralService.find(Data.structure.tags, span.attr("data-tags-tree-id"));
+GeneralService.removeHash();
+window.location.href += `#tag_id:${tag.id}`;
+}
+}
+
+// Find instance(folder, note, tag) by url with hint
+findInstanceWithUrlHint(): void {
+	let url: string = window.location.href;
+	let notes: any = [];
+	if ( url.indexOf("folder_id") != -1 ) {
+		let id: any = url.split('folder_id:')[1];
+		let folder: any = GeneralService.find(Data.structure.folders, id);
+		$(".notes_info h2").text(`Notes in folder ${folder.name}:`);
+		GeneralService.addNotesInFolder(folder, notes);
+		NoteService.renderNotesInColumn(notes);
 	}
-  if ( $target.hasClass("note") || $target.parent().hasClass("note") ) {
-		let span: any = $target.hasClass("note") ? $target : $target.parent(".note");
-		let note: any = GeneralService.find(Data.structure.notes, span.attr("data-note-id"));
-		GeneralService.removeHash();
-		window.location.href += `#note_id:${note.id}`;
+	if ( url.indexOf("tag_id") != -1 ) {
+		let id: any = url.split('tag_id:')[1];
+		let tag: any = GeneralService.find(Data.structure.tags, id);
+		$(".notes_info h2").text(`Notes with tag ${tag.name}:`);
+		$(".notes_info h2").text(`Notes with tag ${tag.name}:`);
+		GeneralService.addNotesWithTag(tag, notes);
+		NoteService.renderNotesInColumn(notes);
 	}
-	if ( $target.attr("data-tags-tree-id") != "root" && $target.hasClass("tag_name") || $target.parent().hasClass("tag_name") ) {
-		let span: any = $target.hasClass("tag_name") ? $target : $target.parent(".tag_name");
-		let tag: any = GeneralService.find(Data.structure.tags, span.attr("data-tags-tree-id"));
-		GeneralService.removeHash();
-		window.location.href += `#tag_id:${tag.id}`;
+
+	if ( url.indexOf("note_id") != -1 ) {
+		let id: any = url.split('note_id:')[1];
+		let note: any = GeneralService.find(Data.structure.notes, id);
+
+		$("#note .note_title").html(note.title);
+		$(".cke_wysiwyg_frame").contents().find('body').html(note.text);
+		$("#application #textarea_editor").html(note.text);
+		let folder = GeneralService.find(Data.structure.folders, note.folder);
+		$("#note .notes_folder").html(`<i class="fa fa-folder-o" aria-hidden="true"></i> ${folder.name}`)
+
 	}
 } 
 
@@ -261,6 +303,7 @@ renderTagNotesInColumn(): void {
 		}
 	}
 }
+
 
 // Open add tag popup
 addTag(): void {

@@ -10,7 +10,7 @@ import { GeneralService } from './services/general.service';
 export class AppComponent {
 
 	ngOnInit() {
-		GeneralService.removeHash();
+		// GeneralService.removeHash();
 	}
 
 }
