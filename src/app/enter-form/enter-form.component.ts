@@ -23,13 +23,13 @@ export class EnterFormComponent implements OnInit {
 		event.preventDefault();
 		$(".error").hide();
 		let pass: any = $("#user_password").val();
-		// $.getJSON("https://galanix.github.io/notes-manager/assets/pass.json", function(result: any) {
-			$.getJSON("http://localhost:4200/assets/pass.json", function(result: any) {
+		$.getJSON("https://galanix.github.io/notes-manager/assets/pass.json", function(result: any) {
+			// $.getJSON("http://localhost:4200/assets/pass.json", function(result: any) {
 			if ( $("#user_name").val() === result.name && 
 				Md5.hashStr(pass) === result.password ) {
 				EnterFormService.set_cookie( "access", "granted", 2018, 2, 5, );
-			// window.location.replace("https://galanix.github.io/notes-manager/application");
-			window.location.replace("http://localhost:4200/application");
+			window.location.replace("https://galanix.github.io/notes-manager/application");
+			// window.location.replace("http://localhost:4200/application");
 			
 		}  
 

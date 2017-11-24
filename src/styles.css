@@ -134,8 +134,6 @@ button:focus:not(:active)::after {
   animation: ripple 1s ease-out;
 }
 
-
-
 .clearfix::after {
 	content: "";
 	clear: both;
@@ -331,6 +329,15 @@ body #popup_note_tag {
 
 .notes_wrapper ul {
 	padding: 0;
+}
+
+.activeUnit {
+	font-size: 18px;
+}
+
+#application .activeUnit i {
+	font-size: 18px;
+	color: #0E9D69;
 }
 
 /************************* SIDEBAR ***************************************/

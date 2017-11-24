@@ -158,8 +158,8 @@ deleteNote(): void {
 // Content page on click X delete coockieand redirect to form page
 exitAppPage(): void {
 	EnterFormService.delete_cookie("access");
-	// window.location.replace("https://galanix.github.io/notes-manager/enter");
-	window.location.replace("http://localhost:4200/enter");
+	window.location.replace("https://galanix.github.io/notes-manager/enter");
+	// window.location.replace("http://localhost:4200/enter");
 }
 
 // Show hint while mouse cursor over button
@@ -189,8 +189,8 @@ showHints(): void {
 
 // Change logo and user name
 renderLogoAndUserName(): void {
-	// $.getJSON("https://galanix.github.io/notes-manager/assets/pass.json", function(result: any) {
-		$.getJSON("http://localhost:4200/assets/pass.json", function(result: any) {
+	$.getJSON("https://galanix.github.io/notes-manager/assets/pass.json", function(result: any) {
+		// $.getJSON("http://localhost:4200/assets/pass.json", function(result: any) {
 			let firstLetter = result.name.slice(0, 1).toUpperCase();
 			$("#logo").html(firstLetter);
 			$("#name").html(result.name);

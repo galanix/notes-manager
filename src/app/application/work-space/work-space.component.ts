@@ -40,6 +40,7 @@ import { Component, OnInit, Input,
 			this.ckeditorContent = ``; 
 			this.router.events.subscribe(path => {
 				this.findInstanceWithUrlHint();
+				this.addActiveClass();
 			});
 		}
 
@@ -52,11 +53,14 @@ import { Component, OnInit, Input,
 			NoteService.dropNotesFolders();
 			GeneralService.resize3dColumn();
 			this.noteService.renderLastNotesInColumn();
+			this.findInstanceWithUrlHint();
+			this.addActiveClass();
 		}
 
 		ngOnInit() {
 			EnterFormService.checkAccess(this.startCall);
-			this.findInstanceWithUrlHint();
+			// this.findInstanceWithUrlHint();
+			// this.addActiveClass();
 		}
 
 		ngAfterContentChecked() {
@@ -300,6 +304,27 @@ renderTagNotesInColumn(): void {
 			GeneralService.addNotesWithTag(tag, notes);
 			NoteService.renderNotesInColumn(notes);
 		}
+	}
+}
+// class activeUnit
+
+// Add active class to chosen folder, tag, note
+addActiveClass(): void {
+	let url: string = window.location.href;
+	$("#sidebar").find("*").removeClass("activeUnit");
+	if ( url.indexOf("folder_id") != -1 ) {
+		let id: any = url.split('folder_id:')[1];
+		$(`span[data-folders-tree-id="${id}"]`).addClass("activeUnit");
+	}
+
+	if ( url.indexOf("tag_id") != -1 ) {
+		let id: any = url.split('tag_id:')[1];
+		$(`span[data-tags-tree-id="${id}"]`).addClass("activeUnit");
+	}
+
+	if ( url.indexOf("note_id") != -1 ) {
+		let id: any = url.split('note_id:')[1];
+		$(`li[data-note-id="${id}"]`).addClass("activeUnit");
 	}
 }
 
