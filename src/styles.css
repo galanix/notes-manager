@@ -50,7 +50,7 @@ table {
 
 
 html {
-/*	visibility: hidden;*/
+	/*	visibility: hidden;*/
 	overflow: hidden;
 }
 
@@ -78,6 +78,70 @@ body input:focus {
 }
 
 body .hidden { display: none; }
+
+.nm_btn { 
+	display: inline-block;
+	position: relative;
+  top: 0;
+	background-color: #0CC481;
+	border: none;
+	color: #fff;
+	cursor: pointer;
+	font-size: 18px;
+	letter-spacing: 1px;
+	margin-right: 15px;
+	overflow: hidden;
+	padding: 10px 14px;
+	
+
+	-webkit-transition: all 0.2s ease-in-out;
+	-o-transition: all 0.2s ease-in-out;
+	transition: all 0.2s ease-in-out;
+}
+
+.nm_btn:last-of-type { margin-right: 0; }
+
+.nm_btn:after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 5px;
+  height: 5px;
+  background: rgba(255, 255, 255, .5);
+  opacity: 0;
+  border-radius: 100%;
+  transform: scale(1, 1) translate(-50%);
+  transform-origin: 50% 50%;
+}
+
+@keyframes ripple {
+  0% {
+    transform: scale(0, 0);
+    opacity: 1;
+  }
+  20% {
+    transform: scale(25, 25);
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: scale(40, 40);
+  }
+}
+
+button:focus:not(:active)::after {
+  animation: ripple 1s ease-out;
+}
+
+
+
+.clearfix::after {
+	content: "";
+	clear: both;
+	display: table;
+}
+
 
 
 /******************************** POPUP **********************************/
@@ -184,7 +248,7 @@ body #popup_note_tag {
 
 .popup_close:hover { opacity: 1; }
 
-#popup_folder button, 
+/*#popup_folder button, 
 #popup_note button,
 #popup_tag button,
 #popup_note_tag button {
@@ -197,7 +261,7 @@ body #popup_note_tag {
 	letter-spacing: 1px;
 	margin-right: 20px;
 	padding: 10px 14px;
-}
+}*/
 
 #popup_folder button:last-of-type {
 	margin-right: 0;
@@ -563,3 +627,85 @@ ol.example li.placeholder:before {
 
 /************************ WORK SPACE end **************************************/
 
+/****************************** SETTINGS MARKUP **************************/
+
+.note_tab_wraper {
+	display: -webkit-flex;
+	display: -moz-flex;
+	display: -ms-flex;
+	display: -o-flex;
+	display: flex;
+}
+
+#recent_note_amount { 
+	display: block;
+	margin-top: 30px;
+
+	-moz-appearance: textfield; 
+}
+
+#recent_note_amount::-webkit-inner-spin-button,
+#recent_note_amount::-webkit-outer-spin-button {
+	-webkit-appearance: none;
+	margin: 0;
+}
+
+.quantity { position: relative; }
+
+.quantity input {
+	width: 45px;
+	height: 42px;
+	line-height: 1.65;
+	/*  float: left;*/
+	display: block;
+	padding: 0;
+	margin: 0;
+	padding-left: 20px;
+	border: 1px solid #eee;
+}
+
+.quantity input:focus {
+	outline: 0;
+}
+
+.quantity-nav {
+	/*  float: left;*/
+	position: relative;
+	height: 42px;
+}
+
+.quantity-button {
+	position: relative;
+	cursor: pointer;
+	border-left: 1px solid #eee;
+	width: 20px;
+	text-align: center;
+	color: #333;
+	font-size: 13px;
+	font-family: "Trebuchet MS", Helvetica, sans-serif !important;
+	line-height: 1.7;
+	-webkit-transform: translateX(-100%);
+	transform: translateX(-100%);
+	-webkit-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	-o-user-select: none;
+	user-select: none;
+}
+
+.quantity-button.quantity-up {
+	position: absolute;
+	height: 50%;
+	top: -43px;
+	left: 67px;
+	border-bottom: 1px solid #eee;
+}
+
+.quantity-button.quantity-down {
+	position: absolute;
+	bottom: 43px;
+	left: 67px;
+	height: 50%;
+}
+
+/****************************** SETTINGS MARKUP end **************************/

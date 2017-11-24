@@ -35,23 +35,12 @@
 	border: 1px solid #0CC481;
 }
 #form input {
-	margin-bottom: 10px;
+	margin-bottom: 20px;
 }
 
 #form input::placeholder {
 	color: lightgray;
 	letter-spacing: 1px;
-}
-
-#form .enter_app_page {
-	display: inline-block;
-	background-color: #0CC481;
-	border: none;
-	color: #fff;
-	cursor: pointer;
-	font-size: 18px;
-	padding: 10px 14px;
-	text-decoration: none;
 }
 
 .error {

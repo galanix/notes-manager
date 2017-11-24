@@ -15,6 +15,8 @@ declare var $: any;
 @Injectable()
 export class NoteService {
 
+	recentNotes: number = (localStorage.getItem("recentNotes")) ? JSON.parse(localStorage.getItem("recentNotes")) : 10;
+
 	constructor() { }
 
 		// Add new note to localStorage and iterate idNoteCounter
@@ -111,6 +113,8 @@ export class NoteService {
 			textArea.attr("data-textarea-id", latestNote.id);
 			editor.attr("data-editor-id", latestNote.id);
 			editorContent.html(latestNote.text);
+			GeneralService.removeHash();
+			window.location.href += `#note_id:${latestNote.id}`;
 		} else {
 			noteTitle.html(null);
 			notesFolder.html(null);
@@ -172,9 +176,11 @@ export class NoteService {
 
 	// Render last 10 notes in additional column
 	renderLastNotesInColumn(): void {
+			// renderLastNotesInColumn(amount: number): void {
 		$(".column_notes .column_note").remove();
 		$(".notes_info h2").text("Recent notes:");
-		let sliced: any = Data.structure.notes.slice(-10);
+		let sliced: any = Data.structure.notes.slice(-this.recentNotes);
+		// let sliced: any = Data.structure.notes.slice(-amount);
 		for (let note of sliced) {
 			let cleanText: string = note.text.replace(/<\/?[^>]+(>|$)/g, "");
 			let slicedText: string;
@@ -184,9 +190,9 @@ export class NoteService {
 				slicedText  = cleanText.substring(0, 200);
 			$(".column_notes").append(`
 				<div class="column_note">
-				<h3>${note.title}</h3>
-				<span>${moment(note.date).format("DD.MM.YYYY, HH:mm:ss")}</span>
-				<div>${slicedText}</div>
+					<h3>${note.title}</h3>
+					<span>${moment(note.date).format("DD.MM.YYYY, HH:mm:ss")}</span>
+					<div>${slicedText}</div>
 				</div>
 				`);
 		}

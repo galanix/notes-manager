@@ -21,14 +21,14 @@ export class SettingsWorkSpaceComponent implements OnInit {
   ngOnInit() {
   }
 
-// Show tab content in settings page
-  showContent(tab: string): void {
-  	let tabsContent = $(".settings_content");
-  	for (let i = 0; i < tabsContent.length; i++) {
-       $(tabsContent[i]).hide();  
-    }
-    $(`.${tab}`).show();
-  }
+// // Show tab content in settings page
+//   showContent(tab: string): void {
+//   	let tabsContent = $(".settings_content");
+//   	for (let i = 0; i < tabsContent.length; i++) {
+//        $(tabsContent[i]).hide();  
+//     }
+//     $(`.${tab}`).show();
+//   }
 
 // Set application page columns or 3 columns markup
   setMarkup():void {
@@ -43,6 +43,4 @@ export class SettingsWorkSpaceComponent implements OnInit {
   	}
   }
 
-
-  
 }

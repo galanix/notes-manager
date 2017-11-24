@@ -40,7 +40,6 @@ export class HeaderComponent implements OnInit {
 	ngOnInit() {
 		this.renderLogoAndUserName();
 		GeneralService.showHints();
-		// this.note_id = this.route.snapshot.paramMap.get('note_id');
 }
 
 // Open folder popup
@@ -133,6 +132,7 @@ saveNote = (): void => {
 
 deleteNote(): void {
 	let workTextarea: any = $("#textarea_editor");
+	let url: any = window.location.href;
 	for (let i = 0; i < Data.structure.notes.length; i++) {
 		if ( Data.structure.notes[i].id == workTextarea.attr("data-textarea-id") ) {
 			let index: number = Data.structure.notes.indexOf(Data.structure.notes[i]);
@@ -147,6 +147,7 @@ deleteNote(): void {
 		workTextarea.attr("data-textarea-id", latestNote.id);
 		NoteService.renderLatestNote();
 	}
+	GeneralService.removeHash();
 	this.noteService.renderLastNotesInColumn();
 	$(".note_title_edit").hide();
 	$(".note_title").show();
@@ -157,8 +158,8 @@ deleteNote(): void {
 // Content page on click X delete coockieand redirect to form page
 exitAppPage(): void {
 	EnterFormService.delete_cookie("access");
-	window.location.replace("http://localhost:4200/enter");
 	// window.location.replace("https://galanix.github.io/notes-manager/enter");
+	window.location.replace("http://localhost:4200/enter");
 }
 
 // Show hint while mouse cursor over button

@@ -254,8 +254,7 @@ findInstanceWithUrlHint(): void {
 		$(".cke_wysiwyg_frame").contents().find('body').html(note.text);
 		$("#application #textarea_editor").html(note.text);
 		let folder = GeneralService.find(Data.structure.folders, note.folder);
-		$("#note .notes_folder").html(`<i class="fa fa-folder-o" aria-hidden="true"></i> ${folder.name}`)
-
+		$("#note .notes_folder").html(`<i class="fa fa-folder-o" aria-hidden="true"></i> ${folder.name}`);
 	}
 } 
 

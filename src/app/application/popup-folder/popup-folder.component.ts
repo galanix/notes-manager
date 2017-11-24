@@ -33,8 +33,9 @@ export class PopupFolderComponent implements OnInit {
 		if ( $("#folder_name").val() ) {
 			this.folderService.updateFoldersData();
 			this.folderWrapper();
+			this.resetOnCloseWrapper();
 		}
-		this.resetOnCloseWrapper();
+		
 		FolderService.delRootNoteWrappersFolders();
 	}
 

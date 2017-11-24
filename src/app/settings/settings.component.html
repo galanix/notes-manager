@@ -1,8 +1,26 @@
 <header>
-	<span (click)="content.showContent('markup')">Markup</span>
-	<span (click)="content.showContent('color')">Color scheme</span>
+	<span class="markup_tab" routerLink="/settings/markup">Markup</span>
+	<span class="color_tab" routerLink="/settings/color">Color scheme</span>
+	<span class="note_tab" routerLink="/settings/note">Note</span>
 	<span class="go_main_page" routerLink="/application">
 		<fa name="backward" aria-hidden="true"></fa>
 	</span>
 </header>
-<app-settings-work-space #content></app-settings-work-space>
+<div class="content_container">
+<app-markup *ngIf="markup"></app-markup>
+<app-color-scheme *ngIf="colorScheme"></app-color-scheme>
+<app-note *ngIf="note"></app-note>
+</div>
+
+
+<!-- <app-settings-work-space></app-settings-work-space> -->
+
+<!-- <header>
+	<span (click)="content.showContent('markup')">Markup</span>
+	<span (click)="content.showContent('color')">Color scheme</span>
+	<span (click)="content.showContent('note')">Note</span>
+	<span class="go_main_page" routerLink="/application">
+		<fa name="backward" aria-hidden="true"></fa>
+	</span>
+</header>
+<app-settings-work-space #content></app-settings-work-space> -->

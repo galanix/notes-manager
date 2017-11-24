@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 
 import {
 	Data,
-	 
+	
 	GeneralService, FolderService,
 	TagService, NoteService
 } from './index';
@@ -33,10 +33,11 @@ export class PopupTagComponent implements OnInit {
 			this.tagService.updateTagsData();
 			$("#popup_tag .tags_tree").find("*").remove();
 			TagService.renderTagSelect(Data.structure.tags, 0);
-			TagService.tagWrapper(); 
+			TagService.tagWrapper();
+			
+			$("#popup_tag").fadeOut(500);
+			(<HTMLFormElement>$("#popup_tag form")[0]).reset();
 		}
-		$("#popup_tag").fadeOut(500);
-		(<HTMLFormElement>$("#popup_tag form")[0]).reset();
 	}
 
 	// Delete tag and render data in select and sidebar

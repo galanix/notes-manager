@@ -28,8 +28,9 @@ export class EnterFormComponent implements OnInit {
 			if ( $("#user_name").val() === result.name && 
 				Md5.hashStr(pass) === result.password ) {
 				EnterFormService.set_cookie( "access", "granted", 2018, 2, 5, );
-			window.location.replace("http://localhost:4200/application");
 			// window.location.replace("https://galanix.github.io/notes-manager/application");
+			window.location.replace("http://localhost:4200/application");
+			
 		}  
 
 		if ( Md5.hashStr(pass) != result.password && pass != "" ) {

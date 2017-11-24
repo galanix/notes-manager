@@ -4,8 +4,10 @@ import { RouterModule, Routes } from '@angular/router';
 import { ApplicationComponent } from './application/application.component';
 import { EnterFormComponent } from './enter-form/enter-form.component';
 import { SettingsComponent } from './settings/settings.component';
-import { WorkSpaceComponent } from './application/work-space/work-space.component';
-import { HeaderComponent } from './application/header/header.component';
+
+import { MarkupComponent } from './settings/markup/markup.component';
+import { ColorSchemeComponent } from './settings/color-scheme/color-scheme.component';
+import { NoteComponent } from './settings/note/note.component';
 
 // import { 
 // 	ApplicationComponent, EnterFormComponent, SettingsComponent,
@@ -13,14 +15,17 @@ import { HeaderComponent } from './application/header/header.component';
 // } from './index';
 
 const routes: Routes = [
+
 { path: '', redirectTo: '/application', pathMatch: 'full' },
 { path: 'application',  component: ApplicationComponent },
 { path: 'enter',  component: EnterFormComponent },
 { path: 'settings',  component: SettingsComponent },
 
-// { path: 'application/note_id',  component: ApplicationComponent },
-// { path: 'application/folder_id',  component: ApplicationComponent },
-// { path: 'application/tag_id',  component: ApplicationComponent }
+{ path: 'settings/markup',  component: SettingsComponent },
+{ path: 'settings/color',  component: SettingsComponent },
+{ path: 'settings/note',  component: SettingsComponent }
+
+
 ];
 
 @NgModule({

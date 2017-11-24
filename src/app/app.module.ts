@@ -14,6 +14,9 @@ import {
   EnterFormService, GeneralService, FolderService, 
   TagService, NoteService
 } from './index';
+import { MarkupComponent } from './settings/markup/markup.component';
+import { ColorSchemeComponent } from './settings/color-scheme/color-scheme.component';
+import { NoteComponent } from './settings/note/note.component';
 
 declare var $: any;
 
@@ -22,7 +25,7 @@ declare var $: any;
   AppComponent, EnterFormComponent, HeaderComponent,
   WorkSpaceComponent, PopupFolderComponent, PopupNoteComponent, 
   PopupTagComponent, PopupNoteTagComponent, ApplicationComponent, 
-  SettingsComponent, SettingsWorkSpaceComponent, 
+  SettingsComponent, SettingsWorkSpaceComponent, MarkupComponent, ColorSchemeComponent, NoteComponent, 
   ],
   imports: [
   BrowserModule, AngularFontAwesomeModule, CKEditorModule,
