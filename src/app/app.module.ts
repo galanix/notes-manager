@@ -9,7 +9,7 @@ import {
   AppComponent, ApplicationComponent, EnterFormComponent, 
   HeaderComponent, WorkSpaceComponent, PopupFolderComponent, 
   PopupNoteComponent, PopupTagComponent, PopupNoteTagComponent,
-  SettingsComponent, AppRoutingModule, SettingsWorkSpaceComponent,
+  SettingsComponent, AppRoutingModule,
 
   EnterFormService, GeneralService, FolderService, 
   TagService, NoteService
@@ -25,7 +25,7 @@ declare var $: any;
   AppComponent, EnterFormComponent, HeaderComponent,
   WorkSpaceComponent, PopupFolderComponent, PopupNoteComponent, 
   PopupTagComponent, PopupNoteTagComponent, ApplicationComponent, 
-  SettingsComponent, SettingsWorkSpaceComponent, MarkupComponent, ColorSchemeComponent, NoteComponent, 
+  SettingsComponent, MarkupComponent, ColorSchemeComponent, NoteComponent, 
   ],
   imports: [
   BrowserModule, AngularFontAwesomeModule, CKEditorModule,

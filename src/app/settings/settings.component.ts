@@ -4,7 +4,6 @@ import 'rxjs/add/operator/pairwise';
 import { Router } from '@angular/router';
 
 import { 
-	SettingsWorkSpaceComponent,
 
 	EnterFormService
 } from './index';

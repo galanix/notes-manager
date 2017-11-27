@@ -6,7 +6,7 @@ import { TagService } from './tag.service';
 
 import { Data } from '../data/data';
 import { Note } from '../data/note';
- 
+
 import * as moment from 'moment';
 
 declare var $: any;
@@ -19,8 +19,8 @@ export class NoteService {
 
 	constructor() { }
 
-		// Add new note to localStorage and iterate idNoteCounter
-	 updateNotesData() {
+	// Add new note to localStorage and iterate idNoteCounter
+	updateNotesData() {
 		let noteTitle: any = $("#note_name").val();
 		let noteText: any = $("#popup_note textarea").val();
 		let folderID: any =	$("#popup_note select option:selected").attr("data-folders-select-id");
@@ -153,15 +153,16 @@ export class NoteService {
 	}
 
 	// Render notes in sidebar tree
-	static renderNotes(folders: any) {
+	static renderNotes(notes: any) {
 		$("#sidebar").find(".note").remove();
 		let notesUl: any = $("<ul>");
-		for (let i = 0; i < folders.length; i++) {
-			let item: any = folders[i];
+		for (let i = 0; i < notes.length; i++) {
+			let item: any = notes[i];
+			console.log("item:", item);
 			let id: any = item.id;
 			let folderID: any = item.folder;
 			let foldersLi: any = $(`.folders span[data-folders-tree-id="${folderID}"]`);
-			let folderUl: any = foldersLi.next("ul").find(".notes_container");
+			let folderUl: any = foldersLi.next("ul").children().children(".notes_container");
 			folderUl.append(`<li data-note-id="${id}" class="note"><i class="fa fa-sticky-note-o" aria-hidden="true"></i>
 				${item.title}</li>`);
 			let noteTags: any = item.tags;
@@ -176,244 +177,244 @@ export class NoteService {
 
 	// Render last 10 notes in additional column
 	renderLastNotesInColumn(): void {
-			// renderLastNotesInColumn(amount: number): void {
-		$(".column_notes .column_note").remove();
-		$(".notes_info h2").text("Recent notes:");
-		let sliced: any = Data.structure.notes.slice(-this.recentNotes);
-		// let sliced: any = Data.structure.notes.slice(-amount);
-		for (let note of sliced) {
-			let cleanText: string = note.text.replace(/<\/?[^>]+(>|$)/g, "");
-			let slicedText: string;
-			if ( cleanText.length > 200 )
-				slicedText  = cleanText.substring(0, 200) + "...";
-			else
-				slicedText  = cleanText.substring(0, 200);
-			$(".column_notes").append(`
-				<div class="column_note">
+		// renderLastNotesInColumn(amount: number): void {
+			$(".column_notes .column_note").remove();
+			$(".notes_info h2").text("Recent notes:");
+			let sliced: any = Data.structure.notes.slice(-this.recentNotes);
+			// let sliced: any = Data.structure.notes.slice(-amount);
+			for (let note of sliced) {
+				let cleanText: string = note.text.replace(/<\/?[^>]+(>|$)/g, "");
+				let slicedText: string;
+				if ( cleanText.length > 200 )
+					slicedText  = cleanText.substring(0, 200) + "...";
+				else
+					slicedText  = cleanText.substring(0, 200);
+				$(".column_notes").append(`
+					<div class="column_note">
 					<h3>${note.title}</h3>
 					<span>${moment(note.date).format("DD.MM.YYYY, HH:mm:ss")}</span>
 					<div>${slicedText}</div>
-				</div>
-				`);
+					</div>
+					`);
+			}
 		}
-	}
 
-	// Render notes in column by click on folder/tag
-	static renderNotesInColumn(notes: any): void {
-		$(".column_notes .column_note").remove();
-		for (let note of notes) {
-			let cleanText: string = note.text.replace(/<\/?[^>]+(>|$)/g, "");
-			let slicedText: string;
-			if ( cleanText.length > 200 )
-				slicedText  = cleanText.substring(0, 200) + "...";
-			else
-				slicedText  = cleanText.substring(0, 200);
-			$(".column_notes").append(`
-				<div class="column_note">
+		// Render notes in column by click on folder/tag
+		static renderNotesInColumn(notes: any): void {
+			$(".column_notes .column_note").remove();
+			for (let note of notes) {
+				let cleanText: string = note.text.replace(/<\/?[^>]+(>|$)/g, "");
+				let slicedText: string;
+				if ( cleanText.length > 200 )
+					slicedText  = cleanText.substring(0, 200) + "...";
+				else
+					slicedText  = cleanText.substring(0, 200);
+				$(".column_notes").append(`
+					<div class="column_note">
 					<h3>${note.title}</h3>
-						<span>${moment(note.date).format("DD.MM.YYYY, HH:mm:ss")}</span>
+					<span>${moment(note.date).format("DD.MM.YYYY, HH:mm:ss")}</span>
 					<div>${slicedText}</div>
-				</div>
-				`);
-		}
-	}
-
-	// Make notes draggable and add styles to draggable note
-	static dragNotesFolders(): void {
-		$(".folders .note").draggable({
-			containment: $(".folders"),
-			helper:"clone",
-			start: function(event, ui) {
-				$(this).addClass("drag_el");
-			},
-			stop: function(event, ui) {
-				$(this).removeClass("drag_el");
+					</div>
+					`);
 			}
-		});
-	}
+		}
 
-	// Remove dragged note from start place and add it to goal place
-	static dropNotesFolders(): void {
-		$(".notes_wrapper").droppable({
-			tolerance: "touch",
-			accept: ".folders .note",
-			// Add additional padding to make dropping notes easier
-			over: function( event, ui ) {
-				$(this).css("padding-bottom", (index) => {
-					return index + 20;
-				});
-			},
-			// Remove additional padding on out
-			out: function( event, ui ) {
-				$(this).css("padding-bottom", (index) => {
-					return index;
-				});
-			},
-			// Remove additional padding on drop
-			drop:function( event, ui ) {
-				ui.draggable.detach().appendTo($(this));
-				$(this).css("padding-bottom", (index) => {
-					return index;
-				});
+		// Make notes draggable and add styles to draggable note
+		static dragNotesFolders(): void {
+			$(".folders .note").draggable({
+				containment: $(".folders"),
+				helper:"clone",
+				start: function(event, ui) {
+					$(this).addClass("drag_el");
+				},
+				stop: function(event, ui) {
+					$(this).removeClass("drag_el");
+				}
+			});
+		}
 
-				let draggedNote = GeneralService.find(Data.structure.notes, ui.draggable.attr("data-note-id"));
-				let newFolderId = $(this).parent("ul").siblings(".folder_name").attr("data-folders-tree-id");
+		// Remove dragged note from start place and add it to goal place
+		static dropNotesFolders(): void {
+			$(".notes_wrapper").droppable({
+				tolerance: "touch",
+				accept: ".folders .note",
+				// Add additional padding to make dropping notes easier
+				over: function( event, ui ) {
+					$(this).css("padding-bottom", (index) => {
+						return index + 20;
+					});
+				},
+				// Remove additional padding on out
+				out: function( event, ui ) {
+					$(this).css("padding-bottom", (index) => {
+						return index;
+					});
+				},
+				// Remove additional padding on drop
+				drop:function( event, ui ) {
+					ui.draggable.detach().appendTo($(this));
+					$(this).css("padding-bottom", (index) => {
+						return index;
+					});
 
-				draggedNote.folder = newFolderId;
-				localStorage.setItem("structure", JSON.stringify(Data.structure));
-				NoteService.renderNoteFields();
-			},
-			activate: function( event, ui ) {
-				let target = $(event.target);
-				let spanFolder = target.parent().siblings("span");
-				let findedObj: any = GeneralService.find(Data.structure.folders, spanFolder.attr("data-folders-tree-id"));
-				// If folder has no children or notes makes it possible to add notes to it
-				if ( $(this).length <= 1 && $(this).parent().children().length <= 1 ) {
-					findedObj.display = "block";
+					let draggedNote = GeneralService.find(Data.structure.notes, ui.draggable.attr("data-note-id"));
+					let newFolderId = $(this).parent("ul").siblings(".folder_name").attr("data-folders-tree-id");
+
+					draggedNote.folder = newFolderId;
 					localStorage.setItem("structure", JSON.stringify(Data.structure));
-					spanFolder.children(".folder").removeClass("fa-angle-right").addClass("fa-angle-down");
+					NoteService.renderNoteFields();
+				},
+				activate: function( event, ui ) {
+					let target = $(event.target);
+					let spanFolder = target.parent().siblings("span");
+					let findedObj: any = GeneralService.find(Data.structure.folders, spanFolder.attr("data-folders-tree-id"));
+					// If folder has no children or notes makes it possible to add notes to it
+					if ( $(this).length <= 1 && $(this).parent().children().length <= 1 ) {
+						findedObj.display = "block";
+						localStorage.setItem("structure", JSON.stringify(Data.structure));
+						spanFolder.children(".folder").removeClass("fa-angle-right").addClass("fa-angle-down");
+					}
+				}
+			});
+		}
+
+		// Check if folder or subfolders has notes
+		static checkNotesInFolders(obj: any) {
+			obj.notRenderInSelect = true;
+			localStorage.setItem("structure", JSON.stringify(Data.structure));
+			for (let i = 0; i < Data.structure.notes.length; i++) {
+				if ( Data.structure.notes[i].folder == obj.id ) {
+					if ( $("#popup_folder .popup_delete_notes_wrapper").css("display").toLowerCase() == "none" )
+						$("#popup_folder .popup_delete_notes_wrapper").show();
 				}
 			}
-		});
-	}
-
-	// Check if folder or subfolders has notes
-	static checkNotesInFolders(obj: any) {
-		obj.notRenderInSelect = true;
-		localStorage.setItem("structure", JSON.stringify(Data.structure));
-		for (let i = 0; i < Data.structure.notes.length; i++) {
-			if ( Data.structure.notes[i].folder == obj.id ) {
-				if ( $("#popup_folder .popup_delete_notes_wrapper").css("display").toLowerCase() == "none" )
-					$("#popup_folder .popup_delete_notes_wrapper").show();
+			if (obj.children) { 
+				let checkNotesInFoldersAgain = (arr: any) => {
+					for(let key in arr) {
+						let item = arr[key];
+						item.notRenderInSelect = true;
+						localStorage.setItem("structure", JSON.stringify(Data.structure));
+						for (let i = 0; i < Data.structure.notes.length; i++) {
+							if ( Data.structure.notes[i].folder == item.id ) {
+								if ( $("#popup_folder .popup_delete_notes_wrapper").css("display").toLowerCase() == "none" )
+									$("#popup_folder .popup_delete_notes_wrapper").show();
+							}
+						}
+						if (item.children)
+							checkNotesInFoldersAgain(item.children);
+					}
+				} 
+				checkNotesInFoldersAgain(obj.children);
 			}
 		}
-		if (obj.children) { 
-			let checkNotesInFoldersAgain = (arr: any) => {
-				for(let key in arr) {
-					let item = arr[key];
-					item.notRenderInSelect = true;
+
+		// Move notes wrapper
+		static moveNoteWrapper() {
+			$("#popup_folder select option:not(:selected)").prop("disabled", false);
+			$("#popup_folder .popup_delete_notes_wrapper").hide();
+			$("#popup_folder").fadeOut(500);
+			$("#popup_folder form").val(null);
+		}
+
+		// Move notes to another folder
+		static moveNoteInFolder = (oldFolder: any, newFolder: any) => { 
+			for (let i = 0; i < Data.structure.notes.length; i++) {
+				if ( Data.structure.notes[i].folder == oldFolder.id ) {
+					Data.structure.notes[i].folder = newFolder.id;
 					localStorage.setItem("structure", JSON.stringify(Data.structure));
-					for (let i = 0; i < Data.structure.notes.length; i++) {
-						if ( Data.structure.notes[i].folder == item.id ) {
-							if ( $("#popup_folder .popup_delete_notes_wrapper").css("display").toLowerCase() == "none" )
-								$("#popup_folder .popup_delete_notes_wrapper").show();
-						}
-					}
-					if (item.children)
-						checkNotesInFoldersAgain(item.children);
-				}
-			} 
-			checkNotesInFoldersAgain(obj.children);
-		}
-	}
-
-	// Move notes wrapper
-	static moveNoteWrapper() {
-		$("#popup_folder select option:not(:selected)").prop("disabled", false);
-		$("#popup_folder .popup_delete_notes_wrapper").hide();
-		$("#popup_folder").fadeOut(500);
-		$("#popup_folder form").val(null);
-	}
-
-	// Move notes to another folder
-	static moveNoteInFolder = (oldFolder: any, newFolder: any) => { 
-		for (let i = 0; i < Data.structure.notes.length; i++) {
-			if ( Data.structure.notes[i].folder == oldFolder.id ) {
-				Data.structure.notes[i].folder = newFolder.id;
-				localStorage.setItem("structure", JSON.stringify(Data.structure));
-			}
-		}
-		if ( oldFolder.children ) { 
-			let moveNoteInFolderAgain = (oldFolder: any, newFolder: any) => {
-				for(let key in oldFolder) {
-					let item = oldFolder[key];
-					for (let i = 0; i < Data.structure.notes.length; i++) {
-						if ( Data.structure.notes[i].folder == item.id ) {
-							Data.structure.notes[i].folder = newFolder.id;
-							localStorage.setItem("structure", JSON.stringify(Data.structure));
-						}
-					}
-					if (item.children)
-						moveNoteInFolderAgain(item.children, newFolder);
 				}
 			}
-			moveNoteInFolderAgain(oldFolder.children, newFolder);
-		}
-	}
-
-	// Delete notes in folder and subfolders
-	static deleteNotesInFolder = (obj: any) => {
-		for (let i = 0; i < Data.structure.notes.length; i++) {
-			if ( Data.structure.notes[i].folder == obj.id ) {
-				let index: number = Data.structure.notes.indexOf(Data.structure.notes[i]);
-				Data.structure.notes.splice(index, 1);
-				i--;
-				localStorage.setItem("structure", JSON.stringify(Data.structure));
+			if ( oldFolder.children ) { 
+				let moveNoteInFolderAgain = (oldFolder: any, newFolder: any) => {
+					for(let key in oldFolder) {
+						let item = oldFolder[key];
+						for (let i = 0; i < Data.structure.notes.length; i++) {
+							if ( Data.structure.notes[i].folder == item.id ) {
+								Data.structure.notes[i].folder = newFolder.id;
+								localStorage.setItem("structure", JSON.stringify(Data.structure));
+							}
+						}
+						if (item.children)
+							moveNoteInFolderAgain(item.children, newFolder);
+					}
+				}
+				moveNoteInFolderAgain(oldFolder.children, newFolder);
 			}
 		}
-		if (obj.children) { 
-			let deleteNotesInFolderAgain = (arr: any) => {
-				for (let key in arr) {
-					let item = arr[key];
-					for (let i = 0; i < Data.structure.notes.length; i++) {
-						if ( Data.structure.notes[i].folder == item.id ) {
-							let index: number = Data.structure.notes.indexOf(Data.structure.notes[i]);
-							Data.structure.notes.splice(index, 1);
-							i--;
-							localStorage.setItem("structure", JSON.stringify(Data.structure));
-						}
-					}
-					if (item.children)
-						deleteNotesInFolderAgain(item.children);
+
+		// Delete notes in folder and subfolders
+		static deleteNotesInFolder = (obj: any) => {
+			for (let i = 0; i < Data.structure.notes.length; i++) {
+				if ( Data.structure.notes[i].folder == obj.id ) {
+					let index: number = Data.structure.notes.indexOf(Data.structure.notes[i]);
+					Data.structure.notes.splice(index, 1);
+					i--;
+					localStorage.setItem("structure", JSON.stringify(Data.structure));
 				}
 			}
-			deleteNotesInFolderAgain(obj.children);
+			if (obj.children) { 
+				let deleteNotesInFolderAgain = (arr: any) => {
+					for (let key in arr) {
+						let item = arr[key];
+						for (let i = 0; i < Data.structure.notes.length; i++) {
+							if ( Data.structure.notes[i].folder == item.id ) {
+								let index: number = Data.structure.notes.indexOf(Data.structure.notes[i]);
+								Data.structure.notes.splice(index, 1);
+								i--;
+								localStorage.setItem("structure", JSON.stringify(Data.structure));
+							}
+						}
+						if (item.children)
+							deleteNotesInFolderAgain(item.children);
+					}
+				}
+				deleteNotesInFolderAgain(obj.children);
+			}
 		}
+
+
+		// Wrapper for click on save or delete button
+		static returnEdit() {
+			$(".edit").css("display", "inline-block");
+			$(".delete_note").css("display", "none");
+			$(".save_note").css("display", "none");
+			$("#textarea_editor").show();
+			$(".note_editor").hide();
+		}
+
 	}
-
-
-	// Wrapper for click on save or delete button
-	static returnEdit() {
-		$(".edit").css("display", "inline-block");
-		$(".delete_note").css("display", "none");
-		$(".save_note").css("display", "none");
-		$("#textarea_editor").show();
-		$(".note_editor").hide();
-	}
-
-}
 
 	// // Wrapper for note functions call
 	// static noteWrapper() { 
-	// 	this.renderNoteFields();
-	// 	TagService.checkNoteForAddTag();
-	// 	TagService.renderTags();
-	// 	this.renderNoteSize();
-	// 	GeneralService.addSortableClass();
-	// 	FolderService.sortableFolders();
-	// 	this.dragNotesFolders();
-	// 	this.dropNotesFolders();
-	// }
+		// 	this.renderNoteFields();
+		// 	TagService.checkNoteForAddTag();
+		// 	TagService.renderTags();
+		// 	this.renderNoteSize();
+		// 	GeneralService.addSortableClass();
+		// 	FolderService.sortableFolders();
+		// 	this.dragNotesFolders();
+		// 	this.dropNotesFolders();
+		// }
 
-// // Notes can change folder and order in folder
-// static sortableNotes(): void {
-	// 	$(".notes_container").sortable({
-		// 		group: "notes_container",
-		// 		handle: ".note",
-		// 		itemSelector: ".note",
-		// 		placeholder: "<li class='placeholder'></li>",
-		// 		pullPlaceholder: true,
-		// 		onDragStart: function ($item, container, _super, event) {
-			// 			$(".notes_wrapper ul").css("padding-bottom", 5);
-			// 		},
-			// 		onDrop: function ($item, container, _super, event) {
-				// 			container.el.removeClass("active");
-				// 				_super($item, container);
-				// 			$(".notes_wrapper ul").css("padding-bottom", 0);
-				// 			let noteObj: any = GeneralService.find(GeneralService.data.notes, $item.attr("data-note-id"));
-				// 			let newFolder: any = $item.parent().parent().parent().siblings("span");
-				// 			noteObj.folder = newFolder.attr("data-folders-tree-id");
-				// 			localStorage.setItem("structure", JSON.stringify(GeneralService.data)); 
-				// 		}
-				// 	});
-				// }
+		// // Notes can change folder and order in folder
+		// static sortableNotes(): void {
+			// 	$(".notes_container").sortable({
+				// 		group: "notes_container",
+				// 		handle: ".note",
+				// 		itemSelector: ".note",
+				// 		placeholder: "<li class='placeholder'></li>",
+				// 		pullPlaceholder: true,
+				// 		onDragStart: function ($item, container, _super, event) {
+					// 			$(".notes_wrapper ul").css("padding-bottom", 5);
+					// 		},
+					// 		onDrop: function ($item, container, _super, event) {
+						// 			container.el.removeClass("active");
+						// 				_super($item, container);
+						// 			$(".notes_wrapper ul").css("padding-bottom", 0);
+						// 			let noteObj: any = GeneralService.find(GeneralService.data.notes, $item.attr("data-note-id"));
+						// 			let newFolder: any = $item.parent().parent().parent().siblings("span");
+						// 			noteObj.folder = newFolder.attr("data-folders-tree-id");
+						// 			localStorage.setItem("structure", JSON.stringify(GeneralService.data)); 
+						// 		}
+						// 	});
+						// }

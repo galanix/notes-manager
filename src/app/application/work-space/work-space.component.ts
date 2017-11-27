@@ -59,8 +59,6 @@ import { Component, OnInit, Input,
 
 		ngOnInit() {
 			EnterFormService.checkAccess(this.startCall);
-			// this.findInstanceWithUrlHint();
-			// this.addActiveClass();
 		}
 
 		ngAfterContentChecked() {

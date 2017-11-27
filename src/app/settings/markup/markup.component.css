@@ -34,13 +34,6 @@
 
 .markup_btn {
 	display: block;
-	background-color: #0CC481;
-	border: none;
-	color: #fff;
-	cursor: pointer;
-	font-size: 16px;
-	letter-spacing: 1px;
 	margin-top: 20px;
-	padding: 7px 10px;
 }
 
